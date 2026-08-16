@@ -47,12 +47,12 @@ export default function Navbar({ navbarRef }: NavbarProps) {
         ref={navbarRef}
         className="relative w-full border-b border-[#151515]/10 bg-[#A8A7A3]/80 backdrop-blur-xs z-50 shrink-0 opacity-0"
       >
-        <div className="max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-16 h-16 lg:h-[72px] flex items-center justify-between">
+        <div className="max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-16 h-20 sm:h-22 lg:h-24 flex items-center justify-between">
           
           {/* Left: Brand Logo in Left Corner */}
           <div className="flex items-center">
-            <Link href="/" className="group flex items-center gap-2 focus:outline-hidden">
-              <div className="relative h-10 sm:h-11 md:h-12 w-40 sm:w-48 md:w-56">
+            <Link href="/" className="group flex items-center gap-3 focus:outline-hidden">
+              <div className="relative h-14 sm:h-16 md:h-18 lg:h-20 w-52 sm:w-64 md:w-76 lg:w-88">
                 <Image
                   src="/logo stage and steel.png"
                   alt="Stage & Steel Logo"
@@ -62,7 +62,7 @@ export default function Navbar({ navbarRef }: NavbarProps) {
                   className="object-contain object-left filter drop-shadow-xs transition-transform duration-200 group-hover:scale-105"
                 />
               </div>
-              <span className="hidden sm:inline-block text-[9px] font-mono tracking-widest text-[#777773] border-l border-[#151515]/20 pl-2 uppercase">
+              <span className="hidden sm:inline-block text-[10px] font-mono tracking-widest text-[#777773] border-l border-[#151515]/20 pl-2.5 uppercase">
                 LABS &reg;
               </span>
             </Link>

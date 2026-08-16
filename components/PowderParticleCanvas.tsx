@@ -37,11 +37,8 @@ export default function PowderParticleCanvas({
     if (!canvas) return;
 
     const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
     let animationFrameId: number;
     let isSpawning = true;
-    let spawnTimer: NodeJS.Timeout;
 
     // Handle High-DPI Canvas Resizing
     const resizeCanvas = () => {
@@ -109,7 +106,7 @@ export default function PowderParticleCanvas({
     spawnPuffs(45, true);
 
     // 2. Smooth gentle powder cloud pour stream for 1.4s
-    spawnTimer = setTimeout(() => {
+    const spawnTimer = setTimeout(() => {
       isSpawning = false;
     }, 1400);
 

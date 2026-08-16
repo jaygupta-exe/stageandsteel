@@ -32,8 +32,6 @@ export default function ProductShowcase({
     const card = card3DRef.current;
     if (!el || !card) return;
 
-    let isInteracting = false;
-
     const setRotateX = gsap.quickTo(card, "rotationX", {
       duration: 0.5,
       ease: "power2.out",
