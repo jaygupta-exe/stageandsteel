@@ -44,9 +44,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      suppressHydrationWarning
       className={`${oswald.variable} ${barlowCondensed.variable} ${spaceGrotesk.variable} ${inter.variable} antialiased selection:bg-[#596238] selection:text-[#F4F4F1]`}
     >
-      <body className="min-h-screen bg-[#A8A7A3] text-[#151515] font-sans relative overflow-x-hidden">
+      <body
+        suppressHydrationWarning
+        className="min-h-screen bg-[#A8A7A3] text-[#151515] font-sans relative overflow-x-hidden"
+      >
         {children}
       </body>
     </html>

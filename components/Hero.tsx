@@ -364,7 +364,7 @@ export default function HeroSection() {
                   </p>
                 </div>
                 <p className="mt-1 text-xs sm:text-sm font-sans text-[#151515]/80 leading-relaxed max-w-md">
-                  Pure cold-microfiltered whey isolate and German Creapure® creatine engineered for athletes who demand uncompromising bioavailability and measured output.
+                  Pure microfiltered whey concentrate delivering 25g protein per scoop and German Creapure® creatine engineered for athletes who demand uncompromising bioavailability and measured output.
                 </p>
               </div>
 

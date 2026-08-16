@@ -52,14 +52,14 @@ export default function Navbar({ navbarRef }: NavbarProps) {
           {/* Left: Brand Logo in Left Corner */}
           <div className="flex items-center">
             <Link href="/" className="group flex items-center gap-2 focus:outline-hidden">
-              <div className="relative h-8 sm:h-9 w-36 sm:w-44">
+              <div className="relative h-10 sm:h-11 md:h-12 w-40 sm:w-48 md:w-56">
                 <Image
                   src="/logo stage and steel.png"
                   alt="Stage & Steel Logo"
                   fill
                   priority
                   unoptimized
-                  className="object-contain filter drop-shadow-xs transition-transform duration-200 group-hover:scale-105"
+                  className="object-contain object-left filter drop-shadow-xs transition-transform duration-200 group-hover:scale-105"
                 />
               </div>
               <span className="hidden sm:inline-block text-[9px] font-mono tracking-widest text-[#777773] border-l border-[#151515]/20 pl-2 uppercase">

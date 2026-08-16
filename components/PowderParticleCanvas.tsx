@@ -53,10 +53,10 @@ export default function PowderParticleCanvas({
     resizeCanvas();
     window.addEventListener("resize", resizeCanvas);
 
-    // Realistic Soft Whey Isolate & Micronized Creatine Dust Hues
+    // Realistic Soft Whey Concentrate & Micronized Creatine Dust Hues
     const powderTones = [
       "255, 255, 255", // Pure Chalk Whey White
-      "246, 245, 240", // Soft Off-White Isolate
+      "246, 245, 240", // Soft Off-White Concentrate
       "235, 233, 222", // Creamy Vanilla Whey
       "225, 229, 218", // Fine Creatine Micro-Dust
       "210, 215, 195", // Subtle Botanical Olive Mist

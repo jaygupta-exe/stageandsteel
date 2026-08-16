@@ -48,9 +48,9 @@ export default function PowderMegaMenu({
       num: "02",
       title: "PROTEIN",
       href: "#",
-      category: "COLD-FILTERED ISOLATE",
-      spec: "27G PROTEIN // 0G SUGAR",
-      desc: "Instantized 100% Pure Whey Isolate & Hydrolyzed matrix for rapid uptake.",
+      category: "MICROFILTERED CONCENTRATE",
+      spec: "25G PROTEIN // PER SCOOP",
+      desc: "Instantized 100% Pure Whey Concentrate matrix for optimal recovery and lean muscle growth.",
       badge: "LAB FLAGSHIP",
     },
     {

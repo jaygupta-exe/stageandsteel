@@ -9,8 +9,8 @@ interface FeatureStripProps {
 
 export default function FeatureStrip({ featureStripRef }: FeatureStripProps) {
   const tickerItems = [
-    "100% COLD-MICROFILTERED WHEY ISOLATE",
-    "27G PROTEIN PER SERVING",
+    "100% MICROFILTERED WHEY CONCENTRATE",
+    "25G PROTEIN PER SCOOP",
     "5G MICRONIZED CREAPURE® MONOHYDRATE",
     "ZERO PROPRIETARY BLENDS",
     "HPLC INDEPENDENT LAB CERTIFIED",
