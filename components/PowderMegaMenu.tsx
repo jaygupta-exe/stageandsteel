@@ -1,0 +1,274 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import { ArrowUpRight, X, Zap, ShieldCheck, Dna, FlaskConical, Package, Layers, PhoneCall } from "lucide-react";
+
+interface PowderMegaMenuProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function PowderMegaMenu({
+  isOpen,
+  onClose,
+}: PowderMegaMenuProps) {
+  const [hoveredIdx, setHoveredIdx] = useState<number>(0);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+    if (isOpen) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [isOpen, onClose]);
+
+  if (!isOpen) return null;
+
+  const navItems = [
+    {
+      num: "01",
+      title: "SHOP",
+      href: "#",
+      category: "FULL ROSTER",
+      spec: "ALL SUPPLEMENTS & MERCH",
+      desc: "Complete laboratory catalog of stage-grade nutritional compounds and apparel.",
+      badge: "NEW DROPS 2026",
+    },
+    {
+      num: "02",
+      title: "PROTEIN",
+      href: "#",
+      category: "COLD-FILTERED ISOLATE",
+      spec: "27G PROTEIN // 0G SUGAR",
+      desc: "Instantized 100% Pure Whey Isolate & Hydrolyzed matrix for rapid uptake.",
+      badge: "LAB FLAGSHIP",
+    },
+    {
+      num: "03",
+      title: "CREATINE",
+      href: "#",
+      category: "MICRONIZED CREAPURE®",
+      spec: "5G CALIBRATED SERVING",
+      desc: "100% German Creapure® monohydrate for cell volumization and explosive ATP output.",
+      badge: "99.9% PURITY",
+    },
+    {
+      num: "04",
+      title: "STACKS",
+      href: "#",
+      category: "SYNERGISTIC PROTOCOLS",
+      spec: "STAGE PREP & MASS MATRIX",
+      desc: "Clinically synchronized compound bundles designed to accelerate recovery.",
+      badge: "SAVE 25%",
+    },
+    {
+      num: "05",
+      title: "ABOUT US",
+      href: "#",
+      category: "THE SCIENCE & STANDARD",
+      spec: "HPLC 3RD-PARTY LAB VERIFIED",
+      desc: "Zero proprietary blends, zero amino-spiking, 100% transparent testing.",
+      badge: "CERTIFIED GMP",
+    },
+    {
+      num: "06",
+      title: "CONTACT",
+      href: "#",
+      category: "SUPPORT & B2B",
+      spec: "ATHLETE DESK & WHOLESALE",
+      desc: "Direct support desk and specialized guidance from certified sports nutritionists.",
+      badge: "24/7 DESK",
+    },
+  ];
+
+  const activeItem = navItems[hoveredIdx] || navItems[0];
+
+  return (
+    <div className="fixed inset-0 z-50 flex flex-col justify-between bg-[#111110]/85 backdrop-blur-2xl text-[#F4F4F1] p-6 sm:p-10 lg:p-14 animate-in fade-in duration-300 select-none overflow-y-auto">
+      
+      {/* 1. TOP BAR */}
+      <div className="max-w-[1580px] w-full mx-auto flex items-center justify-between pb-4 border-b border-[#F4F4F1]/10 shrink-0">
+        
+        {/* Left: Close Scoop Button */}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Close navigation"
+          className="group flex items-center gap-3 text-xs font-mono tracking-widest text-[#F4F4F1] hover:text-[#596238] uppercase transition-colors cursor-pointer"
+        >
+          <div className="w-7 h-7 bg-[#151515] border border-[#F4F4F1]/20 group-hover:border-[#596238] flex items-center justify-center transition-colors">
+            <X className="w-3.5 h-3.5 transition-transform duration-300 group-hover:rotate-90 text-[#F4F4F1]" />
+          </div>
+          <span className="font-bold text-[11px]">MENU // CLOSE</span>
+        </button>
+
+        {/* Center: Brand Signature */}
+        <div className="hidden sm:flex items-center gap-2 font-display text-lg tracking-tight text-[#F4F4F1] uppercase">
+          <span>STAGE</span>
+          <Zap className="w-3.5 h-3.5 text-[#596238] fill-current" />
+          <span>STEEL LABS</span>
+        </div>
+
+        {/* Right: Tactical Corner-Brackets CTA Button */}
+        <div className="relative">
+          <Link
+            href="#"
+            onClick={onClose}
+            className="relative inline-flex items-center gap-2 px-5 py-2 bg-[#A8B778] hover:bg-[#8E9A5E] text-[#151515] font-mono text-[11px] font-black tracking-widest uppercase transition-all duration-200"
+          >
+            <span className="absolute -top-1 -left-1 w-2 h-2 border-t-2 border-l-2 border-[#F4F4F1]" />
+            <span className="absolute -bottom-1 -right-1 w-2 h-2 border-b-2 border-r-2 border-[#F4F4F1]" />
+            <span>SHOP NOW</span>
+            <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
+          </Link>
+        </div>
+      </div>
+
+      {/* 2. MAIN TWO-COLUMN BALANCED EDITORIAL SECTION */}
+      <div className="max-w-[1580px] w-full mx-auto my-auto py-8 lg:py-10 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
+        
+        {/* Left Column: Refined Navigation Menu (7 cols) */}
+        <div className="lg:col-span-7 flex flex-col justify-center">
+          
+          {/* Sub-header */}
+          <div className="flex items-center gap-2 text-[10px] font-mono text-[#A8B778] tracking-[0.25em] uppercase mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#596238] animate-ping" />
+            <span>SYSTEM DIRECTORY // NAVIGATION</span>
+          </div>
+
+          {/* Clean Pro-Sized Navigation Links */}
+          <nav className="flex flex-col border-t border-[#F4F4F1]/10">
+            {navItems.map((item, idx) => {
+              const isHovered = hoveredIdx === idx;
+
+              return (
+                <Link
+                  key={item.num}
+                  href={item.href}
+                  onClick={onClose}
+                  onMouseEnter={() => setHoveredIdx(idx)}
+                  className={`group relative flex items-center justify-between py-3.5 sm:py-4 px-2 border-b border-[#F4F4F1]/10 transition-all duration-200 ${
+                    isHovered
+                      ? "bg-[#181817]/60 border-[#596238]/50 pl-4"
+                      : "hover:bg-[#151514]/40"
+                  }`}
+                >
+                  {/* Left: Number + Title */}
+                  <div className="flex items-center gap-4 sm:gap-6">
+                    <span
+                      className={`font-mono text-xs transition-colors duration-200 ${
+                        isHovered ? "text-[#A8B778] font-bold" : "text-[#777773]"
+                      }`}
+                    >
+                      {item.num}
+                    </span>
+
+                    <span
+                      className={`font-display text-2xl sm:text-3xl lg:text-[34px] font-extrabold uppercase tracking-wide leading-none transition-colors duration-200 ${
+                        isHovered ? "text-[#A8B778]" : "text-[#F4F4F1] group-hover:text-[#F4F4F1]"
+                      }`}
+                    >
+                      {item.title}
+                    </span>
+                  </div>
+
+                  {/* Right: Category tag & Arrow */}
+                  <div className="flex items-center gap-3">
+                    <span className="hidden sm:inline-block text-[9px] font-mono tracking-widest text-[#777773] group-hover:text-[#C4C3BE] uppercase">
+                      {item.spec}
+                    </span>
+                    <ArrowUpRight
+                      className={`w-4 h-4 transition-all duration-200 ${
+                        isHovered
+                          ? "opacity-100 text-[#596238] translate-x-0.5 -translate-y-0.5"
+                          : "opacity-0 text-[#777773]"
+                      }`}
+                    />
+                  </div>
+                </Link>
+              );
+            })}
+          </nav>
+        </div>
+
+        {/* Right Column: Interactive Formula Spotlight & Specs Card (5 cols) */}
+        <div className="hidden lg:flex lg:col-span-5 flex-col justify-between p-6 sm:p-8 bg-[#151514]/80 border border-[#596238]/30 rounded-xs shadow-[0_10px_40px_rgba(0,0,0,0.5)]">
+          
+          <div>
+            <div className="flex items-center justify-between pb-4 mb-5 border-b border-[#F4F4F1]/10">
+              <span className="text-[10px] font-mono text-[#A8B778] tracking-widest uppercase">
+                FORMULA PROTOCOL // {activeItem.num}
+              </span>
+              <span className="px-2 py-0.5 bg-[#596238]/20 border border-[#596238]/40 text-[9px] font-mono text-[#A8B778]">
+                {activeItem.badge}
+              </span>
+            </div>
+
+            <span className="text-xs font-mono text-[#777773] tracking-widest uppercase block mb-1">
+              {activeItem.category}
+            </span>
+
+            <h4 className="font-display text-2xl font-black uppercase text-[#F4F4F1] mb-2 tracking-tight">
+              {activeItem.title}
+            </h4>
+
+            <p className="text-xs font-mono text-[#596238] uppercase font-bold tracking-wider mb-4">
+              {activeItem.spec}
+            </p>
+
+            <p className="text-xs text-[#C4C3BE] leading-relaxed font-body mb-6">
+              {activeItem.desc}
+            </p>
+          </div>
+
+          {/* Quick Specs Indicator Grid */}
+          <div className="pt-4 border-t border-[#F4F4F1]/10 grid grid-cols-2 gap-3 text-[10px] font-mono text-[#777773]">
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#596238]" />
+              <span>HPLC VERIFIED</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#596238]" />
+              <span>ZERO DOPING</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* 3. BOTTOM FOOTER BAR */}
+      <div className="max-w-[1580px] w-full mx-auto flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pt-4 border-t border-[#F4F4F1]/10 shrink-0 text-[10px] sm:text-[11px] font-mono tracking-widest text-[#777773] uppercase">
+        
+        {/* Bottom Left CTA */}
+        <div className="relative">
+          <Link
+            href="#"
+            onClick={onClose}
+            className="relative inline-flex items-center gap-2 px-4 py-1.5 bg-[#A8B778] hover:bg-[#8E9A5E] text-[#151515] font-mono font-bold tracking-widest uppercase transition-all duration-200"
+          >
+            <span className="absolute -top-1 -left-1 w-1.5 h-1.5 border-t-2 border-l-2 border-[#F4F4F1]" />
+            <span className="absolute -bottom-1 -right-1 w-1.5 h-1.5 border-b-2 border-r-2 border-[#F4F4F1]" />
+            <span>EXPLORE CATALOG</span>
+          </Link>
+        </div>
+
+        {/* Right Info */}
+        <div className="flex items-center gap-4">
+          <span className="text-[#A8B778]">ELITE SPORTS NUTRITION FORMULATION</span>
+          <span className="hidden sm:inline-block border-l border-[#F4F4F1]/10 pl-4 text-[#777773]">
+            BATCH SS-2026-X
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,88 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-bg: #A8A7A3;
+  --color-brand-dark: #151515;
+  --color-brand-white: #F4F4F1;
+  --color-brand-grey: #777773;
+  --color-brand-grey-muted: #8E8D88;
+  --color-brand-grey-light: #C4C3BE;
+  --color-brand-olive: #596238;
+  --color-brand-olive-light: #768349;
+  --color-brand-circle: #5A5954;
+  --color-brand-circle-inner: #4E4D48;
+  
+  --font-display: var(--font-barlow-condensed), var(--font-oswald), sans-serif;
+  --font-editorial: var(--font-space-grotesk), var(--font-inter), sans-serif;
+  --font-body: var(--font-inter), sans-serif;
+}
+
+/* Custom Base Styles */
+html, body {
+  background-color: #A8A7A3;
+  color: #151515;
+  font-family: var(--font-inter), sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Grain texture overlay */
+.bg-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.045'/%3E%3C/svg%3E");
+}
+
+/* Studio Product Shadow Layer */
+.studio-shadow-whey {
+  filter: drop-shadow(0 25px 35px rgba(0, 0, 0, 0.45))
+          drop-shadow(0 10px 15px rgba(0, 0, 0, 0.25));
+}
+
+.studio-shadow-creatine {
+  filter: drop-shadow(0 20px 25px rgba(0, 0, 0, 0.4))
+          drop-shadow(0 6px 10px rgba(0, 0, 0, 0.2));
+}
+
+/* Base ground contact shadow for realism */
+.contact-shadow {
+  background: radial-gradient(ellipse at center, rgba(15, 15, 15, 0.55) 0%, rgba(15, 15, 15, 0.35) 40%, rgba(15, 15, 15, 0) 75%);
+}
+
+/* Fine technical grid lines */
+.tech-border-r {
+  border-right: 1px solid rgba(21, 21, 21, 0.12);
+}
+
+.tech-border-b {
+  border-bottom: 1px solid rgba(21, 21, 21, 0.12);
+}
+
+.tech-border-t {
+  border-top: 1px solid rgba(21, 21, 21, 0.14);
+}
+
+/* Condensed display text styling */
+.condensed-title {
+  font-family: var(--font-barlow-condensed), var(--font-oswald), sans-serif;
+  letter-spacing: -0.03em;
+  line-height: 0.86;
+}
+
+/* Infinite Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 25s linear infinite;
+}
+
+.animate-marquee:hover {
+  animation-play-state: paused;
+}
