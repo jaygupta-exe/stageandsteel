@@ -128,10 +128,9 @@ export default function ProductCatalog() {
 
       <div className="max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-16 relative z-10">
         
-        {/* Section Header Matching Hero Typography */}
+        {/* Section Header */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-10 border-b border-[#151515]/15">
           <div>
-            {/* Sub-tag */}
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2.5 h-[2px] bg-[#596238]" />
               <p className="font-editorial text-xs sm:text-sm font-bold text-[#151515] tracking-widest uppercase leading-snug">
@@ -139,7 +138,6 @@ export default function ProductCatalog() {
               </p>
             </div>
 
-            {/* Main Headline */}
             <h2 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase text-[#151515] tracking-tight leading-[0.92]">
               FORMULATED UNDER <br />
               <span className="text-[#596238]">DISCIPLINE.</span>
@@ -169,18 +167,22 @@ export default function ProductCatalog() {
           ))}
         </div>
 
-        {/* Two-Column Flagship Cards Matching Hero Styling */}
+        {/* Two-Column Flagship Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto">
           {filteredProducts.map((product) => {
             return (
               <div
                 key={product.id}
-                className="group relative flex flex-col justify-between bg-[#151515] text-[#F4F4F1] border border-[#151515] shadow-2xl transition-all duration-300 p-6 sm:p-8"
+                className="group relative flex flex-col justify-between bg-white text-[#151515] border border-[#151515]/20 shadow-xl transition-all duration-300 overflow-hidden"
               >
-                <div>
-                  {/* Top Bar inside Card */}
-                  <div className="flex items-center justify-between pb-3 border-b border-[#F4F4F1]/10 mb-5">
-                    <span className="text-[10px] sm:text-[11px] font-mono text-[#A8B778] uppercase tracking-widest font-bold">
+                {/* 1. TOP HALF: PURE WHITE IMAGE STAGE */}
+                <div
+                  onClick={() => setSelectedProduct(product)}
+                  className="relative w-full h-80 sm:h-96 bg-white flex items-center justify-center p-6 cursor-pointer group/img border-b border-[#151515]/10"
+                >
+                  {/* Top Tags inside White Canvas */}
+                  <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
+                    <span className="text-[10px] font-mono font-bold tracking-widest text-[#151515] bg-[#151515]/5 px-2.5 py-1 uppercase">
                       {product.category}
                     </span>
                     <span className="text-[10px] font-mono text-[#777773] uppercase tracking-widest">
@@ -188,100 +190,99 @@ export default function ProductCatalog() {
                     </span>
                   </div>
 
-                  {/* PURE WHITE PRODUCT STAGE (Seamless Image Blend) */}
-                  <div
-                    onClick={() => setSelectedProduct(product)}
-                    className="relative w-full h-72 sm:h-84 bg-white rounded-xs border border-white flex items-center justify-center mb-6 overflow-hidden cursor-pointer group/img shadow-inner"
-                  >
-                    <div className="relative w-full h-full p-4 flex items-center justify-center transition-transform duration-500 ease-out group-hover/img:scale-105">
-                      <Image
-                        src={product.thumbnail}
-                        alt={product.name}
-                        fill
-                        priority
-                        unoptimized
-                        className="object-contain"
-                      />
-                    </div>
-
-                    {/* View Packaging Action Overlay on Hover */}
-                    <div className="absolute inset-0 m-auto w-48 h-10 bg-[#151515]/90 border border-[#A8B778] text-[#F4F4F1] font-editorial text-xs font-bold tracking-widest uppercase opacity-0 group-hover/img:opacity-100 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg">
-                      <Images className="w-4 h-4 text-[#A8B778]" />
-                      <span>VIEW PACKAGING ({product.gallery.length})</span>
-                    </div>
+                  {/* Product Image */}
+                  <div className="relative w-full h-full flex items-center justify-center transition-transform duration-500 ease-out group-hover/img:scale-106">
+                    <Image
+                      src={product.thumbnail}
+                      alt={product.name}
+                      fill
+                      priority
+                      unoptimized
+                      className="object-contain"
+                    />
                   </div>
 
-                  {/* Product Title & Info */}
-                  <h3
-                    onClick={() => setSelectedProduct(product)}
-                    className="font-display text-2xl sm:text-3xl font-black uppercase text-[#F4F4F1] tracking-tight leading-tight mb-1 group-hover:text-[#A8B778] transition-colors cursor-pointer"
-                  >
-                    {product.name}
-                  </h3>
-                  <p className="text-xs font-editorial font-bold text-[#596238] uppercase tracking-wider mb-5">
-                    {product.subtitle}
-                  </p>
-
-                  {/* Live Specs Matrix Mini */}
-                  <div className="grid grid-cols-3 gap-2 p-3 bg-[#111110] border border-[#F4F4F1]/10 mb-6 text-center">
-                    {product.specs.map((s, i) => (
-                      <div key={i} className="flex flex-col">
-                        <span className="text-[9px] font-mono text-[#777773] uppercase tracking-wider">
-                          {s.label}
-                        </span>
-                        <span className="text-sm font-display font-extrabold text-[#F4F4F1]">
-                          {s.value} <span className="text-[9px] text-[#A8B778]">{s.unit}</span>
-                        </span>
-                      </div>
-                    ))}
+                  {/* View Packaging Action Overlay on Hover */}
+                  <div className="absolute inset-0 m-auto w-48 h-10 bg-[#151515]/90 text-[#F4F4F1] font-editorial text-xs font-bold tracking-widest uppercase opacity-0 group-hover/img:opacity-100 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg">
+                    <Images className="w-4 h-4 text-[#A8B778]" />
+                    <span>VIEW PACKAGING ({product.gallery.length})</span>
                   </div>
                 </div>
 
-                {/* Bottom Action Footer */}
-                <div className="pt-5 border-t border-[#F4F4F1]/10 flex items-center justify-between">
+                {/* 2. BOTTOM HALF: DARK TITANIUM LAB SPECS & ORDER SUITE */}
+                <div className="bg-[#151515] text-[#F4F4F1] p-6 sm:p-8 flex flex-col justify-between flex-1">
                   <div>
-                    <span className="text-[9px] font-mono text-[#777773] uppercase tracking-wider block">
-                      PROTOCOL PRICE
-                    </span>
-                    <div className="flex items-baseline gap-2">
-                      <span className="font-display text-2xl sm:text-3xl font-black text-[#F4F4F1]">
-                        {product.price}
-                      </span>
-                      {product.originalPrice && (
-                        <span className="text-xs font-mono line-through text-[#777773]">
-                          {product.originalPrice}
-                        </span>
-                      )}
+                    {/* Title */}
+                    <h3
+                      onClick={() => setSelectedProduct(product)}
+                      className="font-display text-2xl sm:text-3xl font-black uppercase text-[#F4F4F1] tracking-tight leading-tight mb-1 group-hover:text-[#A8B778] transition-colors cursor-pointer"
+                    >
+                      {product.name}
+                    </h3>
+                    <p className="text-xs font-editorial font-bold text-[#596238] uppercase tracking-wider mb-5">
+                      {product.subtitle}
+                    </p>
+
+                    {/* Specs Grid */}
+                    <div className="grid grid-cols-3 gap-2 p-3 bg-[#111110] border border-[#F4F4F1]/10 mb-6 text-center">
+                      {product.specs.map((s, i) => (
+                        <div key={i} className="flex flex-col">
+                          <span className="text-[9px] font-mono text-[#777773] uppercase tracking-wider">
+                            {s.label}
+                          </span>
+                          <span className="text-sm font-display font-extrabold text-[#F4F4F1]">
+                            {s.value} <span className="text-[9px] text-[#A8B778]">{s.unit}</span>
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    {/* View Specs Trigger */}
-                    <button
-                      type="button"
-                      onClick={() => setSelectedProduct(product)}
-                      title="View Packaging & Lab Facts"
-                      className="p-3 bg-[#181817] hover:bg-[#596238] border border-[#F4F4F1]/20 text-[#F4F4F1] transition-colors cursor-pointer"
-                    >
-                      <Images className="w-4 h-4" />
-                    </button>
+                  {/* Price & Actions */}
+                  <div className="pt-5 border-t border-[#F4F4F1]/10 flex items-center justify-between">
+                    <div>
+                      <span className="text-[9px] font-mono text-[#777773] uppercase tracking-wider block">
+                        PROTOCOL PRICE
+                      </span>
+                      <div className="flex items-baseline gap-2">
+                        <span className="font-display text-2xl sm:text-3xl font-black text-[#F4F4F1]">
+                          {product.price}
+                        </span>
+                        {product.originalPrice && (
+                          <span className="text-xs font-mono line-through text-[#777773]">
+                            {product.originalPrice}
+                          </span>
+                        )}
+                      </div>
+                    </div>
 
-                    {/* Order Now Button */}
-                    <button
-                      type="button"
-                      onClick={() => alert(`Added ${product.name} to protocol shaker!`)}
-                      className="px-6 py-3 bg-[#596238] hover:bg-[#A8B778] text-[#F4F4F1] hover:text-[#151515] font-editorial text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer shadow-md"
-                    >
-                      ORDER NOW
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => setSelectedProduct(product)}
+                        title="View Packaging & Lab Facts"
+                        className="p-3 bg-[#181817] hover:bg-[#596238] border border-[#F4F4F1]/20 text-[#F4F4F1] transition-colors cursor-pointer"
+                      >
+                        <Images className="w-4 h-4" />
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => alert(`Added ${product.name} to protocol shaker!`)}
+                        className="px-6 py-3 bg-[#596238] hover:bg-[#A8B778] text-[#F4F4F1] hover:text-[#151515] font-editorial text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer shadow-md"
+                      >
+                        ORDER NOW
+                      </button>
+                    </div>
                   </div>
                 </div>
+
               </div>
             );
           })}
         </div>
 
-        {/* Section Technical Telemetry Strip */}
+        {/* Technical Telemetry Strip */}
         <div className="mt-14 pt-6 border-t border-[#151515]/15 flex flex-wrap items-center justify-between gap-4 text-[10px] sm:text-[11px] font-mono text-[#555550] uppercase tracking-wider">
           <div className="flex items-center gap-2">
             <span className="w-1.5 h-1.5 rounded-full bg-[#596238]" />

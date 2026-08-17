@@ -101,12 +101,11 @@ export default function ProductModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#151515]/90 backdrop-blur-md p-3 sm:p-6 lg:p-8 animate-in fade-in duration-200 select-none">
       
-      {/* Modal Card Matching Hero Aesthetic */}
-      <div className="relative w-full max-w-[1340px] max-h-[94vh] bg-[#151515] text-[#F4F4F1] border border-[#F4F4F1]/15 shadow-2xl flex flex-col overflow-hidden">
+      {/* Modal Card */}
+      <div className="relative w-full max-w-[1340px] max-h-[94vh] bg-[#151515] text-[#F4F4F1] border border-[#F4F4F1]/20 shadow-2xl flex flex-col overflow-hidden">
         
-        {/* Top Tactical Status Bar */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-[#F4F4F1]/10 bg-[#111110] shrink-0">
-          
+        {/* Top Tactical Header */}
+        <div className="flex items-center justify-between px-6 py-3.5 border-b border-[#F4F4F1]/10 bg-[#111110] shrink-0">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-[#A8B778] uppercase">
               <span className="w-2 h-2 rounded-full bg-[#596238] animate-pulse" />
@@ -130,31 +129,29 @@ export default function ProductModal({
         {/* Main Body Grid */}
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-y-auto">
           
-          {/* LEFT: PURE WHITE PRODUCT SLIDER GALLERY (6 cols) */}
-          <div className="lg:col-span-6 flex flex-col justify-between bg-[#111110] border-b lg:border-b-0 lg:border-r border-[#F4F4F1]/10 p-5 sm:p-8 relative">
+          {/* LEFT: 100% SEAMLESS PURE WHITE GALLERY (6 cols) */}
+          <div className="lg:col-span-6 flex flex-col justify-between bg-white text-[#151515] relative p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-[#151515]/10">
             
-            {/* View Indicator Badge */}
-            <div className="flex items-center justify-between w-full mb-3 z-10">
-              <span className="text-[11px] font-mono tracking-widest text-[#A8B778] uppercase bg-[#181817] px-3 py-1 border border-[#596238]/40">
+            {/* Top Info Bar inside White Area */}
+            <div className="flex items-center justify-between w-full mb-2 z-10">
+              <span className="text-[11px] font-mono tracking-widest text-[#151515] uppercase bg-[#151515]/5 px-3 py-1 border border-[#151515]/10 font-bold">
                 VIEW {activeSlide + 1} OF {product.gallery.length} // {currentSlide?.label}
               </span>
               <span className="hidden sm:inline-block text-[10px] font-mono text-[#777773] uppercase">
-                USE ARROWS OR CLICK THUMBNAILS
+                USE ARROWS OR THUMBNAILS
               </span>
             </div>
 
-            {/* Main Image Slider Stage (PURE WHITE BG for Seamless Blend) */}
-            <div className="relative w-full h-[360px] sm:h-[430px] bg-white rounded-xs border border-white flex items-center justify-center overflow-hidden my-auto group shadow-inner">
-              
-              {/* Active Image */}
-              <div className="relative w-full h-full p-4 flex items-center justify-center">
+            {/* Seamless Main Image Display */}
+            <div className="relative w-full h-[380px] sm:h-[450px] bg-white flex items-center justify-center my-auto group">
+              <div className="relative w-full h-full p-2 flex items-center justify-center">
                 {product.gallery.map((slide, idx) => (
                   <div
                     key={slide.url}
-                    className={`absolute inset-0 p-4 flex items-center justify-center transition-all duration-300 ${
+                    className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
                       idx === activeSlide
-                        ? "opacity-100 scale-100 z-10"
-                        : "opacity-0 scale-95 z-0 pointer-events-none"
+                        ? "opacity-100 z-10"
+                        : "opacity-0 z-0 pointer-events-none"
                     }`}
                   >
                     <Image
@@ -175,7 +172,7 @@ export default function ProductModal({
                   type="button"
                   onClick={handlePrev}
                   aria-label="Previous image"
-                  className="absolute left-2 z-20 p-2.5 bg-[#151515]/90 hover:bg-[#596238] border border-[#F4F4F1]/20 text-[#F4F4F1] transition-colors cursor-pointer shadow-md"
+                  className="absolute left-1 sm:left-2 z-20 p-3 bg-[#151515] hover:bg-[#596238] text-white transition-colors cursor-pointer shadow-lg"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -187,7 +184,7 @@ export default function ProductModal({
                   type="button"
                   onClick={handleNext}
                   aria-label="Next image"
-                  className="absolute right-2 z-20 p-2.5 bg-[#151515]/90 hover:bg-[#596238] border border-[#F4F4F1]/20 text-[#F4F4F1] transition-colors cursor-pointer shadow-md"
+                  className="absolute right-1 sm:right-2 z-20 p-3 bg-[#151515] hover:bg-[#596238] text-white transition-colors cursor-pointer shadow-lg"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -196,7 +193,7 @@ export default function ProductModal({
 
             {/* Thumbnail Strip (Pure White Backgrounds) */}
             {product.gallery.length > 1 && (
-              <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-4 border-t border-[#F4F4F1]/10 mt-3 z-10">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-4 border-t border-[#151515]/10 mt-2 z-10">
                 {product.gallery.map((slide, idx) => {
                   const isActive = idx === activeSlide;
                   return (
@@ -204,13 +201,13 @@ export default function ProductModal({
                       key={slide.url}
                       type="button"
                       onClick={() => setActiveSlide(idx)}
-                      className={`relative flex flex-col items-center gap-1.5 p-1.5 bg-[#161615] border transition-all duration-200 cursor-pointer ${
+                      className={`relative flex flex-col items-center gap-1 p-1.5 bg-white border-2 transition-all duration-200 cursor-pointer ${
                         isActive
-                          ? "border-[#A8B778] bg-[#1e1e1d] shadow-[0_0_12px_rgba(168,183,120,0.3)]"
-                          : "border-[#F4F4F1]/10 hover:border-[#596238] opacity-70 hover:opacity-100"
+                          ? "border-[#151515] shadow-md"
+                          : "border-[#151515]/15 hover:border-[#596238] opacity-60 hover:opacity-100"
                       }`}
                     >
-                      <div className="relative w-full h-14 sm:h-16 bg-white rounded-xs overflow-hidden flex items-center justify-center p-1">
+                      <div className="relative w-full h-14 sm:h-16 bg-white overflow-hidden flex items-center justify-center">
                         <Image
                           src={slide.url}
                           alt={slide.label}
@@ -220,7 +217,7 @@ export default function ProductModal({
                         />
                       </div>
                       <span className={`text-[9px] font-mono tracking-wider uppercase ${
-                        isActive ? "text-[#A8B778] font-bold" : "text-[#777773]"
+                        isActive ? "text-[#151515] font-bold" : "text-[#777773]"
                       }`}>
                         {slide.label}
                       </span>
