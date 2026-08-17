@@ -2,12 +2,12 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Eye, ArrowUpRight, ShieldCheck, Sparkles, Filter, Layers, Check } from "lucide-react";
-import Product3DModal, { Product3DData } from "./Product3DModal";
+import { ArrowUpRight, ShieldCheck, Sparkles, Filter, Layers, Check, FileText } from "lucide-react";
+import ProductModal, { ProductData } from "./ProductModal";
 
 export default function ProductCatalog() {
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
-  const [selectedProduct3D, setSelectedProduct3D] = useState<Product3DData | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<ProductData | null>(null);
 
   const categories = [
     { id: "ALL", label: "ALL PROTOCOLS" },
@@ -16,7 +16,7 @@ export default function ProductCatalog() {
     { id: "PERFORMANCE", label: "PERFORMANCE & ENERGY" },
   ];
 
-  const products: Product3DData[] = [
+  const products: ProductData[] = [
     {
       id: "whey-concentrate",
       name: "STAGE WHEY CONCENTRATE",
@@ -25,8 +25,7 @@ export default function ProductCatalog() {
       price: "₹3,499",
       servings: "30 Servings",
       netWeight: "1 KG (2.2 LBS)",
-      tubType: "whey",
-      textureUrl: "/whey-pure-label-texture.png",
+      image: "/whey protein/salted caramel/Whey_protein_front..png",
       accentColor: "#A8B778",
       batchCode: "BATCH SS-2026-X",
       flavors: [
@@ -40,7 +39,7 @@ export default function ProductCatalog() {
         { label: "ENZYMES", value: "DigeZyme®" },
       ],
       description:
-        "Microfiltered pure whey concentrate engineered for maximum leucine bio-availability and accelerated muscular hypertrophy. Formulated with zero amino spiking and zero proprietary blends.",
+        "Microfiltered pure whey concentrate engineered for maximum leucine bio-availability and accelerated muscular hypertrophy. Formulated with zero amino spiking, zero banned substances, and zero proprietary blends.",
       nutritionFacts: [
         { name: "Protein", amount: "25g", dailyValue: "50%" },
         { name: "BCAAs (Leucine, Isoleucine, Valine)", amount: "5.5g" },
@@ -58,8 +57,7 @@ export default function ProductCatalog() {
       price: "₹1,899",
       servings: "60 Servings",
       netWeight: "300G (0.66 LBS)",
-      tubType: "creatine",
-      textureUrl: "/creatine-pure-label-texture.png",
+      image: "/creatine-cutout.png",
       accentColor: "#C4C3BE",
       batchCode: "BATCH CR-2026-GER",
       flavors: [
@@ -89,8 +87,7 @@ export default function ProductCatalog() {
       price: "₹4,299",
       servings: "30 Servings",
       netWeight: "1 KG (2.2 LBS)",
-      tubType: "whey",
-      textureUrl: "/whey-pure-label-texture.png",
+      image: "/whey protein/salted caramel/Whey_protein_front..png",
       accentColor: "#A8B778",
       batchCode: "BATCH ISO-2026-V1",
       flavors: [
@@ -120,8 +117,7 @@ export default function ProductCatalog() {
       price: "₹2,499",
       servings: "30 Servings",
       netWeight: "420G (0.92 LBS)",
-      tubType: "creatine",
-      textureUrl: "/creatine-pure-label-texture.png",
+      image: "/creatine-cutout.png",
       accentColor: "#D4A373",
       batchCode: "BATCH NITRO-2026-MAX",
       flavors: [
@@ -201,14 +197,9 @@ export default function ProductCatalog() {
           ))}
         </div>
 
-        {/* Masterpiece Product Grid (Editorial Tactical Cards) */}
+        {/* Masterpiece Product Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 lg:gap-8">
           {filteredProducts.map((product) => {
-            const isWhey = product.tubType === "whey";
-            const thumbnailSrc = isWhey
-              ? "/whey protein/salted caramel/Whey_protein_front..png"
-              : "/creatine-cutout.png";
-
             return (
               <div
                 key={product.id}
@@ -231,14 +222,17 @@ export default function ProductCatalog() {
                     </span>
                   </div>
 
-                  {/* Interactive 3D Product Cutout Stage */}
-                  <div className="relative w-full h-64 sm:h-72 flex items-center justify-center mb-6 overflow-hidden">
+                  {/* High-Resolution Product Cutout Stage */}
+                  <div
+                    onClick={() => setSelectedProduct(product)}
+                    className="relative w-full h-64 sm:h-72 flex items-center justify-center mb-6 overflow-hidden cursor-pointer"
+                  >
                     {/* Subtle Radial Glow */}
                     <div className="absolute inset-0 bg-radial from-[#596238]/15 via-transparent to-transparent rounded-full opacity-40 group-hover:opacity-80 transition-opacity" />
 
                     <div className="relative w-48 sm:w-56 h-full transition-transform duration-500 ease-out group-hover:scale-108 group-hover:-translate-y-2">
                       <Image
-                        src={thumbnailSrc}
+                        src={product.image}
                         alt={product.name}
                         fill
                         unoptimized
@@ -246,19 +240,18 @@ export default function ProductCatalog() {
                       />
                     </div>
 
-                    {/* Floating 3D Inspect Action Overlay on Hover */}
-                    <button
-                      type="button"
-                      onClick={() => setSelectedProduct3D(product)}
-                      className="absolute inset-0 m-auto w-40 h-10 bg-[#141413]/90 border border-[#A8B778] text-[#F4F4F1] font-mono text-[11px] font-bold tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center gap-2 hover:bg-[#A8B778] hover:text-[#151515] shadow-lg cursor-pointer"
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                      <span>INSPECT 3D (360°)</span>
-                    </button>
+                    {/* View Specs Overlay Button on Hover */}
+                    <div className="absolute inset-0 m-auto w-36 h-9 bg-[#141413]/90 border border-[#A8B778] text-[#F4F4F1] font-mono text-[11px] font-bold tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center gap-2 hover:bg-[#A8B778] hover:text-[#151515] shadow-lg">
+                      <FileText className="w-3.5 h-3.5" />
+                      <span>VIEW SPECS</span>
+                    </div>
                   </div>
 
                   {/* Product Title & Info */}
-                  <h3 className="font-display text-xl sm:text-2xl font-black uppercase text-[#F4F4F1] tracking-tight leading-tight mb-1 group-hover:text-[#A8B778] transition-colors">
+                  <h3
+                    onClick={() => setSelectedProduct(product)}
+                    className="font-display text-xl sm:text-2xl font-black uppercase text-[#F4F4F1] tracking-tight leading-tight mb-1 group-hover:text-[#A8B778] transition-colors cursor-pointer"
+                  >
                     {product.name}
                   </h3>
                   <p className="text-[11px] font-mono text-[#777773] uppercase tracking-wider mb-4">
@@ -292,14 +285,14 @@ export default function ProductCatalog() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    {/* Direct 3D Inspect Trigger */}
+                    {/* View Specs Trigger */}
                     <button
                       type="button"
-                      onClick={() => setSelectedProduct3D(product)}
-                      title="Open 360° 3D Inspector"
+                      onClick={() => setSelectedProduct(product)}
+                      title="View Full Lab Formula Specs"
                       className="p-2.5 bg-[#181817] hover:bg-[#596238]/30 border border-[#F4F4F1]/10 hover:border-[#A8B778] text-[#C4C3BE] hover:text-[#F4F4F1] transition-colors cursor-pointer"
                     >
-                      <Eye className="w-4 h-4" />
+                      <FileText className="w-4 h-4" />
                     </button>
 
                     {/* Quick Add Button */}
@@ -319,11 +312,11 @@ export default function ProductCatalog() {
 
       </div>
 
-      {/* Fullscreen Real-time 360° 3D Product Inspector Modal */}
-      <Product3DModal
-        isOpen={Boolean(selectedProduct3D)}
-        onClose={() => setSelectedProduct3D(null)}
-        product={selectedProduct3D}
+      {/* Clean Fullscreen Formula Specs & Details Modal */}
+      <ProductModal
+        isOpen={Boolean(selectedProduct)}
+        onClose={() => setSelectedProduct(null)}
+        product={selectedProduct}
       />
     </section>
   );
