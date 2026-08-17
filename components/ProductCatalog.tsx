@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { ArrowUpRight, ShieldCheck, Sparkles, Filter, Layers, Check, FileText, Images } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ShieldCheck, Images, Check } from "lucide-react";
 import ProductModal, { ProductData } from "./ProductModal";
 
 export default function ProductCatalog() {
@@ -28,7 +28,7 @@ export default function ProductCatalog() {
       thumbnail: "/whey protein/salted caramel/Whey protein salted.JPG.jpeg",
       gallery: [
         {
-          label: "01 FRONT VIEW",
+          label: "01 FRONT PACKAGING",
           url: "/whey protein/salted caramel/Whey protein salted.JPG.jpeg",
         },
         {
@@ -36,14 +36,14 @@ export default function ProductCatalog() {
           url: "/whey protein/salted caramel/sakted caramel back.PNG",
         },
         {
-          label: "03 AMINO & SPECS",
+          label: "03 AMINO & DIRECTIONS",
           url: "/whey protein/salted caramel/salted caramel back 1.PNG",
         },
       ],
-      accentColor: "#A8B778",
+      accentColor: "#596238",
       batchCode: "BATCH SS-2026-X",
       flavors: [
-        { name: "Salted Caramel", color: "#D4A373", inStock: true },
+        { name: "Salted Caramel", color: "#DE8A36", inStock: true },
       ],
       specs: [
         { label: "PROTEIN", value: "25", unit: "G" },
@@ -51,14 +51,14 @@ export default function ProductCatalog() {
         { label: "ENZYMES", value: "DigeZyme®" },
       ],
       description:
-        "Microfiltered pure whey concentrate engineered for maximum leucine bio-availability and accelerated muscular hypertrophy. Formulated with zero amino spiking, zero banned substances, and zero proprietary blends.",
+        "Pure microfiltered whey concentrate delivering 25g protein per scoop, instantized for rapid bio-availability, accelerated muscular hypertrophy, and optimal recovery.",
       nutritionFacts: [
-        { name: "Protein", amount: "25g", dailyValue: "50%" },
+        { name: "Protein per Scoop", amount: "25g", dailyValue: "50%" },
         { name: "BCAAs (Leucine, Isoleucine, Valine)", amount: "5.5g" },
         { name: "EAAs (Essential Amino Acids)", amount: "11.7g" },
         { name: "Total Carbohydrates", amount: "2.1g" },
         { name: "Dietary Fat", amount: "1.4g" },
-        { name: "DigeZyme® Multi-Enzyme Matrix", amount: "100mg" },
+        { name: "DigeZyme® Multi-Enzyme Complex", amount: "100mg" },
       ],
       suggestedUse:
         "Mix 1 rounded scoop (33g) with 200–250ml cold water or skimmed milk in a shaker cup. Consume immediately post-workout or between meals for optimal protein synthesis.",
@@ -75,7 +75,7 @@ export default function ProductCatalog() {
       thumbnail: "/creatine/creatine front.jpg.jpeg",
       gallery: [
         {
-          label: "01 FRONT VIEW",
+          label: "01 FRONT PACKAGING",
           url: "/creatine/creatine front.jpg.jpeg",
         },
         {
@@ -87,7 +87,7 @@ export default function ProductCatalog() {
           url: "/creatine/creatine back 2.jpg.jpeg",
         },
       ],
-      accentColor: "#C4C3BE",
+      accentColor: "#596238",
       batchCode: "BATCH CR-2026-GER",
       flavors: [
         { name: "Unflavored Raw Purity", color: "#F4F4F1", inStock: true },
@@ -121,44 +121,47 @@ export default function ProductCatalog() {
         });
 
   return (
-    <section className="relative w-full py-24 sm:py-32 bg-[#121211] text-[#F4F4F1] overflow-hidden border-t border-[#151515]/20">
+    <section className="relative w-full py-20 sm:py-28 bg-[#A8A7A3] text-[#151515] overflow-hidden border-t border-[#151515]/15">
       
-      {/* Background Ambience & Grid */}
-      <div className="absolute inset-0 bg-[radial-gradient(#596238_1px,transparent_1px)] [background-size:32px_32px] opacity-[0.07] pointer-events-none" />
-      <div className="absolute top-1/4 -right-40 w-96 h-96 bg-[#596238]/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-10 -left-40 w-96 h-96 bg-[#A8B778]/5 rounded-full blur-3xl pointer-events-none" />
+      {/* Subtle Concrete Texture */}
+      <div className="absolute inset-0 bg-grain pointer-events-none opacity-40" />
 
       <div className="max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-16 relative z-10">
         
-        {/* Section Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-12 border-b border-[#F4F4F1]/10">
+        {/* Section Header Matching Hero Typography */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-10 border-b border-[#151515]/15">
           <div>
-            <div className="flex items-center gap-2 text-xs font-mono text-[#A8B778] tracking-[0.25em] uppercase mb-3">
-              <span className="w-2 h-2 rounded-full bg-[#596238] animate-pulse" />
-              <span>STAGE PROTOCOL // LAB ROSTER 2026</span>
+            {/* Sub-tag */}
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2.5 h-[2px] bg-[#596238]" />
+              <p className="font-editorial text-xs sm:text-sm font-bold text-[#151515] tracking-widest uppercase leading-snug">
+                STAGE PROTOCOL // LAB ROSTER 2026
+              </p>
             </div>
-            <h2 className="font-display text-4xl sm:text-5xl lg:text-6xl font-black uppercase text-[#F4F4F1] tracking-tight leading-[0.95]">
-              FORMULATED FOR <br />
-              <span className="text-[#A8B778]">THE STAGE.</span>
+
+            {/* Main Headline */}
+            <h2 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase text-[#151515] tracking-tight leading-[0.92]">
+              FORMULATED UNDER <br />
+              <span className="text-[#596238]">DISCIPLINE.</span>
             </h2>
           </div>
 
-          <p className="max-w-xl text-sm sm:text-base text-[#C4C3BE] leading-relaxed font-body">
-            Pure microfiltered compounds calibrated for elite athletes who demand zero proprietary blends, maximum bioavailability, and unyielding laboratory transparency.
+          <p className="max-w-md text-xs sm:text-sm font-sans text-[#151515]/80 leading-relaxed">
+            Pure microfiltered compounds calibrated for athletes who demand zero proprietary blends, measured bio-availability, and absolute stage output.
           </p>
         </div>
 
         {/* Category Filters Bar */}
-        <div className="flex flex-wrap items-center gap-2 py-8">
+        <div className="flex flex-wrap items-center gap-3 py-8">
           {categories.map((cat) => (
             <button
               key={cat.id}
               type="button"
               onClick={() => setActiveCategory(cat.id)}
-              className={`px-5 py-2.5 text-xs font-mono tracking-widest uppercase transition-all duration-200 cursor-pointer ${
+              className={`px-6 py-2.5 text-xs font-editorial font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer ${
                 activeCategory === cat.id
-                  ? "bg-[#A8B778] text-[#151515] font-black border border-[#A8B778]"
-                  : "bg-[#181817] text-[#777773] hover:text-[#F4F4F1] border border-[#F4F4F1]/10 hover:border-[#596238]"
+                  ? "bg-[#151515] text-[#F4F4F1] shadow-md"
+                  : "bg-[#151515]/10 text-[#151515] hover:bg-[#151515]/20 border border-[#151515]/15"
               }`}
             >
               {cat.label}
@@ -166,52 +169,44 @@ export default function ProductCatalog() {
           ))}
         </div>
 
-        {/* Masterpiece Product Grid (2 Flagship Products) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
+        {/* Two-Column Flagship Cards Matching Hero Styling */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto">
           {filteredProducts.map((product) => {
             return (
               <div
                 key={product.id}
-                className="group relative flex flex-col justify-between bg-[#161615] border border-[#F4F4F1]/10 hover:border-[#596238] transition-all duration-300 p-6 sm:p-8 shadow-[0_10px_30px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_45px_rgba(89,98,56,0.15)]"
+                className="group relative flex flex-col justify-between bg-[#151515] text-[#F4F4F1] border border-[#151515] shadow-2xl transition-all duration-300 p-6 sm:p-8"
               >
-                {/* Corner Tactical Brackets */}
-                <span className="absolute top-0 left-0 w-2.5 h-2.5 border-t-2 border-l-2 border-[#596238] opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="absolute top-0 right-0 w-2.5 h-2.5 border-t-2 border-r-2 border-[#596238] opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="absolute bottom-0 left-0 w-2.5 h-2.5 border-b-2 border-l-2 border-[#596238] opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-b-2 border-r-2 border-[#596238] opacity-0 group-hover:opacity-100 transition-opacity" />
-
                 <div>
                   {/* Top Bar inside Card */}
-                  <div className="flex items-center justify-between pb-3 border-b border-[#F4F4F1]/10 mb-6">
-                    <span className="text-[10px] font-mono text-[#A8B778] uppercase tracking-wider">
+                  <div className="flex items-center justify-between pb-3 border-b border-[#F4F4F1]/10 mb-5">
+                    <span className="text-[10px] sm:text-[11px] font-mono text-[#A8B778] uppercase tracking-widest font-bold">
                       {product.category}
                     </span>
-                    <span className="text-[9px] font-mono text-[#777773] uppercase tracking-widest">
+                    <span className="text-[10px] font-mono text-[#777773] uppercase tracking-widest">
                       {product.servings} • {product.netWeight}
                     </span>
                   </div>
 
-                  {/* High-Resolution Product Cutout Stage */}
+                  {/* PURE WHITE PRODUCT STAGE (Seamless Image Blend) */}
                   <div
                     onClick={() => setSelectedProduct(product)}
-                    className="relative w-full h-72 sm:h-80 flex items-center justify-center mb-6 overflow-hidden cursor-pointer"
+                    className="relative w-full h-72 sm:h-84 bg-white rounded-xs border border-white flex items-center justify-center mb-6 overflow-hidden cursor-pointer group/img shadow-inner"
                   >
-                    {/* Subtle Radial Glow */}
-                    <div className="absolute inset-0 bg-radial from-[#596238]/15 via-transparent to-transparent rounded-full opacity-40 group-hover:opacity-80 transition-opacity" />
-
-                    <div className="relative w-56 sm:w-64 h-full transition-transform duration-500 ease-out group-hover:scale-106 group-hover:-translate-y-2">
+                    <div className="relative w-full h-full p-4 flex items-center justify-center transition-transform duration-500 ease-out group-hover/img:scale-105">
                       <Image
                         src={product.thumbnail}
                         alt={product.name}
                         fill
+                        priority
                         unoptimized
-                        className="object-contain filter drop-shadow-[0_15px_25px_rgba(0,0,0,0.7)]"
+                        className="object-contain"
                       />
                     </div>
 
-                    {/* View Packaging Gallery Overlay on Hover */}
-                    <div className="absolute inset-0 m-auto w-44 h-10 bg-[#141413]/90 border border-[#A8B778] text-[#F4F4F1] font-mono text-[11px] font-bold tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center gap-2 hover:bg-[#A8B778] hover:text-[#151515] shadow-lg">
-                      <Images className="w-3.5 h-3.5" />
+                    {/* View Packaging Action Overlay on Hover */}
+                    <div className="absolute inset-0 m-auto w-48 h-10 bg-[#151515]/90 border border-[#A8B778] text-[#F4F4F1] font-editorial text-xs font-bold tracking-widest uppercase opacity-0 group-hover/img:opacity-100 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg">
+                      <Images className="w-4 h-4 text-[#A8B778]" />
                       <span>VIEW PACKAGING ({product.gallery.length})</span>
                     </div>
                   </div>
@@ -223,19 +218,19 @@ export default function ProductCatalog() {
                   >
                     {product.name}
                   </h3>
-                  <p className="text-xs font-mono text-[#777773] uppercase tracking-wider mb-5">
+                  <p className="text-xs font-editorial font-bold text-[#596238] uppercase tracking-wider mb-5">
                     {product.subtitle}
                   </p>
 
                   {/* Live Specs Matrix Mini */}
-                  <div className="grid grid-cols-3 gap-2 p-3 bg-[#121211] border border-[#F4F4F1]/5 mb-6 text-center">
+                  <div className="grid grid-cols-3 gap-2 p-3 bg-[#111110] border border-[#F4F4F1]/10 mb-6 text-center">
                     {product.specs.map((s, i) => (
                       <div key={i} className="flex flex-col">
-                        <span className="text-[8px] font-mono text-[#777773] uppercase">
+                        <span className="text-[9px] font-mono text-[#777773] uppercase tracking-wider">
                           {s.label}
                         </span>
-                        <span className="text-sm font-display font-bold text-[#F4F4F1]">
-                          {s.value} <span className="text-[8px] text-[#A8B778]">{s.unit}</span>
+                        <span className="text-sm font-display font-extrabold text-[#F4F4F1]">
+                          {s.value} <span className="text-[9px] text-[#A8B778]">{s.unit}</span>
                         </span>
                       </div>
                     ))}
@@ -245,7 +240,7 @@ export default function ProductCatalog() {
                 {/* Bottom Action Footer */}
                 <div className="pt-5 border-t border-[#F4F4F1]/10 flex items-center justify-between">
                   <div>
-                    <span className="text-[8px] font-mono text-[#777773] uppercase block">
+                    <span className="text-[9px] font-mono text-[#777773] uppercase tracking-wider block">
                       PROTOCOL PRICE
                     </span>
                     <div className="flex items-baseline gap-2">
@@ -265,17 +260,17 @@ export default function ProductCatalog() {
                     <button
                       type="button"
                       onClick={() => setSelectedProduct(product)}
-                      title="View Full Lab Packaging & Facts"
-                      className="p-2.5 bg-[#181817] hover:bg-[#596238]/30 border border-[#F4F4F1]/10 hover:border-[#A8B778] text-[#C4C3BE] hover:text-[#F4F4F1] transition-colors cursor-pointer"
+                      title="View Packaging & Lab Facts"
+                      className="p-3 bg-[#181817] hover:bg-[#596238] border border-[#F4F4F1]/20 text-[#F4F4F1] transition-colors cursor-pointer"
                     >
                       <Images className="w-4 h-4" />
                     </button>
 
-                    {/* Quick Add Button */}
+                    {/* Order Now Button */}
                     <button
                       type="button"
                       onClick={() => alert(`Added ${product.name} to protocol shaker!`)}
-                      className="px-5 py-2.5 bg-[#A8B778] hover:bg-[#8E9A5E] text-[#151515] font-mono text-xs font-black tracking-wider uppercase transition-colors cursor-pointer"
+                      className="px-6 py-3 bg-[#596238] hover:bg-[#A8B778] text-[#F4F4F1] hover:text-[#151515] font-editorial text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer shadow-md"
                     >
                       ORDER NOW
                     </button>
@@ -286,9 +281,24 @@ export default function ProductCatalog() {
           })}
         </div>
 
+        {/* Section Technical Telemetry Strip */}
+        <div className="mt-14 pt-6 border-t border-[#151515]/15 flex flex-wrap items-center justify-between gap-4 text-[10px] sm:text-[11px] font-mono text-[#555550] uppercase tracking-wider">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#596238]" />
+            <span>HPLC 3RD-PARTY CERTIFIED BATCHES</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span>100% DOPING FREE</span>
+            <span>•</span>
+            <span>ZERO PROPRIETARY BLENDS</span>
+            <span>•</span>
+            <span>FAST DISPATCH NATIONWIDE</span>
+          </div>
+        </div>
+
       </div>
 
-      {/* E-Commerce Multi-Image Slider Product Modal */}
+      {/* Multi-Image Packaging Slider Modal */}
       <ProductModal
         isOpen={Boolean(selectedProduct)}
         onClose={() => setSelectedProduct(null)}
