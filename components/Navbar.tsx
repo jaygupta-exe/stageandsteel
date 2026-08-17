@@ -18,10 +18,8 @@ export default function Navbar({ navbarRef }: NavbarProps) {
   const scoopButtonRef = useRef<HTMLButtonElement | null>(null);
 
   const navLinks = [
-    { name: "SHOP", href: "#" },
     { name: "PROTEIN", href: "#" },
     { name: "CREATINE", href: "#" },
-    { name: "STACKS", href: "#" },
     { name: "ABOUT US", href: "#" },
     { name: "CONTACT", href: "#" },
   ];

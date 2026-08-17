@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowUpRight, X, Zap, ShieldCheck, Dna, FlaskConical, Package, Layers, PhoneCall } from "lucide-react";
+import { ArrowUpRight, X, Zap } from "lucide-react";
 
 interface PowderMegaMenuProps {
   isOpen: boolean;
@@ -37,15 +37,6 @@ export default function PowderMegaMenu({
   const navItems = [
     {
       num: "01",
-      title: "SHOP",
-      href: "#",
-      category: "FULL ROSTER",
-      spec: "ALL SUPPLEMENTS & MERCH",
-      desc: "Complete laboratory catalog of stage-grade nutritional compounds and apparel.",
-      badge: "NEW DROPS 2026",
-    },
-    {
-      num: "02",
       title: "PROTEIN",
       href: "#",
       category: "MICROFILTERED CONCENTRATE",
@@ -54,7 +45,7 @@ export default function PowderMegaMenu({
       badge: "LAB FLAGSHIP",
     },
     {
-      num: "03",
+      num: "02",
       title: "CREATINE",
       href: "#",
       category: "MICRONIZED CREAPURE®",
@@ -63,16 +54,7 @@ export default function PowderMegaMenu({
       badge: "99.9% PURITY",
     },
     {
-      num: "04",
-      title: "STACKS",
-      href: "#",
-      category: "SYNERGISTIC PROTOCOLS",
-      spec: "STAGE PREP & MASS MATRIX",
-      desc: "Clinically synchronized compound bundles designed to accelerate recovery.",
-      badge: "SAVE 25%",
-    },
-    {
-      num: "05",
+      num: "03",
       title: "ABOUT US",
       href: "#",
       category: "THE SCIENCE & STANDARD",
@@ -81,7 +63,7 @@ export default function PowderMegaMenu({
       badge: "CERTIFIED GMP",
     },
     {
-      num: "06",
+      num: "04",
       title: "CONTACT",
       href: "#",
       category: "SUPPORT & B2B",
