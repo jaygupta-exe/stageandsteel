@@ -26,11 +26,7 @@ export default function ProductCatalog() {
       servings: "30 Servings",
       netWeight: "1 KG (2.2 LBS)",
       tubType: "whey",
-      views: [
-        { angle: 0, label: "0° FRONT", image: "/whey protein/salted caramel/Whey_protein_front..png" },
-        { angle: 120, label: "120° AMINO SPECS", image: "/whey protein/salted caramel/whey_protein_back_.png" },
-        { angle: 240, label: "240° NUTRITION FACTS", image: "/whey protein/salted caramel/whey_proetin_back_2.png" },
-      ],
+      textureUrl: "/whey-pure-label-texture.png",
       accentColor: "#A8B778",
       batchCode: "BATCH SS-2026-X",
       flavors: [
@@ -63,9 +59,7 @@ export default function ProductCatalog() {
       servings: "60 Servings",
       netWeight: "300G (0.66 LBS)",
       tubType: "creatine",
-      views: [
-        { angle: 0, label: "0° FRONT", image: "/creatine-cutout.png" },
-      ],
+      textureUrl: "/creatine-pure-label-texture.png",
       accentColor: "#C4C3BE",
       batchCode: "BATCH CR-2026-GER",
       flavors: [
@@ -96,10 +90,7 @@ export default function ProductCatalog() {
       servings: "30 Servings",
       netWeight: "1 KG (2.2 LBS)",
       tubType: "whey",
-      views: [
-        { angle: 0, label: "0° FRONT", image: "/whey protein/salted caramel/Whey_protein_front..png" },
-        { angle: 180, label: "180° LAB FACTS", image: "/whey protein/salted caramel/whey_proetin_back_2.png" },
-      ],
+      textureUrl: "/whey-pure-label-texture.png",
       accentColor: "#A8B778",
       batchCode: "BATCH ISO-2026-V1",
       flavors: [
@@ -130,9 +121,7 @@ export default function ProductCatalog() {
       servings: "30 Servings",
       netWeight: "420G (0.92 LBS)",
       tubType: "creatine",
-      views: [
-        { angle: 0, label: "0° FRONT", image: "/creatine-cutout.png" },
-      ],
+      textureUrl: "/creatine-pure-label-texture.png",
       accentColor: "#D4A373",
       batchCode: "BATCH NITRO-2026-MAX",
       flavors: [

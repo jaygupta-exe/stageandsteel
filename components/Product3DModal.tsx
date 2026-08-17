@@ -13,7 +13,7 @@ export interface Product3DData {
   servings: string;
   netWeight: string;
   tubType: "whey" | "creatine";
-  views: { angle: number; label: string; image: string }[];
+  textureUrl: string;
   accentColor: string;
   batchCode: string;
   flavors: { name: string; color: string; inStock: boolean }[];
@@ -133,7 +133,8 @@ export default function Product3DModal({
 
             {/* 3D Canvas */}
             <ThreeDSupplementCanvas
-              views={product.views}
+              textureUrl={product.textureUrl}
+              tubType={product.tubType}
               accentColor={product.accentColor}
               autoRotate={autoRotate}
               onAngleChange={setCurrentAngle}
