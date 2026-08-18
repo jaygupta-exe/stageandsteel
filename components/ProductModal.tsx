@@ -27,6 +27,7 @@ export interface ProductData {
   description: string;
   nutritionFacts: { name: string; amount: string; dailyValue?: string }[];
   suggestedUse: string;
+  labReportUrl?: string;
 }
 
 interface ProductModalProps {
@@ -43,7 +44,7 @@ export default function ProductModal({
   const [activeSlide, setActiveSlide] = useState<number>(0);
   const [selectedFlavor, setSelectedFlavor] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
-  const [activeTab, setActiveTab] = useState<"SPECS" | "NUTRITION" | "USAGE">("SPECS");
+  const [activeTab, setActiveTab] = useState<"SPECS" | "NUTRITION" | "USAGE" | "LAB_REPORT">("SPECS");
 
   useEffect(() => {
     if (product) {
@@ -99,19 +100,19 @@ export default function ProductModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#151515]/90 backdrop-blur-md p-3 sm:p-6 lg:p-8 animate-in fade-in duration-200 select-none">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#111110]/85 backdrop-blur-md p-3 sm:p-6 lg:p-8 animate-in fade-in duration-200 select-none">
       
       {/* Modal Card */}
-      <div className="relative w-full max-w-[1340px] max-h-[94vh] bg-[#151515] text-[#F4F4F1] border border-[#F4F4F1]/20 shadow-2xl flex flex-col overflow-hidden">
+      <div className="relative w-full max-w-[1340px] max-h-[94vh] bg-[#151514] text-[#F4F4F1] border border-white/15 rounded-2xl shadow-2xl flex flex-col overflow-hidden">
         
         {/* Top Tactical Header */}
-        <div className="flex items-center justify-between px-6 py-3.5 border-b border-[#F4F4F1]/10 bg-[#111110] shrink-0">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0E0E0D] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-[#A8B778] uppercase">
-              <span className="w-2 h-2 rounded-full bg-[#596238] animate-pulse" />
+            <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-[#D4F843] uppercase font-bold">
+              <span className="w-2 h-2 rounded-full bg-[#D4F843] animate-pulse" />
               <span>STAGE PROTOCOL // {product.batchCode}</span>
             </div>
-            <span className="hidden md:inline-block px-2.5 py-0.5 bg-[#596238]/30 border border-[#596238] text-[10px] font-mono text-[#A8B778] uppercase">
+            <span className="hidden md:inline-block px-2.5 py-0.5 bg-[#D4F843]/15 border border-[#D4F843]/30 text-[10px] font-mono text-[#D4F843] uppercase rounded">
               HPLC 3RD-PARTY VERIFIED • 100% PURE
             </span>
           </div>
@@ -120,7 +121,7 @@ export default function ProductModal({
             type="button"
             onClick={onClose}
             aria-label="Close product view"
-            className="p-1.5 bg-[#181817] hover:bg-[#596238] border border-[#F4F4F1]/20 text-[#F4F4F1] transition-colors cursor-pointer"
+            className="p-2 bg-[#222220] hover:bg-[#D4F843] hover:text-[#121211] border border-white/10 text-[#F4F4F1] rounded-lg transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -130,11 +131,11 @@ export default function ProductModal({
         <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-y-auto">
           
           {/* LEFT: 100% SEAMLESS PURE WHITE GALLERY (6 cols) */}
-          <div className="lg:col-span-6 flex flex-col justify-between bg-white text-[#151515] relative p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-[#151515]/10">
+          <div className="lg:col-span-6 flex flex-col justify-between bg-[#FAFAFA] text-[#151515] relative p-6 sm:p-8 border-b lg:border-b-0 lg:border-r border-black/10">
             
             {/* Top Info Bar inside White Area */}
             <div className="flex items-center justify-between w-full mb-2 z-10">
-              <span className="text-[11px] font-mono tracking-widest text-[#151515] uppercase bg-[#151515]/5 px-3 py-1 border border-[#151515]/10 font-bold">
+              <span className="text-[11px] font-mono tracking-widest text-[#151515] uppercase bg-[#151515]/5 px-3 py-1 border border-black/10 font-bold rounded">
                 VIEW {activeSlide + 1} OF {product.gallery.length} // {currentSlide?.label}
               </span>
               <span className="hidden sm:inline-block text-[10px] font-mono text-[#777773] uppercase">
@@ -143,7 +144,7 @@ export default function ProductModal({
             </div>
 
             {/* Seamless Main Image Display */}
-            <div className="relative w-full h-[380px] sm:h-[450px] bg-white flex items-center justify-center my-auto group">
+            <div className="relative w-full h-[380px] sm:h-[450px] bg-transparent flex items-center justify-center my-auto group">
               <div className="relative w-full h-full p-2 flex items-center justify-center">
                 {product.gallery.map((slide, idx) => (
                   <div
@@ -172,7 +173,7 @@ export default function ProductModal({
                   type="button"
                   onClick={handlePrev}
                   aria-label="Previous image"
-                  className="absolute left-1 sm:left-2 z-20 p-3 bg-[#151515] hover:bg-[#596238] text-white transition-colors cursor-pointer shadow-lg"
+                  className="absolute left-1 sm:left-2 z-20 p-3 bg-[#151515] hover:bg-[#D4F843] text-white hover:text-black rounded-lg transition-colors cursor-pointer shadow-lg"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -184,7 +185,7 @@ export default function ProductModal({
                   type="button"
                   onClick={handleNext}
                   aria-label="Next image"
-                  className="absolute right-1 sm:right-2 z-20 p-3 bg-[#151515] hover:bg-[#596238] text-white transition-colors cursor-pointer shadow-lg"
+                  className="absolute right-1 sm:right-2 z-20 p-3 bg-[#151515] hover:bg-[#D4F843] text-white hover:text-black rounded-lg transition-colors cursor-pointer shadow-lg"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -193,7 +194,7 @@ export default function ProductModal({
 
             {/* Thumbnail Strip (Pure White Backgrounds) */}
             {product.gallery.length > 1 && (
-              <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-4 border-t border-[#151515]/10 mt-2 z-10">
+              <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-4 border-t border-black/10 mt-2 z-10">
                 {product.gallery.map((slide, idx) => {
                   const isActive = idx === activeSlide;
                   return (
@@ -201,13 +202,13 @@ export default function ProductModal({
                       key={slide.url}
                       type="button"
                       onClick={() => setActiveSlide(idx)}
-                      className={`relative flex flex-col items-center gap-1 p-1.5 bg-white border-2 transition-all duration-200 cursor-pointer ${
+                      className={`relative flex flex-col items-center gap-1 p-1.5 bg-white border-2 rounded-lg transition-all duration-200 cursor-pointer ${
                         isActive
-                          ? "border-[#151515] shadow-md"
-                          : "border-[#151515]/15 hover:border-[#596238] opacity-60 hover:opacity-100"
+                          ? "border-[#151515] shadow-md scale-[1.02]"
+                          : "border-black/10 hover:border-black/30 opacity-70 hover:opacity-100"
                       }`}
                     >
-                      <div className="relative w-full h-14 sm:h-16 bg-white overflow-hidden flex items-center justify-center">
+                      <div className="relative w-full h-14 sm:h-16 bg-white overflow-hidden flex items-center justify-center rounded">
                         <Image
                           src={slide.url}
                           alt={slide.label}
@@ -216,7 +217,7 @@ export default function ProductModal({
                           className="object-contain"
                         />
                       </div>
-                      <span className={`text-[9px] font-mono tracking-wider uppercase ${
+                      <span className={`text-[9px] font-mono tracking-wider uppercase truncate max-w-full px-1 ${
                         isActive ? "text-[#151515] font-bold" : "text-[#777773]"
                       }`}>
                         {slide.label}
@@ -229,73 +230,90 @@ export default function ProductModal({
           </div>
 
           {/* RIGHT: E-Commerce Product Details & Purchasing Suite (6 cols) */}
-          <div className="lg:col-span-6 flex flex-col justify-between p-6 sm:p-8 lg:p-10 bg-[#151515]">
+          <div className="lg:col-span-6 flex flex-col justify-between p-6 sm:p-8 lg:p-10 bg-[#151514]">
             
             <div>
               {/* Category & Weight */}
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-mono text-[#A8B778] tracking-widest uppercase font-bold">
+                <span className="text-xs font-mono text-[#D4F843] tracking-widest uppercase font-bold">
                   {product.category}
                 </span>
-                <span className="text-[10px] font-mono text-[#777773] uppercase tracking-widest">
+                <span className="text-[10px] font-mono text-[#8E8D88] uppercase tracking-widest">
                   {product.netWeight} // {product.servings}
                 </span>
               </div>
 
               {/* Title & Subtitle Matching Hero Typography */}
-              <h2 className="font-display text-3xl sm:text-4xl lg:text-[44px] font-black uppercase text-[#F4F4F1] tracking-tight leading-[0.95] mb-2">
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-[42px] font-black uppercase text-[#F5F5F2] tracking-tight leading-[0.95] mb-2">
                 {product.name}
               </h2>
               <div className="flex items-center gap-2 mb-5">
-                <span className="w-2.5 h-[2px] bg-[#596238]" />
-                <p className="font-editorial text-xs sm:text-sm font-bold text-[#596238] uppercase tracking-wider">
+                <span className="w-2.5 h-[2px] bg-[#D4F843]" />
+                <p className="font-mono text-xs sm:text-sm font-bold text-[#A8A7A3] uppercase tracking-wider">
                   {product.subtitle}
                 </p>
               </div>
 
               {/* Quick Specs Highlight Box */}
-              <div className="grid grid-cols-3 gap-2.5 p-3.5 bg-[#111110] border border-[#F4F4F1]/10 mb-6">
+              <div className="grid grid-cols-3 gap-2.5 p-3.5 bg-[#0D0D0C] border border-white/10 rounded-lg mb-6 shadow-inner">
                 {product.specs.map((s, i) => (
-                  <div key={i} className="flex flex-col">
-                    <span className="text-[9px] font-mono text-[#777773] uppercase tracking-wider">
+                  <div key={i} className="flex flex-col text-center">
+                    <span className="text-[9px] font-mono text-[#8E8D88] uppercase tracking-wider mb-0.5">
                       {s.label}
                     </span>
-                    <span className="text-base sm:text-lg font-display font-black text-[#F4F4F1]">
-                      {s.value} <span className="text-[10px] font-mono text-[#A8B778]">{s.unit}</span>
+                    <span className="text-base sm:text-lg font-display font-black text-[#F5F5F2]">
+                      {s.value} <span className="text-[10px] font-mono text-[#D4F843] font-bold">{s.unit}</span>
                     </span>
                   </div>
                 ))}
               </div>
 
-              {/* Tabs: Specs | Nutrition Facts | Usage */}
-              <div className="flex border-b border-[#F4F4F1]/10 mb-5">
-                {(["SPECS", "NUTRITION", "USAGE"] as const).map((tab) => (
-                  <button
-                    key={tab}
-                    type="button"
-                    onClick={() => setActiveTab(tab)}
-                    className={`px-4 py-2 text-xs font-editorial font-bold tracking-widest uppercase transition-all duration-150 cursor-pointer ${
-                      activeTab === tab
-                        ? "text-[#A8B778] border-b-2 border-[#A8B778] bg-[#181817]"
-                        : "text-[#777773] hover:text-[#F4F4F1]"
-                    }`}
-                  >
-                    {tab === "SPECS" ? "FORMULA SPECS" : tab === "NUTRITION" ? "NUTRITION PANEL" : "HOW TO USE"}
-                  </button>
-                ))}
+              {/* Tabs: Specs | Nutrition Facts | Usage | Lab Report */}
+              <div className="flex border-b border-white/10 mb-5 gap-1 overflow-x-auto">
+                {(["SPECS", "NUTRITION", "USAGE", "LAB_REPORT"] as const).map((tab) => {
+                  if (tab === "LAB_REPORT" && !product.labReportUrl) return null;
+                  return (
+                    <button
+                      key={tab}
+                      type="button"
+                      onClick={() => {
+                        setActiveTab(tab);
+                        if (tab === "LAB_REPORT" && product.labReportUrl) {
+                          const labIdx = product.gallery.findIndex((g) => g.label.includes("LAB TEST") || g.url.includes("lab-reports"));
+                          if (labIdx !== -1) setActiveSlide(labIdx);
+                        }
+                      }}
+                      className={`px-4 py-2.5 text-xs font-editorial font-bold tracking-widest uppercase transition-all duration-150 cursor-pointer rounded-t-lg shrink-0 flex items-center gap-1.5 ${
+                        activeTab === tab
+                          ? "text-[#D4F843] border-b-2 border-[#D4F843] bg-white/5"
+                          : "text-[#8E8D88] hover:text-[#F4F4F1]"
+                      }`}
+                    >
+                      {tab === "SPECS" && "FORMULA SPECS"}
+                      {tab === "NUTRITION" && "NUTRITION PANEL"}
+                      {tab === "USAGE" && "HOW TO USE"}
+                      {tab === "LAB_REPORT" && (
+                        <>
+                          <ShieldCheck className="w-3.5 h-3.5 text-[#D4F843]" />
+                          <span>LAB REPORT (COA)</span>
+                        </>
+                      )}
+                    </button>
+                  );
+                })}
               </div>
 
               {/* Tab 1: Specs & Flavor */}
               {activeTab === "SPECS" && (
                 <div className="space-y-4 animate-in fade-in duration-200">
-                  <p className="text-xs sm:text-sm font-sans text-[#F4F4F1]/80 leading-relaxed">
+                  <p className="text-xs sm:text-sm font-sans text-[#D4D3CD] leading-relaxed">
                     {product.description}
                   </p>
 
                   {/* Flavor Switcher */}
                   {product.flavors.length > 0 && (
                     <div className="pt-2">
-                      <span className="text-[10px] font-mono text-[#777773] uppercase tracking-widest block mb-2">
+                      <span className="text-[10px] font-mono text-[#8E8D88] uppercase tracking-widest block mb-2">
                         AVAILABLE FLAVOR: <span className="text-[#F4F4F1] font-bold">{selectedFlavor}</span>
                       </span>
                       <div className="flex flex-wrap gap-2">
@@ -304,14 +322,14 @@ export default function ProductModal({
                             key={f.name}
                             type="button"
                             onClick={() => setSelectedFlavor(f.name)}
-                            className={`px-3.5 py-2 text-xs font-editorial font-bold uppercase tracking-wider border transition-all duration-150 flex items-center gap-2 cursor-pointer ${
+                            className={`px-3.5 py-2 text-xs font-editorial font-bold uppercase tracking-wider border rounded-lg transition-all duration-150 flex items-center gap-2 cursor-pointer ${
                               selectedFlavor === f.name
-                                ? "bg-[#596238] border-[#A8B778] text-[#F4F4F1]"
-                                : "bg-[#181817] border-[#F4F4F1]/10 text-[#777773] hover:border-[#596238]"
+                                ? "bg-[#D4F843] border-[#D4F843] text-[#121211]"
+                                : "bg-[#1E1E1C] border-white/10 text-[#8E8D88] hover:border-white/30 hover:text-white"
                             }`}
                           >
                             <span
-                              className="w-2.5 h-2.5 rounded-full"
+                              className="w-2.5 h-2.5 rounded-full border border-black/20"
                               style={{ backgroundColor: f.color }}
                             />
                             <span>{f.name}</span>
@@ -326,14 +344,14 @@ export default function ProductModal({
               {/* Tab 2: Nutrition Matrix */}
               {activeTab === "NUTRITION" && (
                 <div className="space-y-2 max-h-[220px] overflow-y-auto pr-2 animate-in fade-in duration-200">
-                  <div className="text-[10px] font-mono text-[#A8B778] tracking-wider mb-2 flex justify-between border-b border-[#F4F4F1]/10 pb-1">
+                  <div className="text-[10px] font-mono text-[#D4F843] tracking-wider mb-2 flex justify-between border-b border-white/10 pb-1 font-bold">
                     <span>ACTIVE COMPOUND</span>
                     <span>AMOUNT PER SERVING</span>
                   </div>
                   {product.nutritionFacts.map((n, i) => (
-                    <div key={i} className="flex items-center justify-between text-xs py-1.5 border-b border-[#F4F4F1]/5">
-                      <span className="text-[#F4F4F1]/80 font-sans">{n.name}</span>
-                      <span className="font-mono font-bold text-[#F4F4F1]">{n.amount}</span>
+                    <div key={i} className="flex items-center justify-between text-xs py-1.5 border-b border-white/5">
+                      <span className="text-[#D4D3CD] font-sans">{n.name}</span>
+                      <span className="font-mono font-bold text-[#F5F5F2]">{n.amount}</span>
                     </div>
                   ))}
                 </div>
@@ -341,21 +359,65 @@ export default function ProductModal({
 
               {/* Tab 3: Suggested Use */}
               {activeTab === "USAGE" && (
-                <div className="space-y-4 text-xs text-[#F4F4F1]/80 leading-relaxed animate-in fade-in duration-200">
-                  <div className="p-3.5 bg-[#111110] border border-[#596238]/40">
-                    <span className="font-mono text-[10px] text-[#A8B778] uppercase tracking-wider block mb-1">
+                <div className="space-y-4 text-xs text-[#D4D3CD] leading-relaxed animate-in fade-in duration-200">
+                  <div className="p-3.5 bg-[#0D0D0C] border border-white/10 rounded-lg">
+                    <span className="font-mono text-[10px] text-[#D4F843] uppercase tracking-wider block mb-1 font-bold">
                       SUGGESTED PROTOCOL:
                     </span>
-                    <p className="text-xs sm:text-sm font-sans text-[#F4F4F1] leading-relaxed">
+                    <p className="text-xs sm:text-sm font-sans text-[#F5F5F2] leading-relaxed">
                       {product.suggestedUse}
                     </p>
                   </div>
 
-                  <div className="flex items-start gap-3 p-3 bg-[#111110] border border-[#F4F4F1]/10">
-                    <ShieldCheck className="w-4 h-4 text-[#A8B778] shrink-0 mt-0.5" />
+                  <div className="flex items-start gap-3 p-3 bg-[#0D0D0C] border border-white/10 rounded-lg">
+                    <ShieldCheck className="w-4 h-4 text-[#D4F843] shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-editorial font-bold text-[#F4F4F1] block mb-0.5">100% Transparent Label Guarantee</span>
-                      <span className="text-[11px] font-sans text-[#777773]">Zero proprietary blends, zero amino-spiking, zero banned substances. CGMP &amp; WADA compliant.</span>
+                      <span className="font-editorial font-bold text-[#F5F5F2] block mb-0.5">100% Transparent Label Guarantee</span>
+                      <span className="text-[11px] font-sans text-[#8E8D88]">Zero proprietary blends, zero amino-spiking, zero banned substances. CGMP &amp; WADA compliant.</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Tab 4: Lab Test Report COA */}
+              {activeTab === "LAB_REPORT" && product.labReportUrl && (
+                <div className="space-y-4 animate-in fade-in duration-200">
+                  <div className="p-3.5 bg-[#0D0D0C] border border-[#D4F843]/30 rounded-lg flex items-start justify-between gap-3">
+                    <div>
+                      <span className="font-mono text-[10px] text-[#D4F843] uppercase tracking-wider block mb-0.5 font-bold">
+                        3RD-PARTY HPLC CERTIFIED REPORT
+                      </span>
+                      <p className="text-xs font-sans text-[#F5F5F2] leading-relaxed">
+                        Official analytical laboratory report confirming purity, measured protein content, and 100% label accuracy.
+                      </p>
+                    </div>
+                    <a
+                      href={product.labReportUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-3 py-1.5 bg-[#D4F843] hover:bg-[#BDE62B] text-[#121211] font-mono text-[10px] font-bold tracking-wider uppercase rounded transition-colors shrink-0 flex items-center gap-1"
+                    >
+                      <span>FULL COA</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </a>
+                  </div>
+
+                  <div
+                    className="relative w-full h-44 bg-white/5 border border-white/10 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer group"
+                    onClick={() => {
+                      const labIdx = product.gallery.findIndex((g) => g.label.includes("LAB TEST") || g.url.includes("lab-reports"));
+                      if (labIdx !== -1) setActiveSlide(labIdx);
+                    }}
+                  >
+                    <Image
+                      src={product.labReportUrl}
+                      alt="Lab Test Report COA"
+                      fill
+                      unoptimized
+                      className="object-contain p-2 group-hover:scale-105 transition-transform"
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs font-mono text-[#D4F843] font-bold">
+                      CLICK TO VIEW IN MAIN VIEWER
                     </div>
                   </div>
                 </div>
@@ -363,16 +425,16 @@ export default function ProductModal({
             </div>
 
             {/* Bottom E-Commerce Actions & Price */}
-            <div className="pt-6 mt-6 border-t border-[#F4F4F1]/10 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="pt-6 mt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
               
               {/* Price & Quantity */}
               <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-start">
                 <div>
-                  <span className="text-[9px] font-mono text-[#777773] tracking-widest uppercase block">
+                  <span className="text-[9px] font-mono text-[#8E8D88] tracking-widest uppercase block">
                     PRICE // TAX INCLUDED
                   </span>
                   <div className="flex items-baseline gap-2">
-                    <span className="font-display text-3xl sm:text-4xl font-black text-[#F4F4F1]">
+                    <span className="font-display text-3xl sm:text-4xl font-black text-[#F5F5F2]">
                       {product.price}
                     </span>
                     {product.originalPrice && (
@@ -384,21 +446,21 @@ export default function ProductModal({
                 </div>
 
                 {/* Quantity Selector */}
-                <div className="flex items-center border border-[#F4F4F1]/20 bg-[#111110]">
+                <div className="flex items-center border border-white/15 bg-[#0D0D0C] rounded-lg overflow-hidden">
                   <button
                     type="button"
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="p-2 text-[#777773] hover:text-[#F4F4F1] transition-colors cursor-pointer"
+                    className="p-2.5 text-[#8E8D88] hover:text-[#F5F5F2] hover:bg-white/5 transition-colors cursor-pointer"
                   >
                     <Minus className="w-3.5 h-3.5" />
                   </button>
-                  <span className="px-3 text-xs font-mono font-bold text-[#F4F4F1]">
+                  <span className="px-3 text-xs font-mono font-bold text-[#F5F5F2]">
                     {quantity}
                   </span>
                   <button
                     type="button"
                     onClick={() => setQuantity((q) => q + 1)}
-                    className="p-2 text-[#777773] hover:text-[#F4F4F1] transition-colors cursor-pointer"
+                    className="p-2.5 text-[#8E8D88] hover:text-[#F5F5F2] hover:bg-white/5 transition-colors cursor-pointer"
                   >
                     <Plus className="w-3.5 h-3.5" />
                   </button>
@@ -410,7 +472,7 @@ export default function ProductModal({
                 <button
                   type="button"
                   onClick={() => alert(`Added ${quantity}x ${product.name} (${selectedFlavor}) to protocol!`)}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-3.5 bg-[#596238] hover:bg-[#A8B778] text-[#F4F4F1] hover:text-[#151515] font-editorial text-xs sm:text-sm font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer shadow-lg"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-3.5 bg-[#D4F843] hover:bg-[#BDE62B] text-[#121211] font-editorial text-xs sm:text-sm font-bold tracking-widest uppercase rounded-lg transition-all duration-200 cursor-pointer shadow-[0_0_20px_rgba(212,248,67,0.3)] hover:shadow-[0_0_30px_rgba(212,248,67,0.5)] active:scale-98"
                 >
                   <span>ADD TO PROTOCOL</span>
                   <ArrowRight className="w-4 h-4" />

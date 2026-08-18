@@ -1,31 +1,162 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowRight, ArrowUpRight, ShieldCheck, Images, Check } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ShieldCheck, Images, Check, Sparkles, Zap, Flame } from "lucide-react";
 import ProductModal, { ProductData } from "./ProductModal";
 
 export default function ProductCatalog() {
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const [selectedProduct, setSelectedProduct] = useState<ProductData | null>(null);
 
+  useEffect(() => {
+    const handleCategoryFilter = (e: Event) => {
+      const customEvent = e as CustomEvent<string>;
+      if (customEvent.detail) {
+        setActiveCategory(customEvent.detail);
+        const section = document.getElementById("products");
+        if (section) {
+          section.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    };
+
+    const handleHash = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash.includes("protein")) {
+        setActiveCategory("PROTEIN");
+      } else if (hash.includes("creatine")) {
+        setActiveCategory("CREATINE");
+      }
+    };
+
+    handleHash();
+    window.addEventListener("filter-category", handleCategoryFilter);
+    window.addEventListener("hashchange", handleHash);
+
+    return () => {
+      window.removeEventListener("filter-category", handleCategoryFilter);
+      window.removeEventListener("hashchange", handleHash);
+    };
+  }, []);
+
   const categories = [
-    { id: "ALL", label: "ALL PROTOCOLS" },
-    { id: "PROTEIN", label: "PROTEIN MATRIX" },
-    { id: "CREATINE", label: "CREATINE LAB" },
+    { id: "ALL", label: "ALL PROTOCOLS", count: "04" },
+    { id: "PROTEIN", label: "PROTEIN MATRIX", count: "03" },
+    { id: "CREATINE", label: "CREATINE LAB", count: "01" },
   ];
 
   const products: ProductData[] = [
     {
-      id: "whey-concentrate",
-      name: "STAGE WHEY CONCENTRATE",
+      id: "whey-belgian-chocolate",
+      name: "STAGE WHEY - BELGIAN CHOCOLATE",
+      subtitle: "MICROFILTERED 100% PURE WHEY // RICH COCOA",
+      category: "PROTEIN MATRIX",
+      price: "₹3,499",
+      originalPrice: "₹4,299",
+      servings: "30 Servings",
+      netWeight: "1 KG (2.2 LBS)",
+      thumbnail: "/belgium-chocolate-cutout.png",
+      labReportUrl: "/lab-reports/belgian-salted-caramel-test-report.png",
+      gallery: [
+        {
+          label: "01 FRONT PACKAGING",
+          url: "/whey protein/belgium chocalte/belgium choclate 3.PNG",
+        },
+        {
+          label: "02 SUPPLEMENT FACTS",
+          url: "/whey protein/belgium chocalte/belgium chocalte.PNG",
+        },
+        {
+          label: "03 AMINO & DIRECTIONS",
+          url: "/whey protein/belgium chocalte/belgium chocalte2.PNG",
+        },
+        {
+          label: "04 LAB TEST REPORT (COA)",
+          url: "/lab-reports/belgian-salted-caramel-test-report.png",
+        },
+      ],
+      accentColor: "#D4F843",
+      batchCode: "BATCH SS-2026-BC",
+      flavors: [
+        { name: "Belgian Chocolate", color: "#5C3A21", inStock: true },
+      ],
+      specs: [
+        { label: "PROTEIN", value: "24", unit: "G" },
+        { label: "BCAAS", value: "5.5", unit: "G" },
+        { label: "ENZYMES", value: "DigeZyme®" },
+      ],
+      description:
+        "Pure microfiltered Belgian Chocolate whey concentrate delivering 24g ultra-pure protein per scoop with decadent European cocoa. Formulated for rapid bio-availability, accelerated muscular hypertrophy, and optimal recovery.",
+      nutritionFacts: [
+        { name: "Protein per Scoop", amount: "24g", dailyValue: "48%" },
+        { name: "BCAAs (Leucine, Isoleucine, Valine)", amount: "5.5g" },
+        { name: "EAAs (Essential Amino Acids)", amount: "11.7g" },
+        { name: "Total Carbohydrates", amount: "2.4g" },
+        { name: "Dietary Fat", amount: "1.5g" },
+        { name: "DigeZyme® Multi-Enzyme Complex", amount: "100mg" },
+      ],
+      suggestedUse:
+        "Mix 1 rounded scoop (33g) with 200–250ml cold water or skimmed milk in a shaker cup. Consume immediately post-workout or between meals for optimal protein synthesis.",
+    },
+    {
+      id: "whey-mocha-protein",
+      name: "STAGE WHEY - CAFE MOCHA",
+      subtitle: "MICROFILTERED WHEY MATRIX // COFFEE INFUSION",
+      category: "PROTEIN MATRIX",
+      price: "₹3,499",
+      originalPrice: "₹4,299",
+      servings: "30 Servings",
+      netWeight: "1 KG (2.2 LBS)",
+      thumbnail: "/mocha-protein-cutout.png",
+      gallery: [
+        {
+          label: "01 FRONT PACKAGING",
+          url: "/whey protein/mocha protein/mocha protein.PNG",
+        },
+        {
+          label: "02 SUPPLEMENT FACTS",
+          url: "/whey protein/mocha protein/mocha protein 2.PNG",
+        },
+        {
+          label: "03 AMINO & DIRECTIONS",
+          url: "/whey protein/mocha protein/mocha protein 3.PNG",
+        },
+      ],
+      accentColor: "#D4F843",
+      batchCode: "BATCH SS-2026-MC",
+      flavors: [
+        { name: "Cafe Mocha", color: "#6F4E37", inStock: true },
+      ],
+      specs: [
+        { label: "PROTEIN", value: "25", unit: "G" },
+        { label: "BCAAS", value: "5.5", unit: "G" },
+        { label: "ENZYMES", value: "DigeZyme®" },
+      ],
+      description:
+        "Artisanal roast Cafe Mocha whey concentrate combining 25g ultra-clean microfiltered protein with authentic coffee aroma and multi-enzyme digestive complex for superior absorption.",
+      nutritionFacts: [
+        { name: "Protein per Scoop", amount: "25g", dailyValue: "50%" },
+        { name: "BCAAs (Leucine, Isoleucine, Valine)", amount: "5.5g" },
+        { name: "EAAs (Essential Amino Acids)", amount: "11.7g" },
+        { name: "Total Carbohydrates", amount: "2.2g" },
+        { name: "Dietary Fat", amount: "1.4g" },
+        { name: "DigeZyme® Multi-Enzyme Complex", amount: "100mg" },
+      ],
+      suggestedUse:
+        "Mix 1 rounded scoop (33g) with 200–250ml ice-cold water or milk in a shaker cup. Perfect as a morning kickstarter or high-octane post-workout fuel.",
+    },
+    {
+      id: "whey-salted-caramel",
+      name: "STAGE WHEY - SALTED CARAMEL",
       subtitle: "MICROFILTERED 100% PURE WHEY MATRIX",
       category: "PROTEIN MATRIX",
       price: "₹3,499",
       originalPrice: "₹4,299",
       servings: "30 Servings",
       netWeight: "1 KG (2.2 LBS)",
-      thumbnail: "/whey protein/salted caramel/Whey protein salted.JPG.jpeg",
+      thumbnail: "/whey-cutout.png",
+      labReportUrl: "/lab-reports/belgian-salted-caramel-test-report.png",
       gallery: [
         {
           label: "01 FRONT PACKAGING",
@@ -39,9 +170,13 @@ export default function ProductCatalog() {
           label: "03 AMINO & DIRECTIONS",
           url: "/whey protein/salted caramel/salted caramel back 1.PNG",
         },
+        {
+          label: "04 LAB TEST REPORT (COA)",
+          url: "/lab-reports/belgian-salted-caramel-test-report.png",
+        },
       ],
-      accentColor: "#596238",
-      batchCode: "BATCH SS-2026-X",
+      accentColor: "#D4F843",
+      batchCode: "BATCH SS-2026-SC",
       flavors: [
         { name: "Salted Caramel", color: "#DE8A36", inStock: true },
       ],
@@ -72,7 +207,7 @@ export default function ProductCatalog() {
       originalPrice: "₹2,399",
       servings: "60 Servings",
       netWeight: "300G (0.66 LBS)",
-      thumbnail: "/creatine/creatine front.jpg.jpeg",
+      thumbnail: "/creatine-cutout.png",
       gallery: [
         {
           label: "01 FRONT PACKAGING",
@@ -87,7 +222,7 @@ export default function ProductCatalog() {
           url: "/creatine/creatine back 2.jpg.jpeg",
         },
       ],
-      accentColor: "#596238",
+      accentColor: "#D4F843",
       batchCode: "BATCH CR-2026-GER",
       flavors: [
         { name: "Unflavored Raw Purity", color: "#F4F4F1", inStock: true },
@@ -121,131 +256,215 @@ export default function ProductCatalog() {
         });
 
   return (
-    <section className="relative w-full py-20 sm:py-28 bg-[#A8A7A3] text-[#151515] overflow-hidden border-t border-[#151515]/15">
+    <section id="products" className="relative w-full py-20 sm:py-28 bg-[#A8A7A3] text-[#151515] overflow-hidden border-t border-[#151515]/15">
       
-      {/* Subtle Concrete Texture */}
+      {/* Subtle Concrete Grain Texture */}
       <div className="absolute inset-0 bg-grain pointer-events-none opacity-40" />
+
+      {/* Decorative Technical Grid Lines */}
+      <div className="absolute inset-0 pointer-events-none opacity-10 flex justify-between max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-16">
+        <div className="w-[1px] h-full bg-[#151515]" />
+        <div className="w-[1px] h-full bg-[#151515] hidden md:block" />
+        <div className="w-[1px] h-full bg-[#151515]" />
+      </div>
 
       <div className="max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-16 relative z-10">
         
         {/* Section Header */}
-        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-10 border-b border-[#151515]/15">
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-10 border-b border-[#151515]/20">
           <div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="w-2.5 h-[2px] bg-[#596238]" />
-              <p className="font-editorial text-xs sm:text-sm font-bold text-[#151515] tracking-widest uppercase leading-snug">
+            <div className="flex items-center gap-2.5 mb-3">
+              <span className="w-2.5 h-2.5 bg-[#151515] flex items-center justify-center">
+                <span className="w-1 h-1 bg-[#D4F843]" />
+              </span>
+              <p className="font-mono text-xs sm:text-sm font-bold text-[#151515] tracking-widest uppercase">
                 STAGE PROTOCOL // LAB ROSTER 2026
               </p>
             </div>
 
             <h2 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase text-[#151515] tracking-tight leading-[0.92]">
               FORMULATED UNDER <br />
-              <span className="text-[#596238]">DISCIPLINE.</span>
+              <span className="text-[#151515] relative inline-block">
+                DISCIPLINE.
+                <span className="absolute -bottom-1 left-0 w-full h-[3px] bg-[#151515]" />
+              </span>
             </h2>
           </div>
 
-          <p className="max-w-md text-xs sm:text-sm font-sans text-[#151515]/80 leading-relaxed">
-            Pure microfiltered compounds calibrated for athletes who demand zero proprietary blends, measured bio-availability, and absolute stage output.
-          </p>
+          <div className="flex flex-col gap-3 max-w-md">
+            <p className="text-xs sm:text-sm font-sans text-[#2B2B28] leading-relaxed font-medium">
+              Pure microfiltered compounds calibrated for athletes who demand zero proprietary blends, measured bio-availability, and absolute stage output.
+            </p>
+            <div className="flex items-center gap-4 text-[10px] font-mono text-[#444440] uppercase tracking-wider">
+              <span className="flex items-center gap-1.5 font-bold">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#151515]" /> 100% TRANSPARENT LABELS
+              </span>
+              <span>•</span>
+              <span>BATCH CERTIFIED</span>
+            </div>
+          </div>
         </div>
 
         {/* Category Filters Bar */}
-        <div className="flex flex-wrap items-center gap-3 py-8">
-          {categories.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              onClick={() => setActiveCategory(cat.id)}
-              className={`px-6 py-2.5 text-xs font-editorial font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer ${
-                activeCategory === cat.id
-                  ? "bg-[#151515] text-[#F4F4F1] shadow-md"
-                  : "bg-[#151515]/10 text-[#151515] hover:bg-[#151515]/20 border border-[#151515]/15"
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
+        <div className="flex flex-wrap items-center justify-between gap-4 py-8">
+          <div className="inline-flex p-1.5 bg-[#151515]/10 backdrop-blur-sm rounded-lg border border-[#151515]/15 shadow-inner">
+            {categories.map((cat) => {
+              const isActive = activeCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  type="button"
+                  onClick={() => setActiveCategory(cat.id)}
+                  className={`relative px-5 py-2.5 text-xs font-editorial font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-md flex items-center gap-2.5 ${
+                    isActive
+                      ? "bg-[#151515] text-[#D4F843] shadow-lg"
+                      : "text-[#151515] hover:text-black hover:bg-[#151515]/10"
+                  }`}
+                >
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#D4F843] animate-pulse" />}
+                  <span>{cat.label}</span>
+                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
+                    isActive ? "bg-white/10 text-white/80" : "bg-[#151515]/10 text-[#151515]/70"
+                  }`}>
+                    {cat.count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-[#3A3A35]">
+            <span className="w-2 h-2 rounded-full bg-emerald-700 animate-pulse" />
+            <span className="tracking-wider uppercase font-bold">LIVE INVENTORY // ALL PROTOCOLS IN STOCK</span>
+          </div>
         </div>
 
-        {/* Two-Column Flagship Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12 max-w-6xl mx-auto">
+        {/* Two-Column Flagship Cards - Modern Luxury Monolithic Design */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 max-w-6xl mx-auto">
           {filteredProducts.map((product) => {
             return (
               <div
                 key={product.id}
-                className="group relative flex flex-col justify-between bg-white text-[#151515] border border-[#151515]/20 shadow-xl transition-all duration-300 overflow-hidden"
+                className="group relative flex flex-col justify-between bg-[#151514] text-[#F4F4F1] border border-[#151515]/30 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.25)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.4)] transition-all duration-300 overflow-hidden"
               >
-                {/* 1. TOP HALF: PURE WHITE IMAGE STAGE */}
+                {/* Top Subtle Metallic Highlight Edge */}
+                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4F843]/40 to-transparent z-20" />
+
+                {/* 1. SEAMLESS STUDIO SHOWCASE STAGE */}
                 <div
                   onClick={() => setSelectedProduct(product)}
-                  className="relative w-full h-80 sm:h-96 bg-white flex items-center justify-center p-6 cursor-pointer group/img border-b border-[#151515]/10"
+                  className="relative w-full h-80 sm:h-96 bg-gradient-to-b from-[#1E1E1C] via-[#171716] to-[#121211] flex flex-col items-center justify-between p-6 cursor-pointer group/stage overflow-hidden border-b border-white/5"
                 >
-                  {/* Top Tags inside White Canvas */}
-                  <div className="absolute top-4 left-4 right-4 flex items-center justify-between z-10">
-                    <span className="text-[10px] font-mono font-bold tracking-widest text-[#151515] bg-[#151515]/5 px-2.5 py-1 uppercase">
+                  {/* Studio Ambient Radial Spotlight */}
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(212,248,67,0.09)_0%,rgba(255,255,255,0.03)_35%,transparent_70%)] pointer-events-none" />
+                  
+                  {/* Subtle Background Circuit / Geometric Accent */}
+                  <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+
+                  {/* Top Meta Bar */}
+                  <div className="w-full flex items-center justify-between z-10">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#121211]/90 backdrop-blur-md border border-[#D4F843]/30 rounded text-[10px] font-mono font-bold tracking-widest text-[#D4F843] uppercase shadow-sm">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#D4F843]" />
                       {product.category}
                     </span>
-                    <span className="text-[10px] font-mono text-[#777773] uppercase tracking-widest">
+                    <span className="text-[10px] font-mono text-[#A3A29E] uppercase tracking-widest bg-white/5 px-2.5 py-1 rounded border border-white/5">
                       {product.servings} • {product.netWeight}
                     </span>
                   </div>
 
-                  {/* Product Image */}
-                  <div className="relative w-full h-full flex items-center justify-center transition-transform duration-500 ease-out group-hover/img:scale-106">
-                    <Image
-                      src={product.thumbnail}
-                      alt={product.name}
-                      fill
-                      priority
-                      unoptimized
-                      className="object-contain"
-                    />
+                  {/* Product Cutout Showcase with Realistic Ground Shadow */}
+                  <div className="relative w-full h-56 sm:h-64 flex items-center justify-center my-auto">
+                    {/* Pedestal Ground Contact Shadow */}
+                    <div className="absolute bottom-2 w-48 sm:w-56 h-6 bg-black/80 rounded-full blur-md pointer-events-none group-hover/stage:scale-95 transition-transform duration-500" />
+                    
+                    {/* Floating Product Image */}
+                    <div className="relative w-full h-full flex items-center justify-center transition-all duration-500 ease-out group-hover/stage:scale-108 group-hover/stage:-translate-y-2">
+                      <Image
+                        src={product.thumbnail}
+                        alt={product.name}
+                        fill
+                        priority
+                        unoptimized
+                        className="object-contain filter drop-shadow-[0_20px_30px_rgba(0,0,0,0.6)]"
+                      />
+                    </div>
                   </div>
 
-                  {/* View Packaging Action Overlay on Hover */}
-                  <div className="absolute inset-0 m-auto w-48 h-10 bg-[#151515]/90 text-[#F4F4F1] font-editorial text-xs font-bold tracking-widest uppercase opacity-0 group-hover/img:opacity-100 transition-all duration-200 flex items-center justify-center gap-2 shadow-lg">
-                    <Images className="w-4 h-4 text-[#A8B778]" />
-                    <span>VIEW PACKAGING ({product.gallery.length})</span>
+                  {/* Hover Gallery Action Badge */}
+                  <div className="w-full flex items-center justify-between z-10 pt-2">
+                    <span className="text-[10px] font-mono text-[#777773] uppercase tracking-wider">
+                      {product.batchCode}
+                    </span>
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#D4F843]/10 border border-[#D4F843]/20 text-[#D4F843] text-[10px] font-mono font-bold tracking-wider uppercase group-hover/stage:bg-[#D4F843] group-hover/stage:text-[#121211] transition-all duration-200">
+                      <Images className="w-3.5 h-3.5" />
+                      <span>VIEW PACKAGING ({product.gallery.length})</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* 2. BOTTOM HALF: DARK TITANIUM LAB SPECS & ORDER SUITE */}
-                <div className="bg-[#151515] text-[#F4F4F1] p-6 sm:p-8 flex flex-col justify-between flex-1">
+                {/* 2. TITANIUM SPECS & CONVERSION SUITE */}
+                <div className="p-6 sm:p-8 flex flex-col justify-between flex-1 bg-[#151514]">
                   <div>
-                    {/* Title */}
-                    <h3
-                      onClick={() => setSelectedProduct(product)}
-                      className="font-display text-2xl sm:text-3xl font-black uppercase text-[#F4F4F1] tracking-tight leading-tight mb-1 group-hover:text-[#A8B778] transition-colors cursor-pointer"
-                    >
-                      {product.name}
-                    </h3>
-                    <p className="text-xs font-editorial font-bold text-[#596238] uppercase tracking-wider mb-5">
-                      {product.subtitle}
-                    </p>
+                    {/* Product Name & Subtitle */}
+                    <div className="mb-4">
+                      <h3
+                        onClick={() => setSelectedProduct(product)}
+                        className="font-display text-2xl sm:text-3xl font-black uppercase text-[#F5F5F2] tracking-tight leading-tight mb-1.5 group-hover:text-[#D4F843] transition-colors cursor-pointer"
+                      >
+                        {product.name}
+                      </h3>
+                      <p className="text-xs font-mono font-medium text-[#A8A7A3] uppercase tracking-wider">
+                        {product.subtitle}
+                      </p>
+                    </div>
 
-                    {/* Specs Grid */}
-                    <div className="grid grid-cols-3 gap-2 p-3 bg-[#111110] border border-[#F4F4F1]/10 mb-6 text-center">
+                    {/* Performance Specs Matrix */}
+                    <div className="grid grid-cols-3 gap-2 p-3.5 bg-[#0D0D0C] border border-white/10 rounded-lg mb-6 text-center divide-x divide-white/5 shadow-inner">
                       {product.specs.map((s, i) => (
-                        <div key={i} className="flex flex-col">
-                          <span className="text-[9px] font-mono text-[#777773] uppercase tracking-wider">
+                        <div key={i} className="flex flex-col px-1">
+                          <span className="text-[9px] font-mono text-[#8E8D88] uppercase tracking-wider mb-0.5">
                             {s.label}
                           </span>
-                          <span className="text-sm font-display font-extrabold text-[#F4F4F1]">
-                            {s.value} <span className="text-[9px] text-[#A8B778]">{s.unit}</span>
+                          <span className="text-base sm:text-lg font-display font-black text-[#F5F5F2]">
+                            {s.value} <span className="text-[10px] font-mono text-[#D4F843] font-bold">{s.unit}</span>
                           </span>
                         </div>
                       ))}
                     </div>
+
+                    {/* Flavor & Guarantee Row */}
+                    <div className="flex items-center justify-between pb-5 border-b border-white/10 text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full border border-white/20" style={{ backgroundColor: product.flavors[0]?.color || '#DE8A36' }} />
+                        <span className="font-editorial text-xs font-semibold text-[#D4D3CD]">
+                          {product.flavors[0]?.name}
+                        </span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedProduct(product)}
+                        className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono text-[#D4F843] hover:text-white bg-[#D4F843]/10 hover:bg-[#D4F843]/25 px-2.5 py-1 rounded border border-[#D4F843]/30 transition-all cursor-pointer"
+                        title="View Official 3rd-Party HPLC Lab Test Report"
+                      >
+                        <Check className="w-3.5 h-3.5" />
+                        <span>{product.labReportUrl ? "HPLC REPORT AVAILABLE" : "HPLC VERIFIED"}</span>
+                      </button>
+                    </div>
                   </div>
 
-                  {/* Price & Actions */}
-                  <div className="pt-5 border-t border-[#F4F4F1]/10 flex items-center justify-between">
+                  {/* Pricing & Checkout Action */}
+                  <div className="pt-5 flex items-center justify-between gap-4">
                     <div>
-                      <span className="text-[9px] font-mono text-[#777773] uppercase tracking-wider block">
-                        PROTOCOL PRICE
-                      </span>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-[9px] font-mono text-[#8E8D88] uppercase tracking-wider block">
+                          PROTOCOL PRICE
+                        </span>
+                        <span className="px-1.5 py-0.2 bg-[#D4F843]/15 text-[#D4F843] text-[9px] font-mono font-bold rounded">
+                          SAVE 19%
+                        </span>
+                      </div>
                       <div className="flex items-baseline gap-2">
-                        <span className="font-display text-2xl sm:text-3xl font-black text-[#F4F4F1]">
+                        <span className="font-display text-3xl font-black text-[#F5F5F2]">
                           {product.price}
                         </span>
                         {product.originalPrice && (
@@ -261,7 +480,7 @@ export default function ProductCatalog() {
                         type="button"
                         onClick={() => setSelectedProduct(product)}
                         title="View Packaging & Lab Facts"
-                        className="p-3 bg-[#181817] hover:bg-[#596238] border border-[#F4F4F1]/20 text-[#F4F4F1] transition-colors cursor-pointer"
+                        className="p-3.5 bg-[#222220] hover:bg-[#2C2C29] border border-white/10 hover:border-white/20 text-[#F5F5F2] rounded-lg transition-colors cursor-pointer shadow-sm"
                       >
                         <Images className="w-4 h-4" />
                       </button>
@@ -269,9 +488,10 @@ export default function ProductCatalog() {
                       <button
                         type="button"
                         onClick={() => alert(`Added ${product.name} to protocol shaker!`)}
-                        className="px-6 py-3 bg-[#596238] hover:bg-[#A8B778] text-[#F4F4F1] hover:text-[#151515] font-editorial text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer shadow-md"
+                        className="px-6 py-3.5 bg-[#D4F843] hover:bg-[#BDE62B] text-[#121211] font-editorial text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-lg shadow-[0_0_20px_rgba(212,248,67,0.25)] hover:shadow-[0_0_25px_rgba(212,248,67,0.45)] hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
                       >
-                        ORDER NOW
+                        <span>ORDER NOW</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
                   </div>
@@ -283,10 +503,10 @@ export default function ProductCatalog() {
         </div>
 
         {/* Technical Telemetry Strip */}
-        <div className="mt-14 pt-6 border-t border-[#151515]/15 flex flex-wrap items-center justify-between gap-4 text-[10px] sm:text-[11px] font-mono text-[#555550] uppercase tracking-wider">
+        <div className="mt-14 pt-6 border-t border-[#151515]/20 flex flex-wrap items-center justify-between gap-4 text-[10px] sm:text-[11px] font-mono text-[#2B2B28] uppercase tracking-wider font-semibold">
           <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#596238]" />
-            <span>HPLC 3RD-PARTY CERTIFIED BATCHES</span>
+            <span className="w-2 h-2 rounded-full bg-[#151515] animate-ping" />
+            <span className="font-bold">HPLC 3RD-PARTY CERTIFIED BATCHES</span>
           </div>
           <div className="flex items-center gap-4">
             <span>100% DOPING FREE</span>
@@ -308,3 +528,4 @@ export default function ProductCatalog() {
     </section>
   );
 }
+

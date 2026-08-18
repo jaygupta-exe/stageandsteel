@@ -38,7 +38,7 @@ export default function PowderMegaMenu({
     {
       num: "01",
       title: "PROTEIN",
-      href: "#",
+      href: "#products",
       category: "MICROFILTERED CONCENTRATE",
       spec: "25G PROTEIN // PER SCOOP",
       desc: "Instantized 100% Pure Whey Concentrate matrix for optimal recovery and lean muscle growth.",
@@ -47,7 +47,7 @@ export default function PowderMegaMenu({
     {
       num: "02",
       title: "CREATINE",
-      href: "#",
+      href: "#products",
       category: "MICRONIZED CREAPURE®",
       spec: "5G CALIBRATED SERVING",
       desc: "100% German Creapure® monohydrate for cell volumization and explosive ATP output.",
@@ -56,16 +56,16 @@ export default function PowderMegaMenu({
     {
       num: "03",
       title: "ABOUT US",
-      href: "#",
-      category: "THE SCIENCE & STANDARD",
-      spec: "HPLC 3RD-PARTY LAB VERIFIED",
-      desc: "Zero proprietary blends, zero amino-spiking, 100% transparent testing.",
-      badge: "CERTIFIED GMP",
+      href: "#about",
+      category: "MEET THE FOUNDERS",
+      spec: "DIVESH MEHAN & ASHISH YADAV",
+      desc: "Built on discipline, backed by experience, and forged for champions.",
+      badge: "FOUNDERS & VISION",
     },
     {
       num: "04",
       title: "CONTACT",
-      href: "#",
+      href: "#about",
       category: "SUPPORT & B2B",
       spec: "ATHLETE DESK & WHOLESALE",
       desc: "Direct support desk and specialized guidance from certified sports nutritionists.",
@@ -137,7 +137,14 @@ export default function PowderMegaMenu({
                 <Link
                   key={item.num}
                   href={item.href}
-                  onClick={onClose}
+                  onClick={() => {
+                    if (item.title === "PROTEIN") {
+                      window.dispatchEvent(new CustomEvent("filter-category", { detail: "PROTEIN" }));
+                    } else if (item.title === "CREATINE") {
+                      window.dispatchEvent(new CustomEvent("filter-category", { detail: "CREATINE" }));
+                    }
+                    onClose();
+                  }}
                   onMouseEnter={() => setHoveredIdx(idx)}
                   className={`group relative flex items-center justify-between py-3.5 sm:py-4 px-2 border-b border-[#F4F4F1]/10 transition-all duration-200 ${
                     isHovered
