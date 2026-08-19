@@ -104,7 +104,7 @@ export default function ProductCatalog() {
       name: "STAGE WHEY - CAFE MOCHA",
       subtitle: "MICROFILTERED WHEY MATRIX // COFFEE INFUSION",
       category: "PROTEIN MATRIX",
-      price: "₹3,499",
+      price: "₹2,599",
       originalPrice: "₹4,299",
       servings: "30 Servings",
       netWeight: "1 KG (2.2 LBS)",
