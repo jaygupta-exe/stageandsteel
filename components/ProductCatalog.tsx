@@ -76,7 +76,7 @@ export default function ProductCatalog() {
           url: "/lab-reports/belgian-salted-caramel-test-report.png",
         },
       ],
-      accentColor: "#D4F843",
+      accentColor: "#596238",
       batchCode: "BATCH SS-2026-BC",
       flavors: [
         { name: "Belgian Chocolate", color: "#5C3A21", inStock: true },
@@ -123,7 +123,7 @@ export default function ProductCatalog() {
           url: "/whey protein/mocha protein/mocha protein 3.PNG",
         },
       ],
-      accentColor: "#D4F843",
+      accentColor: "#596238",
       batchCode: "BATCH SS-2026-MC",
       flavors: [
         { name: "Cafe Mocha", color: "#6F4E37", inStock: true },
@@ -155,7 +155,7 @@ export default function ProductCatalog() {
       originalPrice: "₹4,299",
       servings: "30 Servings",
       netWeight: "1 KG (2.2 LBS)",
-      thumbnail: "/whey-cutout.png",
+      thumbnail: "/salted-caramel-cutout.png",
       labReportUrl: "/lab-reports/belgian-salted-caramel-test-report.png",
       gallery: [
         {
@@ -175,7 +175,7 @@ export default function ProductCatalog() {
           url: "/lab-reports/belgian-salted-caramel-test-report.png",
         },
       ],
-      accentColor: "#D4F843",
+      accentColor: "#596238",
       batchCode: "BATCH SS-2026-SC",
       flavors: [
         { name: "Salted Caramel", color: "#DE8A36", inStock: true },
@@ -191,7 +191,7 @@ export default function ProductCatalog() {
         { name: "Protein per Scoop", amount: "25g", dailyValue: "50%" },
         { name: "BCAAs (Leucine, Isoleucine, Valine)", amount: "5.5g" },
         { name: "EAAs (Essential Amino Acids)", amount: "11.7g" },
-        { name: "Total Carbohydrates", amount: "2.1g" },
+        { name: "Total Carbohydrates", amount: "2.5g" },
         { name: "Dietary Fat", amount: "1.4g" },
         { name: "DigeZyme® Multi-Enzyme Complex", amount: "100mg" },
       ],
@@ -203,26 +203,26 @@ export default function ProductCatalog() {
       name: "STAGE CREAPURE® CREATINE",
       subtitle: "GERMAN MICRONIZED MONOHYDRATE (200 MESH)",
       category: "CREATINE LAB",
-      price: "₹1,899",
-      originalPrice: "₹2,399",
+      price: "₹899",
+      originalPrice: "₹1,299",
       servings: "60 Servings",
       netWeight: "300G (0.66 LBS)",
       thumbnail: "/creatine-cutout.png",
       gallery: [
         {
           label: "01 FRONT PACKAGING",
-          url: "/creatine/creatine front.jpg.jpeg",
+          url: "/creatine/1 k.jpg.jpeg",
         },
         {
           label: "02 SUPPLEMENT FACTS",
-          url: "/creatine/creatine back 1jpg.jpeg",
+          url: "/creatine/2 k.jpg.jpeg",
         },
         {
           label: "03 DIRECTIONS & USAGE",
-          url: "/creatine/creatine back 2.jpg.jpeg",
+          url: "/creatine/3 k.jpg.jpeg",
         },
       ],
-      accentColor: "#D4F843",
+      accentColor: "#596238",
       batchCode: "BATCH CR-2026-GER",
       flavors: [
         { name: "Unflavored Raw Purity", color: "#F4F4F1", inStock: true },
@@ -256,17 +256,13 @@ export default function ProductCatalog() {
         });
 
   return (
-    <section id="products" className="relative w-full py-20 sm:py-28 bg-[#A8A7A3] text-[#151515] overflow-hidden border-t border-[#151515]/15">
-      
-      {/* Subtle Concrete Grain Texture */}
+    <section
+      id="products"
+      className="relative w-full py-20 sm:py-28 bg-[#A8A7A3] text-[#151515] border-t border-[#151515]/10 overflow-hidden"
+    >
+      {/* Background Decorative Grain & Faint Grid */}
       <div className="absolute inset-0 bg-grain pointer-events-none opacity-40" />
-
-      {/* Decorative Technical Grid Lines */}
-      <div className="absolute inset-0 pointer-events-none opacity-10 flex justify-between max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-16">
-        <div className="w-[1px] h-full bg-[#151515]" />
-        <div className="w-[1px] h-full bg-[#151515] hidden md:block" />
-        <div className="w-[1px] h-full bg-[#151515]" />
-      </div>
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#15151508_1px,transparent_1px),linear-gradient(to_bottom,#15151508_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
 
       <div className="max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-16 relative z-10">
         
@@ -275,7 +271,7 @@ export default function ProductCatalog() {
           <div>
             <div className="flex items-center gap-2.5 mb-3">
               <span className="w-2.5 h-2.5 bg-[#151515] flex items-center justify-center">
-                <span className="w-1 h-1 bg-[#D4F843]" />
+                <span className="w-1 h-1 bg-[#8FA355]" />
               </span>
               <p className="font-mono text-xs sm:text-sm font-bold text-[#151515] tracking-widest uppercase">
                 STAGE PROTOCOL // LAB ROSTER 2026
@@ -317,14 +313,14 @@ export default function ProductCatalog() {
                   onClick={() => setActiveCategory(cat.id)}
                   className={`relative px-5 py-2.5 text-xs font-editorial font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-md flex items-center gap-2.5 ${
                     isActive
-                      ? "bg-[#151515] text-[#D4F843] shadow-lg"
+                      ? "bg-[#596238] text-[#F4F4F1] shadow-lg border border-[#7C8B4C]/40"
                       : "text-[#151515] hover:text-black hover:bg-[#151515]/10"
                   }`}
                 >
-                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#D4F843] animate-pulse" />}
+                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#9DB25E] animate-pulse" />}
                   <span>{cat.label}</span>
                   <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                    isActive ? "bg-white/10 text-white/80" : "bg-[#151515]/10 text-[#151515]/70"
+                    isActive ? "bg-black/20 text-[#F4F4F1]" : "bg-[#151515]/10 text-[#151515]/70"
                   }`}>
                     {cat.count}
                   </span>
@@ -348,7 +344,7 @@ export default function ProductCatalog() {
                 className="group relative flex flex-col justify-between bg-[#151514] text-[#F4F4F1] border border-[#151515]/30 rounded-xl shadow-[0_20px_50px_rgba(0,0,0,0.25)] hover:shadow-[0_25px_60px_rgba(0,0,0,0.4)] transition-all duration-300 overflow-hidden"
               >
                 {/* Top Subtle Metallic Highlight Edge */}
-                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#D4F843]/40 to-transparent z-20" />
+                <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-[#596238]/60 to-transparent z-20" />
 
                 {/* 1. SEAMLESS STUDIO SHOWCASE STAGE */}
                 <div
@@ -356,15 +352,15 @@ export default function ProductCatalog() {
                   className="relative w-full h-80 sm:h-96 bg-gradient-to-b from-[#1E1E1C] via-[#171716] to-[#121211] flex flex-col items-center justify-between p-6 cursor-pointer group/stage overflow-hidden border-b border-white/5"
                 >
                   {/* Studio Ambient Radial Spotlight */}
-                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(212,248,67,0.09)_0%,rgba(255,255,255,0.03)_35%,transparent_70%)] pointer-events-none" />
+                  <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(89,98,56,0.18)_0%,rgba(255,255,255,0.03)_35%,transparent_70%)] pointer-events-none" />
                   
                   {/* Subtle Background Circuit / Geometric Accent */}
                   <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
 
                   {/* Top Meta Bar */}
                   <div className="w-full flex items-center justify-between z-10">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#121211]/90 backdrop-blur-md border border-[#D4F843]/30 rounded text-[10px] font-mono font-bold tracking-widest text-[#D4F843] uppercase shadow-sm">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#D4F843]" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#121211]/90 backdrop-blur-md border border-[#596238]/40 rounded text-[10px] font-mono font-bold tracking-widest text-[#9DB25E] uppercase shadow-sm">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#8FA355]" />
                       {product.category}
                     </span>
                     <span className="text-[10px] font-mono text-[#A3A29E] uppercase tracking-widest bg-white/5 px-2.5 py-1 rounded border border-white/5">
@@ -395,7 +391,7 @@ export default function ProductCatalog() {
                     <span className="text-[10px] font-mono text-[#777773] uppercase tracking-wider">
                       {product.batchCode}
                     </span>
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#D4F843]/10 border border-[#D4F843]/20 text-[#D4F843] text-[10px] font-mono font-bold tracking-wider uppercase group-hover/stage:bg-[#D4F843] group-hover/stage:text-[#121211] transition-all duration-200">
+                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#596238]/20 border border-[#596238]/40 text-[#9DB25E] text-[10px] font-mono font-bold tracking-wider uppercase group-hover/stage:bg-[#596238] group-hover/stage:text-[#F4F4F1] transition-all duration-200">
                       <Images className="w-3.5 h-3.5" />
                       <span>VIEW PACKAGING ({product.gallery.length})</span>
                     </div>
@@ -409,7 +405,7 @@ export default function ProductCatalog() {
                     <div className="mb-4">
                       <h3
                         onClick={() => setSelectedProduct(product)}
-                        className="font-display text-2xl sm:text-3xl font-black uppercase text-[#F5F5F2] tracking-tight leading-tight mb-1.5 group-hover:text-[#D4F843] transition-colors cursor-pointer"
+                        className="font-display text-2xl sm:text-3xl font-black uppercase text-[#F5F5F2] tracking-tight leading-tight mb-1.5 group-hover:text-[#9DB25E] transition-colors cursor-pointer"
                       >
                         {product.name}
                       </h3>
@@ -426,7 +422,7 @@ export default function ProductCatalog() {
                             {s.label}
                           </span>
                           <span className="text-base sm:text-lg font-display font-black text-[#F5F5F2]">
-                            {s.value} <span className="text-[10px] font-mono text-[#D4F843] font-bold">{s.unit}</span>
+                            {s.value} <span className="text-[10px] font-mono text-[#9DB25E] font-bold">{s.unit}</span>
                           </span>
                         </div>
                       ))}
@@ -443,7 +439,7 @@ export default function ProductCatalog() {
                       <button
                         type="button"
                         onClick={() => setSelectedProduct(product)}
-                        className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono text-[#D4F843] hover:text-white bg-[#D4F843]/10 hover:bg-[#D4F843]/25 px-2.5 py-1 rounded border border-[#D4F843]/30 transition-all cursor-pointer"
+                        className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono text-[#9DB25E] hover:text-white bg-[#596238]/20 hover:bg-[#596238]/35 px-2.5 py-1 rounded border border-[#596238]/40 transition-all cursor-pointer"
                         title="View Official 3rd-Party HPLC Lab Test Report"
                       >
                         <Check className="w-3.5 h-3.5" />
@@ -459,7 +455,7 @@ export default function ProductCatalog() {
                         <span className="text-[9px] font-mono text-[#8E8D88] uppercase tracking-wider block">
                           PROTOCOL PRICE
                         </span>
-                        <span className="px-1.5 py-0.2 bg-[#D4F843]/15 text-[#D4F843] text-[9px] font-mono font-bold rounded">
+                        <span className="px-1.5 py-0.2 bg-[#596238]/25 text-[#9DB25E] text-[9px] font-mono font-bold rounded border border-[#596238]/35">
                           SAVE 19%
                         </span>
                       </div>
@@ -488,7 +484,7 @@ export default function ProductCatalog() {
                       <button
                         type="button"
                         onClick={() => alert(`Added ${product.name} to protocol shaker!`)}
-                        className="px-6 py-3.5 bg-[#D4F843] hover:bg-[#BDE62B] text-[#121211] font-editorial text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-lg shadow-[0_0_20px_rgba(212,248,67,0.25)] hover:shadow-[0_0_25px_rgba(212,248,67,0.45)] hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
+                        className="px-6 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-editorial text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-lg border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.3)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.5)] hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
                       >
                         <span>ORDER NOW</span>
                         <ArrowRight className="w-3.5 h-3.5" />

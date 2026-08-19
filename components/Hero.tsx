@@ -309,7 +309,7 @@ export default function HeroSection() {
             {/* ========================================================================= */}
             <div
               ref={parallaxHeadlineRef}
-              className="lg:col-span-6 xl:col-span-6 flex flex-col justify-center z-20 will-change-transform"
+              className="order-2 lg:order-1 lg:col-span-6 xl:col-span-6 flex flex-col justify-center z-20 will-change-transform"
             >
               {/* Category Sub-Tag */}
               <div
@@ -411,7 +411,7 @@ export default function HeroSection() {
             {/* ========================================================================= */}
             <div
               ref={parallaxProductRef}
-              className="lg:col-span-6 xl:col-span-6 relative flex items-center justify-center py-2 lg:py-0 will-change-transform"
+              className="order-1 lg:order-2 lg:col-span-6 xl:col-span-6 relative flex items-center justify-center py-2 lg:py-0 will-change-transform"
             >
               <ProductShowcase
                 circleRef={circleRef}

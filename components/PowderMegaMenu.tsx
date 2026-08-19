@@ -95,21 +95,35 @@ export default function PowderMegaMenu({
         </button>
 
         {/* Center: Brand Signature */}
-        <div className="hidden sm:flex items-center gap-2 font-display text-lg tracking-tight text-[#F4F4F1] uppercase">
+        <Link
+          href="/"
+          onClick={() => {
+            onClose();
+            if (typeof window !== "undefined") {
+              if (window.location.pathname === "/" || window.location.pathname === "") {
+                if (window.location.hash) {
+                  window.history.pushState(null, "", "/");
+                }
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+            }
+          }}
+          className="hidden sm:flex items-center gap-2 font-display text-lg tracking-tight text-[#F4F4F1] hover:text-[#9DB25E] transition-colors uppercase cursor-pointer"
+        >
           <span>STAGE</span>
           <Zap className="w-3.5 h-3.5 text-[#596238] fill-current" />
           <span>STEEL LABS</span>
-        </div>
+        </Link>
 
         {/* Right: Tactical Corner-Brackets CTA Button */}
         <div className="relative">
           <Link
-            href="#"
+            href="#products"
             onClick={onClose}
-            className="relative inline-flex items-center gap-2 px-5 py-2 bg-[#A8B778] hover:bg-[#8E9A5E] text-[#151515] font-mono text-[11px] font-black tracking-widest uppercase transition-all duration-200"
+            className="relative inline-flex items-center gap-2 px-5 py-2 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-mono text-[11px] font-bold tracking-widest uppercase transition-all duration-200 border border-[#7C8B4C]/40 shadow-sm"
           >
-            <span className="absolute -top-1 -left-1 w-2 h-2 border-t-2 border-l-2 border-[#F4F4F1]" />
-            <span className="absolute -bottom-1 -right-1 w-2 h-2 border-b-2 border-r-2 border-[#F4F4F1]" />
+            <span className="absolute -top-1 -left-1 w-2 h-2 border-t-2 border-l-2 border-[#9DB25E]" />
+            <span className="absolute -bottom-1 -right-1 w-2 h-2 border-b-2 border-r-2 border-[#9DB25E]" />
             <span>SHOP NOW</span>
             <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.5]" />
           </Link>
@@ -240,12 +254,12 @@ export default function PowderMegaMenu({
         {/* Bottom Left CTA */}
         <div className="relative">
           <Link
-            href="#"
+            href="#products"
             onClick={onClose}
-            className="relative inline-flex items-center gap-2 px-4 py-1.5 bg-[#A8B778] hover:bg-[#8E9A5E] text-[#151515] font-mono font-bold tracking-widest uppercase transition-all duration-200"
+            className="relative inline-flex items-center gap-2 px-4 py-1.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-mono font-bold tracking-widest uppercase transition-all duration-200 border border-[#7C8B4C]/40"
           >
-            <span className="absolute -top-1 -left-1 w-1.5 h-1.5 border-t-2 border-l-2 border-[#F4F4F1]" />
-            <span className="absolute -bottom-1 -right-1 w-1.5 h-1.5 border-b-2 border-r-2 border-[#F4F4F1]" />
+            <span className="absolute -top-1 -left-1 w-1.5 h-1.5 border-t-2 border-l-2 border-[#9DB25E]" />
+            <span className="absolute -bottom-1 -right-1 w-1.5 h-1.5 border-b-2 border-r-2 border-[#9DB25E]" />
             <span>EXPLORE CATALOG</span>
           </Link>
         </div>

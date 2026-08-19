@@ -47,6 +47,18 @@ export default function Navbar({ navbarRef }: NavbarProps) {
     }
   };
 
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    setIsScoopOpen(false);
+    if (typeof window !== "undefined") {
+      if (window.location.pathname === "/" || window.location.pathname === "") {
+        if (window.location.hash) {
+          window.history.pushState(null, "", "/");
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }
+  };
+
   return (
     <>
       <header
@@ -94,7 +106,11 @@ export default function Navbar({ navbarRef }: NavbarProps) {
 
           {/* 2. Center: Brand Logo Centered */}
           <div className="flex items-center justify-center">
-            <Link href="/" className="group flex items-center justify-center gap-2.5 focus:outline-hidden">
+            <Link
+              href="/"
+              onClick={handleLogoClick}
+              className="group flex items-center justify-center gap-2.5 focus:outline-hidden cursor-pointer"
+            >
               <div className="relative h-14 sm:h-16 md:h-18 lg:h-20 w-48 sm:w-60 md:w-72 lg:w-80">
                 <Image
                   src="/logo stage and steel.png"
@@ -105,7 +121,7 @@ export default function Navbar({ navbarRef }: NavbarProps) {
                   className="object-contain object-center filter drop-shadow-xs transition-transform duration-200 group-hover:scale-105"
                 />
               </div>
-              <span className="hidden xl:inline-block text-[10px] font-mono tracking-widest text-[#777773] border-l border-[#151515]/20 pl-2 uppercase font-bold">
+              <span className="hidden xl:inline-block text-[10px] font-mono tracking-widest text-[#777773] border-l border-[#151515]/20 pl-2 uppercase font-bold group-hover:text-[#151515] transition-colors">
                 LABS &reg;
               </span>
             </Link>

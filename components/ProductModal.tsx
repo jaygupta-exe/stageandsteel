@@ -108,11 +108,11 @@ export default function ProductModal({
         {/* Top Tactical Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/10 bg-[#0E0E0D] shrink-0">
           <div className="flex items-center gap-3">
-            <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-[#D4F843] uppercase font-bold">
-              <span className="w-2 h-2 rounded-full bg-[#D4F843] animate-pulse" />
+            <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-[#9DB25E] uppercase font-bold">
+              <span className="w-2 h-2 rounded-full bg-[#8FA355] animate-pulse" />
               <span>STAGE PROTOCOL // {product.batchCode}</span>
             </div>
-            <span className="hidden md:inline-block px-2.5 py-0.5 bg-[#D4F843]/15 border border-[#D4F843]/30 text-[10px] font-mono text-[#D4F843] uppercase rounded">
+            <span className="hidden md:inline-block px-2.5 py-0.5 bg-[#596238]/20 border border-[#596238]/40 text-[10px] font-mono text-[#9DB25E] uppercase rounded">
               HPLC 3RD-PARTY VERIFIED • 100% PURE
             </span>
           </div>
@@ -121,7 +121,7 @@ export default function ProductModal({
             type="button"
             onClick={onClose}
             aria-label="Close product view"
-            className="p-2 bg-[#222220] hover:bg-[#D4F843] hover:text-[#121211] border border-white/10 text-[#F4F4F1] rounded-lg transition-colors cursor-pointer"
+            className="p-2 bg-[#222220] hover:bg-[#596238] hover:text-[#F4F4F1] border border-white/10 text-[#F4F4F1] rounded-lg transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -173,7 +173,7 @@ export default function ProductModal({
                   type="button"
                   onClick={handlePrev}
                   aria-label="Previous image"
-                  className="absolute left-1 sm:left-2 z-20 p-3 bg-[#151515] hover:bg-[#D4F843] text-white hover:text-black rounded-lg transition-colors cursor-pointer shadow-lg"
+                  className="absolute left-1 sm:left-2 z-20 p-3 bg-[#151515] hover:bg-[#596238] text-white hover:text-white rounded-lg transition-colors cursor-pointer shadow-lg"
                 >
                   <ChevronLeft className="w-5 h-5" />
                 </button>
@@ -185,7 +185,7 @@ export default function ProductModal({
                   type="button"
                   onClick={handleNext}
                   aria-label="Next image"
-                  className="absolute right-1 sm:right-2 z-20 p-3 bg-[#151515] hover:bg-[#D4F843] text-white hover:text-black rounded-lg transition-colors cursor-pointer shadow-lg"
+                  className="absolute right-1 sm:right-2 z-20 p-3 bg-[#151515] hover:bg-[#596238] text-white hover:text-white rounded-lg transition-colors cursor-pointer shadow-lg"
                 >
                   <ChevronRight className="w-5 h-5" />
                 </button>
@@ -235,7 +235,7 @@ export default function ProductModal({
             <div>
               {/* Category & Weight */}
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-mono text-[#D4F843] tracking-widest uppercase font-bold">
+                <span className="text-xs font-mono text-[#9DB25E] tracking-widest uppercase font-bold">
                   {product.category}
                 </span>
                 <span className="text-[10px] font-mono text-[#8E8D88] uppercase tracking-widest">
@@ -248,7 +248,7 @@ export default function ProductModal({
                 {product.name}
               </h2>
               <div className="flex items-center gap-2 mb-5">
-                <span className="w-2.5 h-[2px] bg-[#D4F843]" />
+                <span className="w-2.5 h-[2px] bg-[#8FA355]" />
                 <p className="font-mono text-xs sm:text-sm font-bold text-[#A8A7A3] uppercase tracking-wider">
                   {product.subtitle}
                 </p>
@@ -262,7 +262,7 @@ export default function ProductModal({
                       {s.label}
                     </span>
                     <span className="text-base sm:text-lg font-display font-black text-[#F5F5F2]">
-                      {s.value} <span className="text-[10px] font-mono text-[#D4F843] font-bold">{s.unit}</span>
+                      {s.value} <span className="text-[10px] font-mono text-[#9DB25E] font-bold">{s.unit}</span>
                     </span>
                   </div>
                 ))}
@@ -285,7 +285,7 @@ export default function ProductModal({
                       }}
                       className={`px-4 py-2.5 text-xs font-editorial font-bold tracking-widest uppercase transition-all duration-150 cursor-pointer rounded-t-lg shrink-0 flex items-center gap-1.5 ${
                         activeTab === tab
-                          ? "text-[#D4F843] border-b-2 border-[#D4F843] bg-white/5"
+                          ? "text-[#9DB25E] border-b-2 border-[#596238] bg-white/5"
                           : "text-[#8E8D88] hover:text-[#F4F4F1]"
                       }`}
                     >
@@ -294,7 +294,7 @@ export default function ProductModal({
                       {tab === "USAGE" && "HOW TO USE"}
                       {tab === "LAB_REPORT" && (
                         <>
-                          <ShieldCheck className="w-3.5 h-3.5 text-[#D4F843]" />
+                          <ShieldCheck className="w-3.5 h-3.5 text-[#9DB25E]" />
                           <span>LAB REPORT (COA)</span>
                         </>
                       )}
@@ -324,7 +324,7 @@ export default function ProductModal({
                             onClick={() => setSelectedFlavor(f.name)}
                             className={`px-3.5 py-2 text-xs font-editorial font-bold uppercase tracking-wider border rounded-lg transition-all duration-150 flex items-center gap-2 cursor-pointer ${
                               selectedFlavor === f.name
-                                ? "bg-[#D4F843] border-[#D4F843] text-[#121211]"
+                                ? "bg-[#596238] border-[#596238] text-[#F4F4F1]"
                                 : "bg-[#1E1E1C] border-white/10 text-[#8E8D88] hover:border-white/30 hover:text-white"
                             }`}
                           >
@@ -344,7 +344,7 @@ export default function ProductModal({
               {/* Tab 2: Nutrition Matrix */}
               {activeTab === "NUTRITION" && (
                 <div className="space-y-2 max-h-[220px] overflow-y-auto pr-2 animate-in fade-in duration-200">
-                  <div className="text-[10px] font-mono text-[#D4F843] tracking-wider mb-2 flex justify-between border-b border-white/10 pb-1 font-bold">
+                  <div className="text-[10px] font-mono text-[#9DB25E] tracking-wider mb-2 flex justify-between border-b border-white/10 pb-1 font-bold">
                     <span>ACTIVE COMPOUND</span>
                     <span>AMOUNT PER SERVING</span>
                   </div>
@@ -361,7 +361,7 @@ export default function ProductModal({
               {activeTab === "USAGE" && (
                 <div className="space-y-4 text-xs text-[#D4D3CD] leading-relaxed animate-in fade-in duration-200">
                   <div className="p-3.5 bg-[#0D0D0C] border border-white/10 rounded-lg">
-                    <span className="font-mono text-[10px] text-[#D4F843] uppercase tracking-wider block mb-1 font-bold">
+                    <span className="font-mono text-[10px] text-[#9DB25E] uppercase tracking-wider block mb-1 font-bold">
                       SUGGESTED PROTOCOL:
                     </span>
                     <p className="text-xs sm:text-sm font-sans text-[#F5F5F2] leading-relaxed">
@@ -370,7 +370,7 @@ export default function ProductModal({
                   </div>
 
                   <div className="flex items-start gap-3 p-3 bg-[#0D0D0C] border border-white/10 rounded-lg">
-                    <ShieldCheck className="w-4 h-4 text-[#D4F843] shrink-0 mt-0.5" />
+                    <ShieldCheck className="w-4 h-4 text-[#9DB25E] shrink-0 mt-0.5" />
                     <div>
                       <span className="font-editorial font-bold text-[#F5F5F2] block mb-0.5">100% Transparent Label Guarantee</span>
                       <span className="text-[11px] font-sans text-[#8E8D88]">Zero proprietary blends, zero amino-spiking, zero banned substances. CGMP &amp; WADA compliant.</span>
@@ -382,9 +382,9 @@ export default function ProductModal({
               {/* Tab 4: Lab Test Report COA */}
               {activeTab === "LAB_REPORT" && product.labReportUrl && (
                 <div className="space-y-4 animate-in fade-in duration-200">
-                  <div className="p-3.5 bg-[#0D0D0C] border border-[#D4F843]/30 rounded-lg flex items-start justify-between gap-3">
+                  <div className="p-3.5 bg-[#0D0D0C] border border-[#596238]/40 rounded-lg flex items-start justify-between gap-3">
                     <div>
-                      <span className="font-mono text-[10px] text-[#D4F843] uppercase tracking-wider block mb-0.5 font-bold">
+                      <span className="font-mono text-[10px] text-[#9DB25E] uppercase tracking-wider block mb-0.5 font-bold">
                         3RD-PARTY HPLC CERTIFIED REPORT
                       </span>
                       <p className="text-xs font-sans text-[#F5F5F2] leading-relaxed">
@@ -395,7 +395,7 @@ export default function ProductModal({
                       href={product.labReportUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-3 py-1.5 bg-[#D4F843] hover:bg-[#BDE62B] text-[#121211] font-mono text-[10px] font-bold tracking-wider uppercase rounded transition-colors shrink-0 flex items-center gap-1"
+                      className="px-3 py-1.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] border border-[#7C8B4C]/40 font-mono text-[10px] font-bold tracking-wider uppercase rounded transition-colors shrink-0 flex items-center gap-1 shadow-sm"
                     >
                       <span>FULL COA</span>
                       <ArrowRight className="w-3 h-3" />
@@ -416,7 +416,7 @@ export default function ProductModal({
                       unoptimized
                       className="object-contain p-2 group-hover:scale-105 transition-transform"
                     />
-                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs font-mono text-[#D4F843] font-bold">
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs font-mono text-[#9DB25E] font-bold">
                       CLICK TO VIEW IN MAIN VIEWER
                     </div>
                   </div>
@@ -472,7 +472,7 @@ export default function ProductModal({
                 <button
                   type="button"
                   onClick={() => alert(`Added ${quantity}x ${product.name} (${selectedFlavor}) to protocol!`)}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-3.5 bg-[#D4F843] hover:bg-[#BDE62B] text-[#121211] font-editorial text-xs sm:text-sm font-bold tracking-widest uppercase rounded-lg transition-all duration-200 cursor-pointer shadow-[0_0_20px_rgba(212,248,67,0.3)] hover:shadow-[0_0_30px_rgba(212,248,67,0.5)] active:scale-98"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-editorial text-xs sm:text-sm font-bold tracking-widest uppercase rounded-lg transition-all duration-200 cursor-pointer border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.35)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.55)] active:scale-98"
                 >
                   <span>ADD TO PROTOCOL</span>
                   <ArrowRight className="w-4 h-4" />
