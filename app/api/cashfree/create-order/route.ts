@@ -40,6 +40,10 @@ export async function POST(req: Request) {
         ? "https://api.cashfree.com/pg/orders"
         : "https://sandbox.cashfree.com/pg/orders";
 
+    const originHeader = req.headers.get("origin");
+    const hostHeader = req.headers.get("host");
+    const baseUrl = originHeader || (hostHeader ? `https://${hostHeader}` : "https://stageandsteel.in");
+
     const payload = {
       order_id: orderId,
       order_amount: Number(orderAmount),
@@ -51,8 +55,8 @@ export async function POST(req: Request) {
         customer_phone: customerPhone.length === 10 ? customerPhone : "9999999999",
       },
       order_meta: {
-        return_url: `${req.headers.get("origin") || "http://localhost:3000"}/api/cashfree/return?order_id={order_id}`,
-        notify_url: `${req.headers.get("origin") || "http://localhost:3000"}/api/cashfree/webhook`,
+        return_url: `${baseUrl}/api/cashfree/return?order_id={order_id}`,
+        notify_url: `${baseUrl}/api/cashfree/webhook`,
       },
       order_note: `Stage & Steel Order: ${items?.length || 1} items`,
     };
