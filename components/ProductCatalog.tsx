@@ -4,8 +4,10 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { ArrowRight, ArrowUpRight, ShieldCheck, Images, Check, Sparkles, Zap, Flame } from "lucide-react";
 import ProductModal, { ProductData } from "./ProductModal";
+import { useCart } from "@/context/CartContext";
 
 export default function ProductCatalog() {
+  const { addToCart } = useCart();
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const [selectedProduct, setSelectedProduct] = useState<ProductData | null>(null);
 
@@ -483,10 +485,10 @@ export default function ProductCatalog() {
 
                       <button
                         type="button"
-                        onClick={() => alert(`Added ${product.name} to protocol shaker!`)}
+                        onClick={() => addToCart(product, 1, product.flavors[0]?.name)}
                         className="px-6 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-editorial text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-lg border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.3)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.5)] hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
                       >
-                        <span>ORDER NOW</span>
+                        <span>ADD TO CART</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>

@@ -4,6 +4,8 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { X, ChevronLeft, ChevronRight, ShieldCheck, Award, Check, ArrowRight, Plus, Minus } from "lucide-react";
 
+import { useCart } from "@/context/CartContext";
+
 export interface ProductImageSlide {
   label: string;
   url: string;
@@ -41,6 +43,7 @@ export default function ProductModal({
   onClose,
   product,
 }: ProductModalProps) {
+  const { addToCart } = useCart();
   const [activeSlide, setActiveSlide] = useState<number>(0);
   const [selectedFlavor, setSelectedFlavor] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
@@ -471,7 +474,10 @@ export default function ProductModal({
               <div className="w-full sm:w-auto">
                 <button
                   type="button"
-                  onClick={() => alert(`Added ${quantity}x ${product.name} (${selectedFlavor}) to protocol!`)}
+                  onClick={() => {
+                    addToCart(product, quantity, selectedFlavor);
+                    onClose();
+                  }}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-editorial text-xs sm:text-sm font-bold tracking-widest uppercase rounded-lg transition-all duration-200 cursor-pointer border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.35)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.55)] active:scale-98"
                 >
                   <span>ADD TO PROTOCOL</span>

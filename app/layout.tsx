@@ -1,6 +1,11 @@
 import type { Metadata } from "next";
 import { Oswald, Barlow_Condensed, Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/context/AuthContext";
+import { CartProvider } from "@/context/CartContext";
+import AuthModal from "@/components/AuthModal";
+import CartDrawer from "@/components/CartDrawer";
+import CheckoutModal from "@/components/CheckoutModal";
 
 const oswald = Oswald({
   variable: "--font-oswald",
@@ -51,7 +56,14 @@ export default function RootLayout({
         suppressHydrationWarning
         className="min-h-screen bg-[#A8A7A3] text-[#151515] font-sans relative overflow-x-hidden"
       >
-        {children}
+        <AuthProvider>
+          <CartProvider>
+            {children}
+            <AuthModal />
+            <CartDrawer />
+            <CheckoutModal />
+          </CartProvider>
+        </AuthProvider>
       </body>
     </html>
   );

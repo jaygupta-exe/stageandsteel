@@ -1,0 +1,95 @@
+import { NextResponse } from "next/server";
+
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
+    const { orderAmount, customerDetails, items } = body;
+
+    const appId = process.env.CASHFREE_APP_ID;
+    const secretKey = process.env.CASHFREE_SECRET_KEY;
+    const environment = process.env.CASHFREE_ENVIRONMENT || "SANDBOX";
+
+    if (!appId || !secretKey) {
+      return NextResponse.json(
+        {
+          error: "Cashfree API credentials are not configured in .env.local",
+          isConfigured: false,
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!orderAmount || orderAmount <= 0) {
+      return NextResponse.json(
+        { error: "Invalid order amount" },
+        { status: 400 }
+      );
+    }
+
+    // Clean and validate customer details
+    const customerPhone = customerDetails?.phone?.replace(/[^0-9]/g, "") || "9999999999";
+    const customerEmail = customerDetails?.email || "athlete@stageandsteel.com";
+    const customerName = customerDetails?.name || "Stage & Steel Athlete";
+    const customerId = customerDetails?.customerId || `cust_${Date.now()}`;
+
+    // Unique Order ID (max 45 chars alphanumeric)
+    const orderId = `SS_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
+
+    const cashfreeBaseUrl =
+      environment.toUpperCase() === "PRODUCTION"
+        ? "https://api.cashfree.com/pg/orders"
+        : "https://sandbox.cashfree.com/pg/orders";
+
+    const payload = {
+      order_id: orderId,
+      order_amount: Number(orderAmount),
+      order_currency: "INR",
+      customer_details: {
+        customer_id: customerId.substring(0, 45),
+        customer_name: customerName.substring(0, 100),
+        customer_email: customerEmail,
+        customer_phone: customerPhone.length === 10 ? customerPhone : "9999999999",
+      },
+      order_meta: {
+        return_url: `${req.headers.get("origin") || "http://localhost:3000"}/api/cashfree/return?order_id={order_id}`,
+        notify_url: `${req.headers.get("origin") || "http://localhost:3000"}/api/cashfree/webhook`,
+      },
+      order_note: `Stage & Steel Order: ${items?.length || 1} items`,
+    };
+
+    const response = await fetch(cashfreeBaseUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-api-version": "2023-08-01",
+        "x-client-id": appId,
+        "x-client-secret": secretKey,
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Cashfree API error:", data);
+      return NextResponse.json(
+        { error: data.message || "Failed to create Cashfree order", details: data },
+        { status: response.status }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      orderId: data.order_id,
+      paymentSessionId: data.payment_session_id,
+      orderAmount: data.order_amount,
+      environment,
+    });
+  } catch (error: any) {
+    console.error("Order creation internal error:", error);
+    return NextResponse.json(
+      { error: error?.message || "Internal server error" },
+      { status: 500 }
+    );
+  }
+}

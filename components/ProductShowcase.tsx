@@ -123,7 +123,7 @@ export default function ProductShowcase({
           >
             <Image
               src="/whey-cutout.png"
-              alt="Stage & Steel Whey Protein - Belgian Chocolate 1kg"
+              alt="Stage & Steel Whey Protein - Salted Caramel 1kg"
               fill
               priority
               unoptimized
