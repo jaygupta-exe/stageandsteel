@@ -10,6 +10,7 @@ export default function ProductCatalog() {
   const { addToCart } = useCart();
   const [activeCategory, setActiveCategory] = useState<string>("ALL");
   const [selectedProduct, setSelectedProduct] = useState<ProductData | null>(null);
+  const [selectedCardFlavors, setSelectedCardFlavors] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const handleCategoryFilter = (e: Event) => {
@@ -224,27 +225,28 @@ export default function ProductCatalog() {
           url: "/creatine/3 k.jpg.jpeg",
         },
       ],
-      accentColor: "#596238",
+      accentColor: "#DE8A36",
       batchCode: "BATCH CR-2026-GER",
       flavors: [
-        { name: "Unflavored Raw Purity", color: "#F4F4F1", inStock: true },
+        { name: "Orange", color: "#FF7A00", inStock: true },
+        { name: "Pineapple", color: "#FFD000", inStock: true },
       ],
       specs: [
         { label: "PURITY", value: "99.9", unit: "%" },
-        { label: "CREAPURE®", value: "5000", unit: "MG" },
+        { label: "CREATINE", value: "5000", unit: "MG" },
         { label: "FILLERS", value: "0", unit: "%" },
       ],
       description:
-        "100% German Creapure® micronized creatine monohydrate. Rapidly replenishes intracellular phosphocreatine reserves to fuel explosive ATP output, maximal strength, and cellular volumization.",
+        "Premium 200 Mesh micronized creatine monohydrate in delicious Orange and Pineapple flavors. Rapidly replenishes intracellular phosphocreatine reserves to fuel explosive ATP output, maximal strength, and cellular volumization.",
       nutritionFacts: [
-        { name: "Creapure® Creatine Monohydrate", amount: "5,000mg" },
+        { name: "Creatine Monohydrate (Micronized)", amount: "5,000mg" },
         { name: "Purity Rating", amount: "99.9%" },
         { name: "Micronized Mesh Rating", amount: "200 Mesh" },
         { name: "Carbohydrates & Fats", amount: "0g" },
         { name: "Sodium / Additives", amount: "0mg" },
       ],
       suggestedUse:
-        "Mix 1 scoop (5g) with 250ml cold water, juice, or your post-workout Stage Whey shake. Consume daily for optimal cellular phosphocreatine saturation.",
+        "Mix 1 scoop (5g) with 250ml cold water. Consume daily for optimal cellular phosphocreatine saturation.",
     },
   ];
 
@@ -432,12 +434,35 @@ export default function ProductCatalog() {
 
                     {/* Flavor & Guarantee Row */}
                     <div className="flex items-center justify-between pb-5 border-b border-white/10 text-xs">
-                      <div className="flex items-center gap-2">
-                        <span className="w-2.5 h-2.5 rounded-full border border-white/20" style={{ backgroundColor: product.flavors[0]?.color || '#DE8A36' }} />
-                        <span className="font-editorial text-xs font-semibold text-[#D4D3CD]">
-                          {product.flavors[0]?.name}
-                        </span>
-                      </div>
+                      {product.flavors.length > 1 ? (
+                        <div className="flex items-center gap-1.5 flex-wrap">
+                          {product.flavors.map((f) => {
+                            const isSelected = (selectedCardFlavors[product.id] || product.flavors[0]?.name) === f.name;
+                            return (
+                              <button
+                                key={f.name}
+                                type="button"
+                                onClick={() => setSelectedCardFlavors((prev) => ({ ...prev, [product.id]: f.name }))}
+                                className={`px-2.5 py-1 rounded-md text-[11px] font-editorial font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer border ${
+                                  isSelected
+                                    ? "bg-[#596238] border-[#8FA355] text-white shadow-sm"
+                                    : "bg-[#1E1E1C] border-white/10 text-[#A8A7A3] hover:text-white hover:border-white/25"
+                                }`}
+                              >
+                                <span className="w-2 h-2 rounded-full border border-black/30" style={{ backgroundColor: f.color }} />
+                                <span>{f.name}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <span className="w-2.5 h-2.5 rounded-full border border-white/20" style={{ backgroundColor: product.flavors[0]?.color || '#DE8A36' }} />
+                          <span className="font-editorial text-xs font-semibold text-[#D4D3CD]">
+                            {product.flavors[0]?.name}
+                          </span>
+                        </div>
+                      )}
                       <button
                         type="button"
                         onClick={() => setSelectedProduct(product)}
@@ -485,7 +510,7 @@ export default function ProductCatalog() {
 
                       <button
                         type="button"
-                        onClick={() => addToCart(product, 1, product.flavors[0]?.name)}
+                        onClick={() => addToCart(product, 1, selectedCardFlavors[product.id] || product.flavors[0]?.name)}
                         className="px-6 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-editorial text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-lg border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.3)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.5)] hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
                       >
                         <span>ADD TO CART</span>
