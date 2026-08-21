@@ -10,7 +10,21 @@ import {
   sendPasswordResetEmail,
   updateProfile,
 } from "firebase/auth";
-import { getFirestore, Firestore, doc, setDoc, serverTimestamp, getDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  Firestore,
+  doc,
+  setDoc,
+  serverTimestamp,
+  getDoc,
+  collection,
+  query,
+  where,
+  orderBy,
+  getDocs,
+  addDoc,
+  Timestamp,
+} from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -58,5 +72,11 @@ export {
   setDoc,
   serverTimestamp,
   getDoc,
+  collection,
+  query,
+  where,
+  orderBy,
+  getDocs,
+  addDoc,
+  Timestamp,
 };
-

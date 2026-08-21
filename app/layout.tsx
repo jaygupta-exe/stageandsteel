@@ -6,6 +6,7 @@ import { CartProvider } from "@/context/CartContext";
 import AuthModal from "@/components/AuthModal";
 import CartDrawer from "@/components/CartDrawer";
 import CheckoutModal from "@/components/CheckoutModal";
+import WhatsAppWidget from "@/components/WhatsAppWidget";
 
 const oswald = Oswald({
   variable: "--font-oswald",
@@ -35,10 +36,93 @@ const inter = Inter({
   display: "swap",
 });
 
+const siteUrl = "https://stageandsteel.in";
+const siteName = "Stage & Steel";
+const siteDescription =
+  "India's premium athlete-grade sports nutrition. 100% Microfiltered Whey Protein, Micronized Creatine Monohydrate, EAA + Electrolytes. HPLC lab-tested. Zero amino spiking. Free express delivery pan-India.";
+
 export const metadata: Metadata = {
-  title: "STAGE & STEEL | Premium Sports Nutrition & Bodybuilding Supplements",
-  description:
-    "Engineered for performance. Built on discipline. Premium sports nutrition, 100% Whey Protein and Creatine Monohydrate.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "STAGE & STEEL | Premium Sports Nutrition & Bodybuilding Supplements India",
+    template: "%s | Stage & Steel",
+  },
+  description: siteDescription,
+  keywords: [
+    "whey protein",
+    "creatine monohydrate",
+    "EAA supplements",
+    "sports nutrition India",
+    "bodybuilding supplements",
+    "Stage and Steel",
+    "premium protein powder",
+    "microfiltered whey",
+    "HPLC tested protein",
+    "gym supplements",
+    "muscle building",
+    "athlete nutrition",
+    "whey protein India",
+    "creatine India",
+    "Belgian chocolate whey",
+    "salted caramel whey",
+    "cafe mocha whey",
+    "orange creatine",
+    "pineapple creatine",
+    "EAA cola",
+    "free delivery supplements",
+  ],
+  authors: [
+    { name: "Stage & Steel", url: siteUrl },
+    { name: "Divesh Mehan" },
+    { name: "Ashish Yadav" },
+  ],
+  creator: "Stage & Steel",
+  publisher: "Stage & Steel / Sands Nutrition",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: siteUrl,
+    siteName,
+    title: "STAGE & STEEL — Premium Athlete-Grade Sports Nutrition",
+    description: siteDescription,
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Stage & Steel — Premium Sports Nutrition",
+        type: "image/jpeg",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "STAGE & STEEL — Premium Sports Nutrition",
+    description: siteDescription,
+    images: ["/og-image.jpg"],
+    creator: "@stageandsteel",
+  },
+  alternates: {
+    canonical: siteUrl,
+  },
+  category: "Sports Nutrition",
+  other: {
+    "theme-color": "#596238",
+    "msapplication-TileColor": "#596238",
+    "apple-mobile-web-app-title": "Stage & Steel",
+    "application-name": "Stage & Steel",
+  },
 };
 
 export default function RootLayout({
@@ -62,6 +146,7 @@ export default function RootLayout({
             <AuthModal />
             <CartDrawer />
             <CheckoutModal />
+            <WhatsAppWidget />
           </CartProvider>
         </AuthProvider>
       </body>

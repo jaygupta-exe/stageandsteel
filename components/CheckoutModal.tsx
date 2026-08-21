@@ -22,6 +22,7 @@ import {
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { load } from "@cashfreepayments/cashfree-js";
+import { saveOrder } from "@/lib/orders";
 
 export default function CheckoutModal() {
   const {
@@ -80,6 +81,8 @@ export default function CheckoutModal() {
     orderId: string;
     amount: number;
     waybill?: string;
+    whatsappUrl?: string;
+    emailSent?: boolean;
   } | null>(null);
 
   // Pre-fill user data if logged in
@@ -228,10 +231,69 @@ export default function CheckoutModal() {
           console.warn("Delhivery auto-dispatch error:", shipErr);
         }
 
+        // 5. Save order to Firestore for order history
+        const orderItems = items.map((item) => ({
+          id: item.id,
+          name: item.name,
+          flavor: item.flavor,
+          price: item.price,
+          numericPrice: item.numericPrice,
+          quantity: item.quantity,
+          thumbnail: item.thumbnail,
+        }));
+
+        try {
+          await saveOrder({
+            orderId,
+            userId: user?.uid || `guest_${Date.now()}`,
+            items: orderItems,
+            subtotal,
+            discountAmount,
+            couponCode: appliedCoupon?.code || null,
+            finalTotal,
+            status: "PAID",
+            paymentGateway: "CASHFREE",
+            waybill,
+            customerName: name,
+            customerEmail: email,
+            customerPhone: phone.replace(/[^0-9]/g, ""),
+            shippingAddress: { address, city, state: stateName, pincode },
+          });
+        } catch (saveErr) {
+          console.warn("Order save to Firestore warning:", saveErr);
+        }
+
+        // 6. Send order confirmation (email + WhatsApp link)
+        let whatsappUrl = "";
+        let emailSent = false;
+        try {
+          const confirmRes = await fetch("/api/send-confirmation", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              orderId,
+              customerName: name,
+              customerEmail: email,
+              customerPhone: phone.replace(/[^0-9]/g, ""),
+              orderAmount: finalTotal,
+              items: orderItems,
+              waybill,
+              couponCode: appliedCoupon?.code || null,
+            }),
+          });
+          const confirmData = await confirmRes.json();
+          whatsappUrl = confirmData.whatsappUrl || "";
+          emailSent = confirmData.emailSent || false;
+        } catch (confirmErr) {
+          console.warn("Order confirmation send warning:", confirmErr);
+        }
+
         setOrderSuccess({
           orderId,
           amount: finalTotal,
           waybill,
+          whatsappUrl,
+          emailSent,
         });
         clearCart();
       }
@@ -296,6 +358,20 @@ export default function CheckoutModal() {
               </p>
             </div>
 
+            {/* Confirmation Badges */}
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              {orderSuccess.emailSent && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#596238]/20 border border-[#596238]/40 text-[10px] font-mono text-[#9DB25E] font-bold rounded">
+                  <Mail className="w-3 h-3" />
+                  📧 CONFIRMATION EMAIL SENT
+                </span>
+              )}
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#20211e] border border-[#333530] text-[10px] font-mono text-[#8c8e88] rounded">
+                <ShieldCheck className="w-3 h-3 text-[#9DB25E]" />
+                ORDER SAVED TO YOUR ACCOUNT
+              </span>
+            </div>
+
             <div className="p-4 bg-[#111210] border border-[#2b2d28] text-left space-y-2 text-xs font-mono">
               <div className="flex justify-between border-b border-[#222420] pb-2">
                 <span className="text-[#777873]">ORDER ID:</span>
@@ -326,6 +402,21 @@ export default function CheckoutModal() {
                 </div>
               )}
             </div>
+
+            {/* WhatsApp Confirmation Button */}
+            {orderSuccess.whatsappUrl && (
+              <a
+                href={orderSuccess.whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 bg-[#25D366] hover:bg-[#20BD5A] text-white font-editorial font-bold tracking-widest text-sm uppercase transition-all flex items-center justify-center gap-2.5 shadow-lg shadow-[#25D366]/20"
+              >
+                <svg viewBox="0 0 32 32" fill="white" className="w-5 h-5">
+                  <path d="M16.004 0h-.008C7.174 0 0 7.176 0 16c0 3.5 1.128 6.744 3.046 9.378L1.054 31.29l6.118-1.958C9.72 31.054 12.764 32 16.004 32 24.826 32 32 24.822 32 16S24.826 0 16.004 0zm9.35 22.606c-.39 1.1-1.932 2.014-3.166 2.28-.846.18-1.95.324-5.668-1.218-4.762-1.974-7.826-6.814-8.064-7.13-.23-.316-1.93-2.572-1.93-4.904s1.222-3.476 1.656-3.952c.434-.476.948-.596 1.264-.596.316 0 .632.002.908.018.292.014.682-.11 1.068.814.39.938 1.336 3.27 1.452 3.508.118.238.196.514.04.83-.158.316-.236.514-.474.79-.238.278-.5.62-.714.832-.238.236-.486.494-.208.968.276.474 1.228 2.028 2.638 3.286 1.81 1.616 3.338 2.118 3.812 2.356.474.238.75.198 1.026-.118.278-.316 1.186-1.382 1.502-1.858.316-.476.632-.396 1.066-.238.434.158 2.764 1.304 3.238 1.542.474.238.79.356.908.554.118.198.118 1.148-.272 2.252z" />
+                </svg>
+                CONFIRM ORDER ON WHATSAPP
+              </a>
+            )}
 
             <button
               type="button"

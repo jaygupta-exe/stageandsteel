@@ -3,11 +3,12 @@
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Search, User, ShoppingBag, LogOut, ShieldCheck } from "lucide-react";
+import { Search, User, ShoppingBag, LogOut, ShieldCheck, Package } from "lucide-react";
 import SupplementScoop from "./SupplementScoop";
 import PowderParticleCanvas from "./PowderParticleCanvas";
 import PowderMegaMenu from "./PowderMegaMenu";
 import OrderTrackerModal from "./OrderTrackerModal";
+import OrderHistoryModal from "./OrderHistoryModal";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 
@@ -21,6 +22,7 @@ export default function Navbar({ navbarRef }: NavbarProps) {
   const [isScoopOpen, setIsScoopOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isTrackerOpen, setIsTrackerOpen] = useState(false);
+  const [isOrderHistoryOpen, setIsOrderHistoryOpen] = useState(false);
   const [scoopOrigin, setScoopOrigin] = useState<{ x: number; y: number } | null>(null);
   const scoopButtonRef = useRef<HTMLButtonElement | null>(null);
   const userMenuRef = useRef<HTMLDivElement | null>(null);
@@ -166,6 +168,18 @@ export default function Navbar({ navbarRef }: NavbarProps) {
                         <ShieldCheck className="w-3.5 h-3.5" />
                         <span>AUTHENTICATED ATHLETE</span>
                       </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsUserMenuOpen(false);
+                          setIsOrderHistoryOpen(true);
+                        }}
+                        className="w-full flex items-center gap-2 px-2 py-2 text-xs font-mono text-[#D4D3CD] hover:text-white hover:bg-[#252723] transition-colors cursor-pointer uppercase tracking-wider"
+                      >
+                        <Package className="w-3.5 h-3.5 text-[#9DB25E]" />
+                        <span>MY ORDERS</span>
+                      </button>
                     </div>
 
                     <div className="pt-2 border-t border-[#292a26]">
@@ -278,6 +292,12 @@ export default function Navbar({ navbarRef }: NavbarProps) {
       <OrderTrackerModal
         isOpen={isTrackerOpen}
         onClose={() => setIsTrackerOpen(false)}
+      />
+
+      {/* My Orders History Modal */}
+      <OrderHistoryModal
+        isOpen={isOrderHistoryOpen}
+        onClose={() => setIsOrderHistoryOpen(false)}
       />
     </>
   );
