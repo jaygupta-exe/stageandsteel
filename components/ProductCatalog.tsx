@@ -67,7 +67,7 @@ export default function ProductCatalog() {
       gallery: [
         {
           label: "01 FRONT PACKAGING",
-          url: "/whey protein/belgium chocalte/belgium choclate 3.PNG",
+          url: "/whey protein/belgium chocalte/front.png",
         },
         {
           label: "02 SUPPLEMENT FACTS",
