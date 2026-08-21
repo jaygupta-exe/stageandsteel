@@ -112,13 +112,13 @@ export default function ProductCatalog() {
       category: "PROTEIN MATRIX",
       price: "₹2,599",
       originalPrice: "₹4,299",
-      servings: "30 Servings",
+      servings: "28 Servings",
       netWeight: "1 KG (2.2 LBS)",
       thumbnail: "/mocha-protein-cutout.png",
       gallery: [
         {
           label: "01 FRONT PACKAGING",
-          url: "/whey protein/mocha protein/mocha protein.PNG",
+          url: "/whey protein/mocha protein/front.png",
         },
         {
           label: "02 SUPPLEMENT FACTS",
@@ -136,11 +136,11 @@ export default function ProductCatalog() {
       ],
       specs: [
         { label: "PROTEIN", value: "25", unit: "G" },
-        { label: "BCAAS", value: "5.5", unit: "G" },
-        { label: "ENZYMES", value: "DigeZyme®" },
+        { label: "SWEETENER", value: "MONK FRUIT" },
+        { label: "SERVINGS", value: "28", unit: "SCOOPS" },
       ],
       description:
-        "Artisanal roast Cafe Mocha whey concentrate combining 25g ultra-clean microfiltered protein with authentic coffee aroma and multi-enzyme digestive complex for superior absorption.",
+        "Artisanal roast Cafe Mocha whey concentrate combining 25g ultra-clean microfiltered protein with authentic coffee aroma. Naturally sweetened with premium Monk Fruit extract for clean bio-availability without sugar spikes.",
       nutritionFacts: [
         { name: "Protein per Scoop", amount: "25g", dailyValue: "50%" },
         { name: "BCAAs (Leucine, Isoleucine, Valine)", amount: "5.5g" },
@@ -150,7 +150,7 @@ export default function ProductCatalog() {
         { name: "DigeZyme® Multi-Enzyme Complex", amount: "100mg" },
       ],
       suggestedUse:
-        "Mix 1 rounded scoop (33g) with 200–250ml ice-cold water or milk in a shaker cup. Perfect as a morning kickstarter or high-octane post-workout fuel.",
+        "Mix 1 rounded scoop with 200–250ml ice-cold water or milk in a shaker cup. Perfect as a morning kickstarter or high-octane post-workout fuel.",
     },
     {
       id: "whey-salted-caramel",
