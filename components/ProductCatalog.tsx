@@ -206,7 +206,7 @@ export default function ProductCatalog() {
     },
     {
       id: "creapure-creatine",
-      name: "STAGE CREAPURE® CREATINE",
+      name: "STAGE CREATINE MONOHYDRATE",
       subtitle: "GERMAN MICRONIZED MONOHYDRATE (200 MESH)",
       category: "CREATINE LAB",
       price: "₹899",
@@ -217,15 +217,15 @@ export default function ProductCatalog() {
       gallery: [
         {
           label: "01 FRONT PACKAGING",
-          url: "/creatine/1 k.jpg.jpeg",
+          url: "/creatine/front.png",
         },
         {
-          label: "02 SUPPLEMENT FACTS",
-          url: "/creatine/2 k.jpg.jpeg",
+          label: "02 NUTRITION FACTS",
+          url: "/creatine/nutrition.png",
         },
         {
           label: "03 DIRECTIONS & USAGE",
-          url: "/creatine/3 k.jpg.jpeg",
+          url: "/creatine/usage.png",
         },
       ],
       accentColor: "#DE8A36",
@@ -235,21 +235,22 @@ export default function ProductCatalog() {
         { name: "Pineapple", color: "#FFD000", inStock: true },
       ],
       specs: [
-        { label: "PURITY", value: "99.9", unit: "%" },
-        { label: "CREATINE", value: "5000", unit: "MG" },
-        { label: "FILLERS", value: "0", unit: "%" },
+        { label: "CREATINE", value: "3000", unit: "MG" },
+        { label: "VITAMIN C", value: "40", unit: "MG" },
+        { label: "SERVINGS", value: "85", unit: "SCOOPS" },
       ],
       description:
-        "Premium 200 Mesh micronized creatine monohydrate in delicious Orange and Pineapple flavors. 85 full servings designed to rapidly replenish intracellular phosphocreatine reserves to fuel explosive ATP output, maximal strength, and cellular volumization.",
+        "Stage & Steel Premium Grade Micronized Creatine Monohydrate in refreshing Orange & Pineapple flavors. Enhanced with 40mg Vitamin C per scoop to combat oxidative stress, improve absorption, and power explosive ATP muscular endurance across 85 full servings.",
       nutritionFacts: [
-        { name: "Creatine Monohydrate (Micronized)", amount: "5,000mg" },
-        { name: "Purity Rating", amount: "99.9%" },
-        { name: "Micronized Mesh Rating", amount: "200 Mesh" },
-        { name: "Carbohydrates & Fats", amount: "0g" },
-        { name: "Sodium / Additives", amount: "0mg" },
+        { name: "Creatine Monohydrate (Pure Micronized)", amount: "3,000mg" },
+        { name: "Vitamin C (Antioxidant Complex)", amount: "40mg (50% RDA)" },
+        { name: "Carbohydrates", amount: "0.1g" },
+        { name: "Energy / Calories", amount: "0.4 kcal" },
+        { name: "Protein / Dietary Fat", amount: "0g" },
+        { name: "Sodium", amount: "0mg" },
       ],
       suggestedUse:
-        "Mix 1 scoop with 250ml cold water. Consume daily for optimal cellular phosphocreatine saturation.",
+        "Mix 1 scoop (3.5g) with 200–250ml cold water or your preferred beverage. Consume once daily, preferably post-workout or at any convenient time on non-training days.",
     },
     {
       id: "stage-eaa-cola",
