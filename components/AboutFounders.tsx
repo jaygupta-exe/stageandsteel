@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { Trophy, Sunrise, ShieldCheck, Award, Flame, Target, Sparkles, Check, ChevronRight, Zap } from "lucide-react";
+import { Trophy, Sunrise, ShieldCheck, Award, Flame, Target, Sparkles, Check, ChevronRight, Zap, Phone, MessageSquare } from "lucide-react";
 
 export default function AboutFounders() {
   const diveshImages = [
@@ -186,7 +186,7 @@ export default function AboutFounders() {
               </div>
 
               {/* Biography & Story */}
-              <div className="space-y-4 text-xs sm:text-sm font-sans text-[#C4C3BE] leading-relaxed">
+              <div className="space-y-4 text-xs sm:text-sm font-sans text-[#C4C3BE] leading-relaxed mb-6">
                 <p>
                   For <strong className="text-[#F5F5F2] font-semibold">Divesh Mehan</strong>, fitness has never been a hobby—it has been a way of life.
                 </p>
@@ -197,10 +197,40 @@ export default function AboutFounders() {
                   Years of elite competition taught him one fundamental truth: <em className="text-[#F5F5F2] not-italic font-semibold">success is built on consistency, integrity, and quality.</em> That philosophy now forms the cornerstone of Stage &amp; Steel. Every product is engineered to the exact standards of an athlete who lives the demands of peak output and recovery.
                 </p>
               </div>
+
+              {/* Direct Founder Contact Actions */}
+              <div className="p-4 bg-[#0D0D0C] border border-white/10 rounded-xl mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[9px] font-mono text-[#8E8D88] uppercase tracking-widest">
+                    DIRECT ATHLETE LINE:
+                  </span>
+                  <span className="font-mono text-xs font-bold text-[#9DB25E]">
+                    +91 97791 59169
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <a
+                    href="tel:919779159169"
+                    className="py-2.5 px-3 bg-[#222220] hover:bg-[#2C2C29] border border-white/10 text-white rounded-lg text-xs font-editorial font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <Phone className="w-3.5 h-3.5 text-[#9DB25E]" />
+                    <span>CALL</span>
+                  </a>
+                  <a
+                    href="https://wa.me/919779159169?text=Hi%20Divesh,%20I%20have%20an%20inquiry%20regarding%20Stage%20%26%20Steel."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-2.5 px-3 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] rounded-lg text-xs font-editorial font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>WHATSAPP</span>
+                  </a>
+                </div>
+              </div>
             </div>
 
             {/* Quote Footer */}
-            <div className="mt-8 pt-6 border-t border-white/10">
+            <div className="mt-4 pt-6 border-t border-white/10">
               <blockquote className="text-xs sm:text-sm font-editorial italic text-[#F5F5F2] border-l-2 border-[#596238] pl-4">
                 &ldquo;Greatness is not achieved overnight—it is forged through thousands of disciplined days, both inside and outside the gym.&rdquo;
               </blockquote>
@@ -302,7 +332,7 @@ export default function AboutFounders() {
               </div>
 
               {/* Biography & Story */}
-              <div className="space-y-4 text-xs sm:text-sm font-sans text-[#C4C3BE] leading-relaxed">
+              <div className="space-y-4 text-xs sm:text-sm font-sans text-[#C4C3BE] leading-relaxed mb-6">
                 <p>
                   <strong className="text-[#F5F5F2] font-semibold">Ashish Yadav</strong> represents the mindset that true transformation begins long before the world wakes up.
                 </p>
@@ -313,10 +343,40 @@ export default function AboutFounders() {
                   Ashish advocates a lifestyle rooted in mindful nutrition, consistent training, and daily habits that forge both physical strength and mental resilience. To him, fitness is about creating the foundational bedrock for a healthier, more powerful, and meaningful life.
                 </p>
               </div>
+
+              {/* Direct Founder Contact Actions */}
+              <div className="p-4 bg-[#0D0D0C] border border-white/10 rounded-xl mb-6">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-[9px] font-mono text-[#8E8D88] uppercase tracking-widest">
+                    DIRECT ATHLETE LINE:
+                  </span>
+                  <span className="font-mono text-xs font-bold text-[#9DB25E]">
+                    +91 99991 93383
+                  </span>
+                </div>
+                <div className="grid grid-cols-2 gap-2">
+                  <a
+                    href="tel:919999193383"
+                    className="py-2.5 px-3 bg-[#222220] hover:bg-[#2C2C29] border border-white/10 text-white rounded-lg text-xs font-editorial font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <Phone className="w-3.5 h-3.5 text-[#9DB25E]" />
+                    <span>CALL</span>
+                  </a>
+                  <a
+                    href="https://wa.me/919999193383?text=Hi%20Ashish,%20I%20have%20an%20inquiry%20regarding%20Stage%20%26%20Steel."
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="py-2.5 px-3 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] rounded-lg text-xs font-editorial font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all"
+                  >
+                    <MessageSquare className="w-3.5 h-3.5" />
+                    <span>WHATSAPP</span>
+                  </a>
+                </div>
+              </div>
             </div>
 
             {/* Quote Footer */}
-            <div className="mt-8 pt-6 border-t border-white/10">
+            <div className="mt-4 pt-6 border-t border-white/10">
               <blockquote className="text-xs sm:text-sm font-editorial italic text-[#F5F5F2] border-l-2 border-[#596238] pl-4">
                 &ldquo;Discipline is not a restriction—it is the catalyst to unlock the highest version of yourself.&rdquo;
               </blockquote>

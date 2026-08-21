@@ -74,10 +74,10 @@ export default function PowderMegaMenu({
     {
       num: "05",
       title: "CONTACT",
-      href: "#about",
+      href: "#contact",
       category: "SUPPORT & B2B",
       spec: "ATHLETE DESK & WHOLESALE",
-      desc: "Direct support desk and specialized guidance from certified sports nutritionists.",
+      desc: "Direct support desk and specialized guidance from founders & certified sports nutritionists.",
       badge: "24/7 DESK",
     },
   ];

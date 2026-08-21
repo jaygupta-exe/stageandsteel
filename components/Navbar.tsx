@@ -41,6 +41,7 @@ export default function Navbar({ navbarRef }: NavbarProps) {
     { name: "CREATINE", href: "#products" },
     { name: "TRACK ORDER", href: "#track" },
     { name: "ABOUT US", href: "#about" },
+    { name: "CONTACT US", href: "#contact" },
   ];
 
   const handleScoopToggle = () => {

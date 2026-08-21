@@ -2,6 +2,7 @@ import React from "react";
 import HeroSection from "@/components/Hero";
 import ProductCatalog from "@/components/ProductCatalog";
 import AboutFounders from "@/components/AboutFounders";
+import ContactSection from "@/components/ContactSection";
 
 export default function Home() {
   return (
@@ -9,6 +10,7 @@ export default function Home() {
       <HeroSection />
       <ProductCatalog />
       <AboutFounders />
+      <ContactSection />
     </main>
   );
 }
