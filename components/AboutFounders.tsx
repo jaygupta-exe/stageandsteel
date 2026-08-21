@@ -10,6 +10,8 @@ export default function AboutFounders() {
     { src: "/founders/divesh/divesh-2.jpg", label: "NPC & MUSCLEMANIA" },
     { src: "/founders/divesh/divesh-3.jpg", label: "STAGE PERFORMANCE" },
     { src: "/founders/divesh/divesh-4.jpg", label: "DISCIPLINE & CRAFT" },
+    { src: "/founders/divesh/divesh-5.jpg", label: "MUSCLE DENSITY" },
+    { src: "/founders/divesh/divesh-6.jpg", label: "ATHLETE PROTOCOL" },
   ];
 
   const ashishImages = [

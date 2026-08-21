@@ -46,7 +46,7 @@ export default function ProductCatalog() {
   }, []);
 
   const categories = [
-    { id: "ALL", label: "ALL PROTOCOLS", count: "05" },
+    { id: "ALL", label: "ALL PRODUCTS", count: "05" },
     { id: "PROTEIN", label: "PROTEIN MATRIX", count: "03" },
     { id: "CREATINE", label: "CREATINE LAB", count: "01" },
     { id: "EAA", label: "EAA AMINOS", count: "01" },
@@ -88,14 +88,15 @@ export default function ProductCatalog() {
         { name: "Belgian Chocolate", color: "#5C3A21", inStock: true },
       ],
       specs: [
-        { label: "PROTEIN", value: "24", unit: "G" },
-        { label: "BCAAS", value: "5.5", unit: "G" },
-        { label: "ENZYMES", value: "DigeZyme®" },
+        { label: "PROTEIN", value: "25", unit: "G" },
+        { label: "SCOOP", value: "33", unit: "G" },
+        { label: "ENERGY", value: "127.4", unit: "KCAL" },
       ],
       description:
-        "Pure microfiltered Belgian Chocolate whey concentrate delivering 24g ultra-pure protein per scoop with decadent European cocoa. Formulated for rapid bio-availability, accelerated muscular hypertrophy, and optimal recovery.",
+        "Pure microfiltered Belgian Chocolate whey concentrate delivering 25g ultra-pure protein per 33g scoop (127.4 kcal) with decadent European cocoa. Formulated for rapid bio-availability, accelerated muscular hypertrophy, and optimal recovery.",
       nutritionFacts: [
-        { name: "Protein per Scoop", amount: "24g", dailyValue: "48%" },
+        { name: "Protein per Scoop (33g)", amount: "25g", dailyValue: "50%" },
+        { name: "Energy / Calories", amount: "127.4 kcal" },
         { name: "BCAAs (Leucine, Isoleucine, Valine)", amount: "5.5g" },
         { name: "EAAs (Essential Amino Acids)", amount: "11.7g" },
         { name: "Total Carbohydrates", amount: "2.4g" },
@@ -135,22 +136,26 @@ export default function ProductCatalog() {
         { name: "Cafe Mocha", color: "#6F4E37", inStock: true },
       ],
       specs: [
-        { label: "PROTEIN", value: "25", unit: "G" },
-        { label: "SWEETENER", value: "MONK FRUIT" },
-        { label: "SERVINGS", value: "28", unit: "SCOOPS" },
+        { label: "PROTEIN", value: "24.6", unit: "G" },
+        { label: "SCOOP", value: "35", unit: "G" },
+        { label: "ENERGY", value: "124.61", unit: "KCAL" },
       ],
       description:
-        "Artisanal roast Cafe Mocha whey concentrate combining 25g ultra-clean microfiltered protein with authentic coffee aroma. Naturally sweetened with premium Monk Fruit extract for clean bio-availability without sugar spikes.",
+        "Artisanal roast Cafe Mocha whey concentrate combining 24.6g ultra-clean microfiltered protein per 35g scoop (124.61 kcal) with authentic coffee aroma. 28 servings per box. Naturally sweetened with premium Monk Fruit extract for clean bio-availability without sugar spikes.",
       nutritionFacts: [
-        { name: "Protein per Scoop", amount: "25g", dailyValue: "50%" },
+        { name: "Protein per Scoop (35g)", amount: "24.6g", dailyValue: "49%" },
+        { name: "Energy / Calories", amount: "124.61 kcal" },
+        { name: "Servings per Box", amount: "28 Servings" },
+        { name: "Scoop Size", amount: "35g" },
         { name: "BCAAs (Leucine, Isoleucine, Valine)", amount: "5.5g" },
         { name: "EAAs (Essential Amino Acids)", amount: "11.7g" },
         { name: "Total Carbohydrates", amount: "2.2g" },
         { name: "Dietary Fat", amount: "1.4g" },
+        { name: "Sweetener", amount: "Natural Monk Fruit Extract" },
         { name: "DigeZyme® Multi-Enzyme Complex", amount: "100mg" },
       ],
       suggestedUse:
-        "Mix 1 rounded scoop with 200–250ml ice-cold water or milk in a shaker cup. Perfect as a morning kickstarter or high-octane post-workout fuel.",
+        "Mix 1 scoop (35g) with 200–250ml ice-cold water or milk in a shaker cup. Perfect as a morning kickstarter or high-octane post-workout fuel.",
     },
     {
       id: "whey-salted-caramel",
@@ -188,18 +193,19 @@ export default function ProductCatalog() {
       ],
       specs: [
         { label: "PROTEIN", value: "25", unit: "G" },
-        { label: "BCAAS", value: "6.1", unit: "G" },
-        { label: "SERVINGS", value: "30", unit: "SCOOPS" },
+        { label: "SCOOP", value: "33", unit: "G" },
+        { label: "ENERGY", value: "127.4", unit: "KCAL" },
       ],
       description:
-        "Pure microfiltered whey protein blend delivering 25g ultra-clean protein per scoop with 6.1g BCAAs in rich, decadent European Salted Caramel flavor. Fast-digesting formula designed for rapid muscular recovery and accelerated hypertrophy.",
+        "Pure microfiltered whey protein blend delivering 25g ultra-clean protein per 33g scoop (127.4 kcal) with 6.1g BCAAs in rich, decadent European Salted Caramel flavor. Fast-digesting formula designed for rapid muscular recovery and accelerated hypertrophy.",
       nutritionFacts: [
-        { name: "Protein per Scoop (33g)", amount: "25g", dailyValue: "46%" },
+        { name: "Protein per Scoop (33g)", amount: "25g", dailyValue: "50%" },
+        { name: "Energy / Calories", amount: "127.4 kcal" },
+        { name: "Scoop Size", amount: "33g" },
         { name: "BCAAs (Leucine 2.9g, Isoleucine 1.6g, Valine 1.6g)", amount: "6.1g" },
         { name: "Essential Amino Acids (Lysine, Threonine, etc.)", amount: "6.55g" },
         { name: "Total Carbohydrates", amount: "4.0g" },
         { name: "Dietary Fat", amount: "1.8g" },
-        { name: "Energy / Calories", amount: "127.4 kcal" },
         { name: "Potassium / Sodium", amount: "230mg / 150mg" },
       ],
       suggestedUse:
@@ -398,7 +404,7 @@ export default function ProductCatalog() {
 
           <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-[#3A3A35]">
             <span className="w-2 h-2 rounded-full bg-emerald-700 animate-pulse" />
-            <span className="tracking-wider uppercase font-bold">LIVE INVENTORY // ALL PROTOCOLS IN STOCK</span>
+            <span className="tracking-wider uppercase font-bold">LIVE INVENTORY // ALL PRODUCTS IN STOCK</span>
           </div>
         </div>
 
