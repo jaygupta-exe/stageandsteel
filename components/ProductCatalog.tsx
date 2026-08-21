@@ -208,7 +208,7 @@ export default function ProductCatalog() {
       category: "CREATINE LAB",
       price: "₹899",
       originalPrice: "₹1,299",
-      servings: "60 Servings",
+      servings: "85 Servings",
       netWeight: "300G (0.66 LBS)",
       thumbnail: "/creatine-cutout.png",
       gallery: [
@@ -237,7 +237,7 @@ export default function ProductCatalog() {
         { label: "FILLERS", value: "0", unit: "%" },
       ],
       description:
-        "Premium 200 Mesh micronized creatine monohydrate in delicious Orange and Pineapple flavors. Rapidly replenishes intracellular phosphocreatine reserves to fuel explosive ATP output, maximal strength, and cellular volumization.",
+        "Premium 200 Mesh micronized creatine monohydrate in delicious Orange and Pineapple flavors. 85 full servings designed to rapidly replenish intracellular phosphocreatine reserves to fuel explosive ATP output, maximal strength, and cellular volumization.",
       nutritionFacts: [
         { name: "Creatine Monohydrate (Micronized)", amount: "5,000mg" },
         { name: "Purity Rating", amount: "99.9%" },
@@ -246,7 +246,7 @@ export default function ProductCatalog() {
         { name: "Sodium / Additives", amount: "0mg" },
       ],
       suggestedUse:
-        "Mix 1 scoop (5g) with 250ml cold water. Consume daily for optimal cellular phosphocreatine saturation.",
+        "Mix 1 scoop with 250ml cold water. Consume daily for optimal cellular phosphocreatine saturation.",
     },
   ];
 
