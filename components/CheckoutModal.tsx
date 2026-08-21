@@ -514,6 +514,13 @@ export default function CheckoutModal() {
                   </span>
                   <span>POWERED BY CASHFREE PAYMENTS</span>
                 </div>
+
+                <p className="mt-2.5 text-[9px] font-mono text-center text-[#777873] leading-relaxed">
+                  By proceeding, you agree to our{" "}
+                  <a href="/terms-and-conditions" target="_blank" className="text-[#9DB25E] underline hover:text-white">Terms</a>,{" "}
+                  <a href="/shipping-policy" target="_blank" className="text-[#9DB25E] underline hover:text-white">Shipping Policy</a> &amp;{" "}
+                  <a href="/refund-policy" target="_blank" className="text-[#9DB25E] underline hover:text-white">7-Day Refund Policy</a>.
+                </p>
               </div>
             </form>
           </div>

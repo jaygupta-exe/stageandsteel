@@ -35,9 +35,18 @@ function InstagramIcon({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
+import PolicyModal, { PolicyType } from "./PolicyModal";
+
 export default function ContactSection() {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState<string | null>(null);
+  const [isPolicyOpen, setIsPolicyOpen] = useState(false);
+  const [activePolicy, setActivePolicy] = useState<PolicyType>("refund");
+
+  const openPolicy = (policy: PolicyType) => {
+    setActivePolicy(policy);
+    setIsPolicyOpen(true);
+  };
 
   const handleCopy = (text: string, type: "email" | "divesh" | "ashish") => {
     navigator.clipboard.writeText(text);
@@ -289,46 +298,51 @@ export default function ContactSection() {
         </div>
 
         {/* 3. Bottom Minimal Luxury Footer Bar */}
-        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-[#777773]">
+        <div className="mt-16 pt-8 border-t border-white/10 flex flex-col lg:flex-row items-center justify-between gap-6 text-xs font-mono text-[#777773]">
           
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 text-center sm:text-left">
             <span className="font-display text-sm font-black text-[#F5F5F2] tracking-wide">
               STAGE &amp; STEEL LABS
             </span>
             <span>© {new Date().getFullYear()}</span>
             <span>•</span>
-            <span>ALL RIGHTS RESERVED</span>
+            <span>S AND S NUTRITION PARTNERS</span>
           </div>
 
-          <div className="flex items-center gap-6 text-[11px]">
-            <Link
-              href="#products"
-              className="hover:text-[#9DB25E] transition-colors uppercase"
+          {/* Legal & Policy Modals Bar */}
+          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px]">
+            <button
+              type="button"
+              onClick={() => openPolicy("refund")}
+              className="hover:text-[#9DB25E] transition-colors uppercase cursor-pointer"
             >
-              PROTEIN MATRIX
-            </Link>
-            <Link
-              href="#products"
-              className="hover:text-[#9DB25E] transition-colors uppercase"
+              REFUND POLICY
+            </button>
+            <button
+              type="button"
+              onClick={() => openPolicy("shipping")}
+              className="hover:text-[#9DB25E] transition-colors uppercase cursor-pointer"
             >
-              CREATINE LAB
-            </Link>
-            <Link
-              href="#products"
-              className="hover:text-[#9DB25E] transition-colors uppercase"
+              SHIPPING POLICY
+            </button>
+            <button
+              type="button"
+              onClick={() => openPolicy("privacy")}
+              className="hover:text-[#9DB25E] transition-colors uppercase cursor-pointer"
             >
-              EAA AMINOS
-            </Link>
-            <Link
-              href="#about"
-              className="hover:text-[#9DB25E] transition-colors uppercase"
+              PRIVACY POLICY
+            </button>
+            <button
+              type="button"
+              onClick={() => openPolicy("terms")}
+              className="hover:text-[#9DB25E] transition-colors uppercase cursor-pointer"
             >
-              FOUNDERS
-            </Link>
+              TERMS &amp; CONDITIONS
+            </button>
             <button
               type="button"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-              className="hover:text-white transition-colors uppercase cursor-pointer font-bold text-[#9DB25E]"
+              className="hover:text-white transition-colors uppercase cursor-pointer font-bold text-[#9DB25E] pl-2 border-l border-white/10"
             >
               TOP ↑
             </button>
@@ -337,6 +351,13 @@ export default function ContactSection() {
         </div>
 
       </div>
+
+      {/* Interactive Compliance Policy Modal */}
+      <PolicyModal
+        isOpen={isPolicyOpen}
+        onClose={() => setIsPolicyOpen(false)}
+        initialPolicy={activePolicy}
+      />
     </footer>
   );
 }
