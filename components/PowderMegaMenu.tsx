@@ -48,13 +48,22 @@ export default function PowderMegaMenu({
       num: "02",
       title: "CREATINE",
       href: "#products",
-      category: "MICRONIZED CREAPURE®",
-      spec: "5G CALIBRATED SERVING",
-      desc: "100% German Creapure® monohydrate for cell volumization and explosive ATP output.",
+      category: "MICRONIZED CREATINE",
+      spec: "85 SERVINGS // 200 MESH",
+      desc: "100% German micronized monohydrate in Orange & Pineapple flavors for cell volumization and explosive ATP output.",
       badge: "99.9% PURITY",
     },
     {
       num: "03",
+      title: "EAA AMINOS",
+      href: "#products",
+      category: "ESSENTIAL AMINO ACIDS",
+      spec: "6.45G EAAS // 4G BCAAS // COLA",
+      desc: "Full spectrum 9 Essential Amino Acids fortified with crucial hydration electrolytes in refreshing Cola flavor.",
+      badge: "INTRA-WORKOUT",
+    },
+    {
+      num: "04",
       title: "ABOUT US",
       href: "#about",
       category: "MEET THE FOUNDERS",
@@ -63,7 +72,7 @@ export default function PowderMegaMenu({
       badge: "FOUNDERS & VISION",
     },
     {
-      num: "04",
+      num: "05",
       title: "CONTACT",
       href: "#about",
       category: "SUPPORT & B2B",
@@ -156,6 +165,8 @@ export default function PowderMegaMenu({
                       window.dispatchEvent(new CustomEvent("filter-category", { detail: "PROTEIN" }));
                     } else if (item.title === "CREATINE") {
                       window.dispatchEvent(new CustomEvent("filter-category", { detail: "CREATINE" }));
+                    } else if (item.title.includes("EAA")) {
+                      window.dispatchEvent(new CustomEvent("filter-category", { detail: "EAA" }));
                     }
                     onClose();
                   }}

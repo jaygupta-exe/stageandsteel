@@ -30,6 +30,8 @@ export default function ProductCatalog() {
         setActiveCategory("PROTEIN");
       } else if (hash.includes("creatine")) {
         setActiveCategory("CREATINE");
+      } else if (hash.includes("eaa") || hash.includes("amino")) {
+        setActiveCategory("EAA");
       }
     };
 
@@ -44,9 +46,10 @@ export default function ProductCatalog() {
   }, []);
 
   const categories = [
-    { id: "ALL", label: "ALL PROTOCOLS", count: "04" },
+    { id: "ALL", label: "ALL PROTOCOLS", count: "05" },
     { id: "PROTEIN", label: "PROTEIN MATRIX", count: "03" },
     { id: "CREATINE", label: "CREATINE LAB", count: "01" },
+    { id: "EAA", label: "EAA AMINOS", count: "01" },
   ];
 
   const products: ProductData[] = [
@@ -248,6 +251,63 @@ export default function ProductCatalog() {
       suggestedUse:
         "Mix 1 scoop with 250ml cold water. Consume daily for optimal cellular phosphocreatine saturation.",
     },
+    {
+      id: "stage-eaa-cola",
+      name: "STAGE ESSENTIAL AMINO ACIDS (EAA)",
+      subtitle: "FULL SPECTRUM 9 EAAS // ELECTROLYTE HYDRATION",
+      category: "AMINO MATRIX",
+      price: "₹1,199",
+      originalPrice: "₹1,599",
+      servings: "30 Servings",
+      netWeight: "255G (0.56 LBS)",
+      thumbnail: "/eaa-cutout.png",
+      gallery: [
+        {
+          label: "01 FRONT PACKAGING",
+          url: "/eaa/front.png",
+        },
+        {
+          label: "02 AMINO & FACTS",
+          url: "/eaa/nutrition.png",
+        },
+        {
+          label: "03 USAGE & DIRECTIONS",
+          url: "/eaa/usage.png",
+        },
+        {
+          label: "04 3D BOTTLE VIEW",
+          url: "/eaa/trio.png",
+        },
+      ],
+      accentColor: "#8B1E0F",
+      batchCode: "BATCH EAA-2026-COLA",
+      flavors: [
+        { name: "Cola Flavor", color: "#63170D", inStock: true },
+      ],
+      specs: [
+        { label: "EAAS", value: "6.45", unit: "G" },
+        { label: "BCAAS", value: "4000", unit: "MG" },
+        { label: "HYDRATION", value: "ELECTROLYTES" },
+      ],
+      description:
+        "Stage & Steel Premium Grade Essential Amino Acids (EAA) in refreshing Cola Flavor. Scientifically formulated blend of all 9 essential amino acids with crucial electrolytes (Sodium & Potassium) designed to fuel intra-workout endurance, prevent muscle breakdown, and accelerate recovery.",
+      nutritionFacts: [
+        { name: "L-Leucine (Instantized BCAA)", amount: "2,000mg" },
+        { name: "L-Isoleucine (BCAA)", amount: "1,000mg" },
+        { name: "L-Valine (BCAA)", amount: "1,000mg" },
+        { name: "L-Lysine", amount: "950mg" },
+        { name: "L-Threonine", amount: "825mg" },
+        { name: "L-Histidine", amount: "275mg" },
+        { name: "L-Methionine", amount: "150mg" },
+        { name: "L-Phenylalanine", amount: "125mg" },
+        { name: "L-Tryptophan", amount: "125mg" },
+        { name: "Sodium Chloride (Hydration)", amount: "200mg" },
+        { name: "Potassium Chloride (Electrolyte)", amount: "175mg" },
+        { name: "Energy / Sugars", amount: "0.6 kcal / 0g" },
+      ],
+      suggestedUse:
+        "Mix 1 scoop (8.5g) with 200–250ml cold water or your preferred beverage. Consume before, during (intra-workout), or immediately after workout.",
+    },
   ];
 
   const filteredProducts =
@@ -256,6 +316,7 @@ export default function ProductCatalog() {
       : products.filter((p) => {
           if (activeCategory === "PROTEIN") return p.category === "PROTEIN MATRIX";
           if (activeCategory === "CREATINE") return p.category === "CREATINE LAB";
+          if (activeCategory === "EAA") return p.category === "AMINO MATRIX";
           return true;
         });
 
