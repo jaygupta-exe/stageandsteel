@@ -416,7 +416,7 @@ export default function ProductCatalog() {
                 {/* 1. SEAMLESS STUDIO SHOWCASE STAGE */}
                 <div
                   onClick={() => setSelectedProduct(product)}
-                  className="relative w-full h-80 sm:h-96 bg-gradient-to-b from-[#1E1E1C] via-[#171716] to-[#121211] flex flex-col items-center justify-between p-6 cursor-pointer group/stage overflow-hidden border-b border-white/5"
+                  className="relative w-full h-[360px] sm:h-[420px] bg-gradient-to-b from-[#1E1E1C] via-[#171716] to-[#121211] flex flex-col items-center justify-between p-5 sm:p-6 cursor-pointer group/stage overflow-hidden border-b border-white/5"
                 >
                   {/* Studio Ambient Radial Spotlight */}
                   <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_60%,rgba(89,98,56,0.18)_0%,rgba(255,255,255,0.03)_35%,transparent_70%)] pointer-events-none" />
@@ -436,9 +436,9 @@ export default function ProductCatalog() {
                   </div>
 
                   {/* Product Cutout Showcase with Realistic Ground Shadow */}
-                  <div className="relative w-full h-56 sm:h-64 flex items-center justify-center my-auto">
+                  <div className="relative w-full h-64 sm:h-76 flex items-center justify-center my-auto">
                     {/* Pedestal Ground Contact Shadow */}
-                    <div className="absolute bottom-2 w-48 sm:w-56 h-6 bg-black/80 rounded-full blur-md pointer-events-none group-hover/stage:scale-95 transition-transform duration-500" />
+                    <div className="absolute bottom-2 w-52 sm:w-64 h-6 bg-black/80 rounded-full blur-md pointer-events-none group-hover/stage:scale-95 transition-transform duration-500" />
                     
                     {/* Floating Product Image */}
                     <div className="relative w-full h-full flex items-center justify-center transition-all duration-500 ease-out group-hover/stage:scale-108 group-hover/stage:-translate-y-2">
