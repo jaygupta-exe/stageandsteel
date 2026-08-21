@@ -3,6 +3,8 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { soundFX } from "@/lib/sound";
 
+import { Coupon, validateCoupon } from "@/lib/coupons";
+
 export interface CartItem {
   id: string;
   name: string;
@@ -45,6 +47,13 @@ interface CartContextType {
   totalCount: number;
   subtotal: number;
   formattedSubtotal: string;
+  appliedCoupon: Coupon | null;
+  discountAmount: number;
+  finalTotal: number;
+  formattedDiscountAmount: string;
+  formattedFinalTotal: string;
+  applyCoupon: (code: string) => { success: boolean; message: string; discount: number };
+  removeCoupon: () => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -61,13 +70,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+  const [couponCodeStored, setCouponCodeStored] = useState<string>("");
 
-  // Load cart from localStorage
+  // Load cart and coupon from localStorage
   useEffect(() => {
     try {
       const saved = localStorage.getItem("stage_steel_cart");
       if (saved) {
         setItems(JSON.parse(saved));
+      }
+      const savedCoupon = localStorage.getItem("stage_steel_coupon");
+      if (savedCoupon) {
+        setCouponCodeStored(savedCoupon);
       }
     } catch (e) {
       console.warn("Failed to load cart from storage:", e);
@@ -85,6 +100,56 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     }
   }, [items, isLoaded]);
+
+  // Calculate Subtotal
+  const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
+  const subtotal = items.reduce(
+    (sum, item) => sum + item.numericPrice * item.quantity,
+    0
+  );
+  const formattedSubtotal = `₹${subtotal.toLocaleString("en-IN")}`;
+
+  // Recalculate discount whenever subtotal or coupon changes
+  let discountAmount = 0;
+  if (appliedCoupon && subtotal > 0) {
+    const result = validateCoupon(appliedCoupon.code, subtotal);
+    if (result.isValid) {
+      discountAmount = result.discountAmount;
+    }
+  }
+
+  // Restore coupon from storage on initial load once subtotal is known
+  useEffect(() => {
+    if (couponCodeStored && subtotal > 0 && !appliedCoupon) {
+      const result = validateCoupon(couponCodeStored, subtotal);
+      if (result.isValid && result.coupon) {
+        setAppliedCoupon(result.coupon);
+      }
+    }
+  }, [couponCodeStored, subtotal, appliedCoupon]);
+
+  const finalTotal = Math.max(0, subtotal - discountAmount);
+  const formattedDiscountAmount = `₹${discountAmount.toLocaleString("en-IN")}`;
+  const formattedFinalTotal = `₹${finalTotal.toLocaleString("en-IN")}`;
+
+  const applyCoupon = (inputCode: string) => {
+    const result = validateCoupon(inputCode, subtotal);
+    if (result.isValid && result.coupon) {
+      soundFX.playClick();
+      setAppliedCoupon(result.coupon);
+      localStorage.setItem("stage_steel_coupon", result.coupon.code);
+      return { success: true, message: result.message, discount: result.discountAmount };
+    } else {
+      return { success: false, message: result.message, discount: 0 };
+    }
+  };
+
+  const removeCoupon = () => {
+    soundFX.playClick();
+    setAppliedCoupon(null);
+    setCouponCodeStored("");
+    localStorage.removeItem("stage_steel_coupon");
+  };
 
   const openCart = () => setIsCartOpen(true);
   const closeCart = () => setIsCartOpen(false);
@@ -175,14 +240,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const clearCart = () => {
     soundFX.playClick();
     setItems([]);
+    removeCoupon();
   };
-
-  const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);
-  const subtotal = items.reduce(
-    (sum, item) => sum + item.numericPrice * item.quantity,
-    0
-  );
-  const formattedSubtotal = `₹${subtotal.toLocaleString("en-IN")}`;
 
   return (
     <CartContext.Provider
@@ -202,6 +261,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         totalCount,
         subtotal,
         formattedSubtotal,
+        appliedCoupon,
+        discountAmount,
+        finalTotal,
+        formattedDiscountAmount,
+        formattedFinalTotal,
+        applyCoupon,
+        removeCoupon,
       }}
     >
       {children}

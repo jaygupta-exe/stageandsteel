@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { X, Plus, Minus, Trash2, ArrowRight, ShoppingBag, ShieldCheck } from "lucide-react";
+import { X, Plus, Minus, Trash2, ArrowRight, ShoppingBag, ShieldCheck, Tag, Percent, Check, AlertCircle } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
 export default function CartDrawer() {
@@ -13,9 +13,35 @@ export default function CartDrawer() {
     openCheckout,
     updateQuantity,
     removeFromCart,
+    subtotal,
     formattedSubtotal,
+    appliedCoupon,
+    discountAmount,
+    formattedDiscountAmount,
+    formattedFinalTotal,
+    applyCoupon,
+    removeCoupon,
     totalCount,
   } = useCart();
+
+  const [couponInput, setCouponInput] = useState("");
+  const [couponFeedback, setCouponFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+
+  const handleApplyCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!couponInput.trim()) return;
+    const res = applyCoupon(couponInput);
+    if (res.success) {
+      setCouponFeedback({ type: "success", message: res.message });
+      setCouponInput("");
+    } else {
+      setCouponFeedback({ type: "error", message: res.message });
+    }
+    setTimeout(() => setCouponFeedback(null), 4000);
+  };
 
   // Close on Escape key
   useEffect(() => {
@@ -86,7 +112,7 @@ export default function CartDrawer() {
                 PROTOCOL SHAKER EMPTY
               </p>
               <p className="text-xs font-mono max-w-[240px] text-[#8e9089]">
-                Select your pure microfiltered protein or creatine to fuel your discipline.
+                Select your pure microfiltered protein, creatine, or EAA to fuel your discipline.
               </p>
             </div>
           ) : (
@@ -157,30 +183,103 @@ export default function CartDrawer() {
 
         {/* Drawer Footer & Checkout */}
         {items.length > 0 && (
-          <div className="p-5 sm:p-6 border-t border-[#262824] bg-[#121312] space-y-4">
+          <div className="p-5 sm:p-6 border-t border-[#262824] bg-[#121312] space-y-3.5">
             
-            {/* Free Shipping & Authenticity Badge */}
-            <div className="flex items-center justify-between text-[10px] font-mono text-[#8e9089] pb-2 border-b border-[#222420]">
-              <div className="flex items-center gap-1.5 text-[#9DB25E]">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                <span>HPLC 3RD PARTY VERIFIED</span>
-              </div>
-              <span className="text-[#a5a7a0]">FREE EXPRESS DISPATCH</span>
+            {/* Promo Code System */}
+            <div className="space-y-2 pb-2 border-b border-[#222420]">
+              {appliedCoupon ? (
+                <div className="p-2.5 bg-[#596238]/15 border border-[#596238]/40 rounded flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Tag className="w-4 h-4 text-[#9DB25E]" />
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-mono text-xs font-bold text-white tracking-wider">
+                          {appliedCoupon.code}
+                        </span>
+                        <span className="text-[10px] font-mono px-1.5 py-0.2 bg-[#596238] text-white rounded font-semibold">
+                          {appliedCoupon.type === "percentage" ? `${appliedCoupon.value}% OFF` : `₹${appliedCoupon.value} OFF`}
+                        </span>
+                      </div>
+                      <span className="text-[10px] font-mono text-[#9DB25E] block">
+                        Saved {formattedDiscountAmount}
+                      </span>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={removeCoupon}
+                    className="text-[10px] font-mono text-red-400 hover:text-red-300 uppercase px-2 py-1 hover:bg-white/5 rounded transition-colors cursor-pointer"
+                  >
+                    REMOVE
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleApplyCoupon} className="flex gap-2">
+                  <div className="relative flex-1">
+                    <Tag className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#777873]" />
+                    <input
+                      type="text"
+                      placeholder="ENTER PROMO CODE (e.g. LAUNCH10)"
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                      className="w-full pl-8 pr-2.5 py-2 bg-[#1b1c19] border border-[#2e302b] focus:border-[#8FA355] text-white font-mono text-xs placeholder:text-[#666762] focus:outline-hidden uppercase"
+                    />
+                  </div>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-[#262824] hover:bg-[#596238] hover:text-white border border-[#3a3c36] text-[#9DB25E] font-mono text-xs font-bold uppercase transition-all cursor-pointer"
+                  >
+                    APPLY
+                  </button>
+                </form>
+              )}
+
+              {/* Feedback messages */}
+              {couponFeedback && (
+                <div
+                  className={`text-[10px] font-mono flex items-center gap-1.5 ${
+                    couponFeedback.type === "success"
+                      ? "text-emerald-400"
+                      : "text-red-400"
+                  }`}
+                >
+                  {couponFeedback.type === "success" ? (
+                    <Check className="w-3 h-3" />
+                  ) : (
+                    <AlertCircle className="w-3 h-3" />
+                  )}
+                  <span>{couponFeedback.message}</span>
+                </div>
+              )}
             </div>
 
-            {/* Subtotal */}
-            <div className="flex items-baseline justify-between">
-              <div>
-                <span className="text-[10px] font-mono text-[#8c8e88] uppercase tracking-widest block">
-                  SUBTOTAL
+            {/* Price Breakdown */}
+            <div className="space-y-1.5 text-xs font-mono">
+              <div className="flex justify-between text-[#8c8e88]">
+                <span>SUBTOTAL:</span>
+                <span className="text-white">{formattedSubtotal}</span>
+              </div>
+
+              {discountAmount > 0 && (
+                <div className="flex justify-between text-[#9DB25E] font-bold">
+                  <span>DISCOUNT ({appliedCoupon?.code}):</span>
+                  <span>-{formattedDiscountAmount}</span>
+                </div>
+              )}
+
+              <div className="flex justify-between text-[#8c8e88]">
+                <span>DELIVERY:</span>
+                <span className="text-[#9DB25E] font-bold">FREE EXPRESS</span>
+              </div>
+
+              <div className="flex items-baseline justify-between pt-2 border-t border-[#222420]">
+                <span className="text-xs font-mono font-bold text-white uppercase tracking-widest">
+                  TOTAL PAYABLE:
                 </span>
-                <span className="text-[10px] font-mono text-[#666762]">
-                  Taxes & shipping calculated at checkout
+                <span className="font-display text-2xl font-black text-white">
+                  {formattedFinalTotal}
                 </span>
               </div>
-              <span className="font-display text-2xl font-black text-white">
-                {formattedSubtotal}
-              </span>
             </div>
 
             {/* Checkout Button */}

@@ -15,6 +15,9 @@ import {
   User as UserIcon,
   MapPin,
   Lock,
+  Tag,
+  Check,
+  Percent,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
@@ -27,9 +30,35 @@ export default function CheckoutModal() {
     closeCheckout,
     subtotal,
     formattedSubtotal,
+    appliedCoupon,
+    discountAmount,
+    formattedDiscountAmount,
+    finalTotal,
+    formattedFinalTotal,
+    applyCoupon,
+    removeCoupon,
     clearCart,
   } = useCart();
   const { user } = useAuth();
+
+  const [couponInput, setCouponInput] = useState("");
+  const [couponFeedback, setCouponFeedback] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
+
+  const handleApplyCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!couponInput.trim()) return;
+    const res = applyCoupon(couponInput);
+    if (res.success) {
+      setCouponFeedback({ type: "success", message: res.message });
+      setCouponInput("");
+    } else {
+      setCouponFeedback({ type: "error", message: res.message });
+    }
+    setTimeout(() => setCouponFeedback(null), 4000);
+  };
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -130,7 +159,8 @@ export default function CheckoutModal() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          orderAmount: subtotal,
+          orderAmount: finalTotal,
+          couponCode: appliedCoupon?.code || null,
           customerDetails: {
             customerId: user?.uid || `cust_${Date.now()}`,
             name,
@@ -184,7 +214,7 @@ export default function CheckoutModal() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               orderId,
-              amount: subtotal,
+              amount: finalTotal,
               customer: { name, phone, email },
               shippingAddress: { address, city, state: stateName, pincode },
               items,
@@ -200,7 +230,7 @@ export default function CheckoutModal() {
 
         setOrderSuccess({
           orderId,
-          amount: subtotal,
+          amount: finalTotal,
           waybill,
         });
         clearCart();
@@ -317,13 +347,14 @@ export default function CheckoutModal() {
               </div>
             )}
 
-            {/* Order Items Preview */}
-            <div className="p-3.5 bg-[#101110] border border-[#262824] rounded-xs">
-              <div className="flex items-center justify-between text-[11px] font-mono text-[#8c8e88] pb-2 border-b border-[#222420] mb-2.5">
+            {/* Order Items & Coupon Summary */}
+            <div className="p-3.5 bg-[#101110] border border-[#262824] rounded-xs space-y-3">
+              <div className="flex items-center justify-between text-[11px] font-mono text-[#8c8e88] pb-2 border-b border-[#222420]">
                 <span>ORDER SUMMARY ({items.reduce((s, i) => s + i.quantity, 0)} ITEMS)</span>
                 <span className="text-white font-bold">{formattedSubtotal}</span>
               </div>
-              <div className="space-y-2 max-h-28 overflow-y-auto pr-1">
+
+              <div className="space-y-1.5 max-h-24 overflow-y-auto pr-1">
                 {items.map((item) => (
                   <div
                     key={`${item.id}-${item.flavor}`}
@@ -337,6 +368,72 @@ export default function CheckoutModal() {
                     </span>
                   </div>
                 ))}
+              </div>
+
+              {/* Promo Code Input in Checkout */}
+              <div className="pt-2 border-t border-[#222420]">
+                {appliedCoupon ? (
+                  <div className="p-2 bg-[#596238]/20 border border-[#596238]/40 rounded flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Tag className="w-3.5 h-3.5 text-[#9DB25E]" />
+                      <div className="text-xs font-mono">
+                        <span className="font-bold text-white tracking-wide mr-1.5">{appliedCoupon.code}</span>
+                        <span className="text-[#9DB25E]">(-{formattedDiscountAmount})</span>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={removeCoupon}
+                      className="text-[10px] font-mono text-red-400 hover:text-red-300 uppercase cursor-pointer"
+                    >
+                      REMOVE
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Tag className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#666762]" />
+                      <input
+                        type="text"
+                        placeholder="COUPON (e.g. LAUNCH10)"
+                        value={couponInput}
+                        onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                        className="w-full bg-[#0d0e0d] border border-[#2b2d28] focus:border-[#8FA355] text-white text-xs pl-8 pr-2 py-1.5 placeholder:text-[#444541] focus:outline-hidden uppercase font-mono"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleApplyCoupon}
+                      className="px-3 py-1.5 bg-[#232521] hover:bg-[#596238] text-[#9DB25E] hover:text-white border border-[#3a3c36] text-xs font-mono font-bold uppercase transition-all cursor-pointer"
+                    >
+                      APPLY
+                    </button>
+                  </div>
+                )}
+
+                {couponFeedback && (
+                  <p className={`mt-1 text-[10px] font-mono ${couponFeedback.type === "success" ? "text-emerald-400" : "text-red-400"}`}>
+                    {couponFeedback.message}
+                  </p>
+                )}
+              </div>
+
+              {/* Final Totals Breakdown */}
+              <div className="pt-2 border-t border-[#222420] space-y-1 text-xs font-mono">
+                {discountAmount > 0 && (
+                  <div className="flex justify-between text-[#9DB25E] font-bold">
+                    <span>DISCOUNT ({appliedCoupon?.code}):</span>
+                    <span>-{formattedDiscountAmount}</span>
+                  </div>
+                )}
+                <div className="flex justify-between text-[#8c8e88]">
+                  <span>DELIVERY:</span>
+                  <span className="text-[#9DB25E] font-bold">FREE EXPRESS</span>
+                </div>
+                <div className="flex justify-between text-white font-bold pt-1 border-t border-[#222420] text-sm">
+                  <span>TOTAL PAYABLE:</span>
+                  <span className="text-[#9DB25E] text-base">{formattedFinalTotal}</span>
+                </div>
               </div>
             </div>
 
@@ -392,7 +489,7 @@ export default function CheckoutModal() {
                       <input
                         type="email"
                         required
-                        placeholder="athlete@gym.com"
+                        placeholder="alex@athlete.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         className="w-full bg-[#0d0e0d] border border-[#2b2d28] focus:border-[#8FA355] text-white text-xs pl-8 pr-2.5 py-2 placeholder:text-[#444541] focus:outline-hidden"
@@ -404,26 +501,20 @@ export default function CheckoutModal() {
 
               {/* Shipping Address */}
               <div>
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-[10px] font-mono tracking-widest text-[#9DB25E] uppercase font-bold block">
-                    02. EXPRESS SHIPPING DESTINATION
-                  </span>
-                  <div className="flex items-center gap-1 text-[10px] font-mono text-[#8FA355]">
-                    <Truck className="w-3 h-3" />
-                    <span>DELHIVERY SURFACE B2C</span>
-                  </div>
-                </div>
+                <span className="text-[10px] font-mono tracking-widest text-[#9DB25E] uppercase font-bold block mb-2">
+                  02. DISPATCH DESTINATION (DELHIVERY EXPRESS)
+                </span>
                 <div className="space-y-3">
                   <div>
                     <label className="block text-[9px] font-mono tracking-wider text-[#8e9089] uppercase mb-1">
-                      Street Address / House No. *
+                      Street Address / House / Flat No. *
                     </label>
                     <div className="relative">
-                      <MapPin className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#666762]" />
+                      <MapPin className="w-3.5 h-3.5 absolute left-3 top-3 text-[#666762]" />
                       <input
                         type="text"
                         required
-                        placeholder="Flat 402, Steel Residency, Gymkhana Road"
+                        placeholder="House No., Street / Sector / Landmark"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                         className="w-full bg-[#0d0e0d] border border-[#2b2d28] focus:border-[#8FA355] text-white text-xs pl-8 pr-2.5 py-2 placeholder:text-[#444541] focus:outline-hidden"
@@ -431,27 +522,35 @@ export default function CheckoutModal() {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div>
                       <div className="flex items-center justify-between mb-1">
-                        <label className="block text-[9px] font-mono tracking-wider text-[#8e9089] uppercase">
+                        <label className="text-[9px] font-mono tracking-wider text-[#8e9089] uppercase">
                           PIN Code *
                         </label>
-                        {pincodeStatus?.checking && (
-                          <span className="text-[8px] font-mono text-yellow-400">CHECKING...</span>
-                        )}
-                        {pincodeStatus?.serviceable === true && (
-                          <span className="text-[8px] font-mono text-[#9DB25E]">✓ VERIFIED</span>
-                        )}
-                        {pincodeStatus?.serviceable === false && (
-                          <span className="text-[8px] font-mono text-red-400">UNSERVICEABLE</span>
+                        {pincodeStatus && (
+                          <span
+                            className={`text-[9px] font-mono ${
+                              pincodeStatus.checking
+                                ? "text-yellow-400"
+                                : pincodeStatus.serviceable
+                                ? "text-emerald-400"
+                                : "text-red-400"
+                            }`}
+                          >
+                            {pincodeStatus.checking
+                              ? "CHECKING..."
+                              : pincodeStatus.serviceable
+                              ? "✓ EXPRESS SERVICEABLE"
+                              : "✕ UNSERVICEABLE"}
+                          </span>
                         )}
                       </div>
                       <input
                         type="text"
                         required
                         maxLength={6}
-                        placeholder="400001"
+                        placeholder="110001"
                         value={pincode}
                         onChange={(e) => handlePincodeChange(e.target.value)}
                         className="w-full bg-[#0d0e0d] border border-[#2b2d28] focus:border-[#8FA355] text-white text-xs px-2.5 py-2 placeholder:text-[#444541] focus:outline-hidden"
@@ -501,7 +600,7 @@ export default function CheckoutModal() {
                   ) : (
                     <>
                       <Lock className="w-4 h-4" />
-                      <span>PAY {formattedSubtotal} VIA CASHFREE PG</span>
+                      <span>PAY {formattedFinalTotal} VIA CASHFREE PG</span>
                       <ArrowRight className="w-4 h-4" />
                     </>
                   )}

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { orderAmount, customerDetails, items } = body;
+    const { orderAmount, customerDetails, items, couponCode } = body;
 
     const appId = process.env.CASHFREE_APP_ID;
     const secretKey = process.env.CASHFREE_SECRET_KEY;
@@ -58,7 +58,7 @@ export async function POST(req: Request) {
         return_url: `${baseUrl}/api/cashfree/return?order_id={order_id}`,
         notify_url: `${baseUrl}/api/cashfree/webhook`,
       },
-      order_note: `Stage & Steel Order: ${items?.length || 1} items`,
+      order_note: `Stage & Steel Order: ${items?.length || 1} items${couponCode ? ` (Coupon: ${couponCode})` : ""}`,
     };
 
     const response = await fetch(cashfreeBaseUrl, {
