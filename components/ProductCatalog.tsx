@@ -166,43 +166,44 @@ export default function ProductCatalog() {
       gallery: [
         {
           label: "01 FRONT PACKAGING",
-          url: "/whey protein/salted caramel/Whey protein salted.JPG.jpeg",
+          url: "/salted-caramel/front.png",
         },
         {
-          label: "02 NUTRITION FACTS",
-          url: "/whey protein/salted caramel/sakted caramel back.PNG",
+          label: "02 NUTRITION & AMINO PROFILE",
+          url: "/salted-caramel/nutrition.png",
         },
         {
-          label: "03 AMINO & DIRECTIONS",
-          url: "/whey protein/salted caramel/salted caramel back 1.PNG",
+          label: "03 INGREDIENTS & USAGE",
+          url: "/salted-caramel/directions.png",
         },
         {
           label: "04 LAB TEST REPORT (COA)",
           url: "/lab-reports/belgian-salted-caramel-test-report.png",
         },
       ],
-      accentColor: "#596238",
+      accentColor: "#DE8A36",
       batchCode: "BATCH SS-2026-SC",
       flavors: [
         { name: "Salted Caramel", color: "#DE8A36", inStock: true },
       ],
       specs: [
         { label: "PROTEIN", value: "25", unit: "G" },
-        { label: "BCAAS", value: "5.5", unit: "G" },
-        { label: "ENZYMES", value: "DigeZyme®" },
+        { label: "BCAAS", value: "6.1", unit: "G" },
+        { label: "SERVINGS", value: "30", unit: "SCOOPS" },
       ],
       description:
-        "Pure microfiltered whey concentrate delivering 25g protein per scoop, instantized for rapid bio-availability, accelerated muscular hypertrophy, and optimal recovery.",
+        "Pure microfiltered whey protein blend delivering 25g ultra-clean protein per scoop with 6.1g BCAAs in rich, decadent European Salted Caramel flavor. Fast-digesting formula designed for rapid muscular recovery and accelerated hypertrophy.",
       nutritionFacts: [
-        { name: "Protein per Scoop", amount: "25g", dailyValue: "50%" },
-        { name: "BCAAs (Leucine, Isoleucine, Valine)", amount: "5.5g" },
-        { name: "EAAs (Essential Amino Acids)", amount: "11.7g" },
-        { name: "Total Carbohydrates", amount: "2.5g" },
-        { name: "Dietary Fat", amount: "1.4g" },
-        { name: "DigeZyme® Multi-Enzyme Complex", amount: "100mg" },
+        { name: "Protein per Scoop (33g)", amount: "25g", dailyValue: "46%" },
+        { name: "BCAAs (Leucine 2.9g, Isoleucine 1.6g, Valine 1.6g)", amount: "6.1g" },
+        { name: "Essential Amino Acids (Lysine, Threonine, etc.)", amount: "6.55g" },
+        { name: "Total Carbohydrates", amount: "4.0g" },
+        { name: "Dietary Fat", amount: "1.8g" },
+        { name: "Energy / Calories", amount: "127.4 kcal" },
+        { name: "Potassium / Sodium", amount: "230mg / 150mg" },
       ],
       suggestedUse:
-        "Mix 1 rounded scoop (33g) with 200–250ml cold water or skimmed milk in a shaker cup. Consume immediately post-workout or between meals for optimal protein synthesis.",
+        "Mix 1 level scoop (33g) with 200–250ml chilled water or skimmed milk in a shaker cup. Shake vigorously for 30 seconds. Consume immediately post-workout or between meals.",
     },
     {
       id: "creapure-creatine",
