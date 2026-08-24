@@ -123,9 +123,9 @@ export default function ProductModal({
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-2 text-xs font-mono tracking-widest text-[#9DB25E] uppercase font-bold">
               <span className="w-2 h-2 rounded-full bg-[#8FA355] animate-pulse" />
-              <span>STAGE PROTOCOL // {product.batchCode}</span>
+              <span>STAGE &amp; STEEL LAB // {product.batchCode}</span>
             </div>
-            <span className="hidden md:inline-block px-2.5 py-0.5 bg-[#596238]/20 border border-[#596238]/40 text-[10px] font-mono text-[#9DB25E] uppercase rounded">
+            <span className="hidden md:inline-block px-2.5 py-0.5 bg-[#596238]/20 border border-[#596238]/40 text-[10px] font-mono text-[#9DB25E] uppercase rounded font-bold">
               HPLC 3RD-PARTY VERIFIED • 100% PURE
             </span>
           </div>
@@ -375,7 +375,7 @@ export default function ProductModal({
                 <div className="space-y-4 text-xs text-[#D4D3CD] leading-relaxed animate-in fade-in duration-200">
                   <div className="p-3.5 bg-[#0D0D0C] border border-white/10 rounded-lg">
                     <span className="font-mono text-[10px] text-[#9DB25E] uppercase tracking-wider block mb-1 font-bold">
-                      SUGGESTED PROTOCOL:
+                      SUGGESTED USAGE:
                     </span>
                     <p className="text-xs sm:text-sm font-sans text-[#F5F5F2] leading-relaxed">
                       {product.suggestedUse}
@@ -404,22 +404,22 @@ export default function ProductModal({
                         Official analytical laboratory report confirming purity, measured protein content, and 100% label accuracy.
                       </p>
                     </div>
-                    <a
-                      href={product.labReportUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="px-3 py-1.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] border border-[#7C8B4C]/40 font-mono text-[10px] font-bold tracking-wider uppercase rounded transition-colors shrink-0 flex items-center gap-1 shadow-sm"
+                    <button
+                      type="button"
+                      onClick={() => {
+                        window.dispatchEvent(new CustomEvent("open-lab-reports", { detail: product.id.includes("creatine") ? "creapure-creatine-coa" : "whey-matrix-coa" }));
+                      }}
+                      className="px-3 py-1.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] border border-[#7C8B4C]/40 font-mono text-[10px] font-bold tracking-wider uppercase rounded transition-colors shrink-0 flex items-center gap-1 shadow-sm cursor-pointer"
                     >
-                      <span>FULL COA</span>
+                      <span>ZOOM REPORT</span>
                       <ArrowRight className="w-3 h-3" />
-                    </a>
+                    </button>
                   </div>
 
                   <div
                     className="relative w-full h-44 bg-white/5 border border-white/10 rounded-lg overflow-hidden flex items-center justify-center cursor-pointer group"
                     onClick={() => {
-                      const labIdx = product.gallery.findIndex((g) => g.label.includes("LAB TEST") || g.url.includes("lab-reports"));
-                      if (labIdx !== -1) setActiveSlide(labIdx);
+                      window.dispatchEvent(new CustomEvent("open-lab-reports", { detail: product.id.includes("creatine") ? "creapure-creatine-coa" : "whey-matrix-coa" }));
                     }}
                   >
                     <Image
@@ -430,7 +430,7 @@ export default function ProductModal({
                       className="object-contain p-2 group-hover:scale-105 transition-transform"
                     />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-xs font-mono text-[#9DB25E] font-bold">
-                      CLICK TO VIEW IN MAIN VIEWER
+                      CLICK TO ZOOM &amp; PAN REPORT
                     </div>
                   </div>
                 </div>
@@ -443,7 +443,7 @@ export default function ProductModal({
               {/* Price & Quantity */}
               <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-start">
                 <div>
-                  <span className="text-[9px] font-mono text-[#8E8D88] tracking-widest uppercase block">
+                  <span className="text-[9px] font-mono text-[#8E8D88] tracking-widest uppercase block font-bold">
                     PRICE // TAX INCLUDED
                   </span>
                   <div className="flex items-baseline gap-2">
@@ -499,7 +499,7 @@ export default function ProductModal({
                   }}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-editorial text-xs sm:text-sm font-bold tracking-widest uppercase rounded-lg transition-all duration-200 cursor-pointer border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.35)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.55)] active:scale-98"
                 >
-                  <span>ADD TO PROTOCOL</span>
+                  <span>ADD TO CART</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </div>

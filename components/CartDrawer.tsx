@@ -83,11 +83,11 @@ export default function CartDrawer() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[10px] font-mono tracking-widest text-[#75804c] uppercase font-bold">
-                  STAGE & STEEL // PROTOCOL
+                  STAGE & STEEL LAB // CART
                 </span>
               </div>
               <h2 className="text-xl font-editorial font-bold tracking-wide uppercase text-white">
-                YOUR STACK ({totalCount})
+                YOUR CART ({totalCount})
               </h2>
             </div>
           </div>
@@ -109,7 +109,7 @@ export default function CartDrawer() {
                 <ShoppingBag className="w-7 h-7" />
               </div>
               <p className="font-editorial text-lg text-white uppercase tracking-wider mb-1">
-                PROTOCOL SHAKER EMPTY
+                YOUR CART IS EMPTY
               </p>
               <p className="text-xs font-mono max-w-[240px] text-[#8e9089]">
                 Select your pure microfiltered protein, creatine, or EAA to fuel your discipline.

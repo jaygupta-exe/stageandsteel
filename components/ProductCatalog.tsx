@@ -47,9 +47,9 @@ export default function ProductCatalog() {
 
   const categories = [
     { id: "ALL", label: "ALL PRODUCTS", count: "05" },
-    { id: "PROTEIN", label: "PROTEIN MATRIX", count: "03" },
-    { id: "CREATINE", label: "CREATINE LAB", count: "01" },
-    { id: "EAA", label: "EAA AMINOS", count: "01" },
+    { id: "PROTEIN", label: "PROTEIN", count: "03" },
+    { id: "CREATINE", label: "CREATINE", count: "01" },
+    { id: "EAA", label: "EAA", count: "01" },
   ];
 
   const products: ProductData[] = [
@@ -57,7 +57,7 @@ export default function ProductCatalog() {
       id: "whey-belgian-chocolate",
       name: "STAGE WHEY - BELGIAN CHOCOLATE",
       subtitle: "MICROFILTERED 100% PURE WHEY // RICH COCOA",
-      category: "PROTEIN MATRIX",
+      category: "PROTEIN",
       price: "₹3,499",
       originalPrice: "₹4,299",
       servings: "30 Servings",
@@ -110,7 +110,7 @@ export default function ProductCatalog() {
       id: "whey-mocha-protein",
       name: "STAGE WHEY - CAFE MOCHA",
       subtitle: "MICROFILTERED WHEY MATRIX // COFFEE INFUSION",
-      category: "PROTEIN MATRIX",
+      category: "PROTEIN",
       price: "₹2,599",
       originalPrice: "₹4,299",
       servings: "28 Servings",
@@ -161,7 +161,7 @@ export default function ProductCatalog() {
       id: "whey-salted-caramel",
       name: "STAGE WHEY - SALTED CARAMEL",
       subtitle: "MICROFILTERED 100% PURE WHEY MATRIX",
-      category: "PROTEIN MATRIX",
+      category: "PROTEIN",
       price: "₹3,499",
       originalPrice: "₹4,299",
       servings: "30 Servings",
@@ -215,7 +215,7 @@ export default function ProductCatalog() {
       id: "creapure-creatine",
       name: "STAGE CREATINE MONOHYDRATE",
       subtitle: "GERMAN MICRONIZED MONOHYDRATE (200 MESH)",
-      category: "CREATINE LAB",
+      category: "CREATINE",
       price: "₹899",
       originalPrice: "₹1,299",
       servings: "85 Servings",
@@ -297,7 +297,7 @@ export default function ProductCatalog() {
       id: "stage-eaa-cola",
       name: "STAGE ESSENTIAL AMINO ACIDS (EAA)",
       subtitle: "FULL SPECTRUM 9 EAAS // ELECTROLYTE HYDRATION",
-      category: "AMINO MATRIX",
+      category: "EAA",
       price: "₹1,199",
       originalPrice: "₹1,599",
       servings: "30 Servings",
@@ -355,12 +355,7 @@ export default function ProductCatalog() {
   const filteredProducts =
     activeCategory === "ALL"
       ? products
-      : products.filter((p) => {
-          if (activeCategory === "PROTEIN") return p.category === "PROTEIN MATRIX";
-          if (activeCategory === "CREATINE") return p.category === "CREATINE LAB";
-          if (activeCategory === "EAA") return p.category === "AMINO MATRIX";
-          return true;
-        });
+      : products.filter((p) => p.category === activeCategory);
 
   return (
     <section
@@ -373,18 +368,9 @@ export default function ProductCatalog() {
 
       <div className="max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-16 relative z-10">
         
-        {/* Section Header */}
+        {/* Section Header - Clean, Bold & Highly Readable */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-8 pb-10 border-b border-[#151515]/20">
           <div>
-            <div className="flex items-center gap-2.5 mb-3">
-              <span className="w-2.5 h-2.5 bg-[#151515] flex items-center justify-center">
-                <span className="w-1 h-1 bg-[#8FA355]" />
-              </span>
-              <p className="font-mono text-xs sm:text-sm font-bold text-[#151515] tracking-widest uppercase">
-                STAGE PROTOCOL // LAB ROSTER 2026
-              </p>
-            </div>
-
             <h2 className="font-display text-4xl sm:text-6xl lg:text-7xl font-black uppercase text-[#151515] tracking-tight leading-[0.92]">
               FORMULATED UNDER <br />
               <span className="text-[#151515] relative inline-block">
@@ -394,13 +380,13 @@ export default function ProductCatalog() {
             </h2>
           </div>
 
-          <div className="flex flex-col gap-3 max-w-md">
-            <p className="text-xs sm:text-sm font-sans text-[#2B2B28] leading-relaxed font-medium">
-              Pure microfiltered compounds calibrated for athletes who demand zero proprietary blends, measured bio-availability, and absolute stage output.
+          <div className="flex flex-col gap-3 max-w-lg">
+            <p className="text-sm sm:text-base font-sans text-[#151515] leading-relaxed font-semibold">
+              Pure microfiltered compounds calibrated for everyone who demands zero proprietary blends, measured bio-availability, and absolute performance output.
             </p>
-            <div className="flex items-center gap-4 text-[10px] font-mono text-[#444440] uppercase tracking-wider">
-              <span className="flex items-center gap-1.5 font-bold">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#151515]" /> 100% TRANSPARENT LABELS
+            <div className="flex items-center gap-4 text-xs sm:text-sm font-mono text-[#151515] uppercase tracking-wider font-bold">
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-[#596238]" /> 100% TRANSPARENT LABELS
               </span>
               <span>•</span>
               <span>BATCH CERTIFIED</span>
@@ -418,16 +404,16 @@ export default function ProductCatalog() {
                   key={cat.id}
                   type="button"
                   onClick={() => setActiveCategory(cat.id)}
-                  className={`relative px-5 py-2.5 text-xs font-editorial font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-md flex items-center gap-2.5 ${
+                  className={`relative px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-sans font-bold tracking-wide uppercase transition-all duration-200 cursor-pointer rounded-md flex items-center gap-2 ${
                     isActive
                       ? "bg-[#596238] text-[#F4F4F1] shadow-lg border border-[#7C8B4C]/40"
                       : "text-[#151515] hover:text-black hover:bg-[#151515]/10"
                   }`}
                 >
-                  {isActive && <span className="w-1.5 h-1.5 rounded-full bg-[#9DB25E] animate-pulse" />}
+                  {isActive && <span className="w-2 h-2 rounded-full bg-[#9DB25E] animate-pulse" />}
                   <span>{cat.label}</span>
-                  <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded ${
-                    isActive ? "bg-black/20 text-[#F4F4F1]" : "bg-[#151515]/10 text-[#151515]/70"
+                  <span className={`text-xs font-mono px-1.5 py-0.5 rounded font-bold ${
+                    isActive ? "bg-black/20 text-[#F4F4F1]" : "bg-[#151515]/15 text-[#151515]"
                   }`}>
                     {cat.count}
                   </span>
@@ -436,9 +422,9 @@ export default function ProductCatalog() {
             })}
           </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-xs font-mono text-[#3A3A35]">
-            <span className="w-2 h-2 rounded-full bg-emerald-700 animate-pulse" />
-            <span className="tracking-wider uppercase font-bold">LIVE INVENTORY // ALL PRODUCTS IN STOCK</span>
+          <div className="hidden sm:flex items-center gap-2 text-xs sm:text-sm font-mono text-[#20201D] font-bold">
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-700 animate-pulse" />
+            <span className="tracking-wider uppercase">LIVE INVENTORY // ALL PRODUCTS IN STOCK</span>
           </div>
         </div>
 
@@ -516,11 +502,39 @@ export default function ProductCatalog() {
                 {/* 2. TITANIUM SPECS & CONVERSION SUITE */}
                 <div className="p-6 sm:p-8 flex flex-col justify-between flex-1 bg-[#151514]">
                   <div>
-                    {/* Product Name & Subtitle */}
+                    {/* 1. TOP: PROMINENT PRODUCT PRICE ROW (User: "aur price upar ana chahiye baki sb niche") */}
+                    <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
+                      <div>
+                        <span className="text-[10px] font-mono text-[#8E8D88] uppercase tracking-wider block font-bold">
+                          PRODUCT PRICE
+                        </span>
+                        <div className="flex items-baseline gap-2.5 mt-0.5">
+                          <span className="font-sans text-3xl sm:text-4xl font-extrabold text-[#F5F5F2] tracking-tight">
+                            {product.price}
+                          </span>
+                          {product.originalPrice && (
+                            <span className="text-sm font-mono line-through text-[#777773]">
+                              {product.originalPrice}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-end gap-1">
+                        <span className="px-2.5 py-0.5 bg-[#596238]/30 text-[#9DB25E] text-[11px] font-mono font-bold rounded border border-[#596238]/40">
+                          SAVE 19%
+                        </span>
+                        <span className="text-[10px] font-mono text-[#8E8D88] uppercase">
+                          FREE DELIVERY
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Product Name & Subtitle - Clean Sans-Serif Font */}
                     <div className="mb-4">
                       <h3
                         onClick={() => setSelectedProduct(product)}
-                        className="font-display text-2xl sm:text-3xl font-black uppercase text-[#F5F5F2] tracking-tight leading-tight mb-1.5 group-hover:text-[#9DB25E] transition-colors cursor-pointer"
+                        className="font-sans text-xl sm:text-2xl font-bold uppercase text-[#F5F5F2] tracking-tight leading-tight mb-1.5 group-hover:text-[#9DB25E] transition-colors cursor-pointer"
                       >
                         {product.name}
                       </h3>
@@ -529,22 +543,22 @@ export default function ProductCatalog() {
                       </p>
                     </div>
 
-                    {/* Performance Specs Matrix */}
-                    <div className="grid grid-cols-3 gap-2 p-3.5 bg-[#0D0D0C] border border-white/10 rounded-lg mb-6 text-center divide-x divide-white/5 shadow-inner">
+                    {/* Performance Specs Matrix - Clean Readability */}
+                    <div className="grid grid-cols-3 gap-2 p-3.5 bg-[#0D0D0C] border border-white/10 rounded-lg mb-5 text-center divide-x divide-white/5 shadow-inner">
                       {product.specs.map((s, i) => (
                         <div key={i} className="flex flex-col px-1">
-                          <span className="text-[9px] font-mono text-[#8E8D88] uppercase tracking-wider mb-0.5">
+                          <span className="text-[10px] font-mono text-[#8E8D88] uppercase tracking-wider mb-0.5 font-semibold">
                             {s.label}
                           </span>
-                          <span className="text-base sm:text-lg font-display font-black text-[#F5F5F2]">
-                            {s.value} <span className="text-[10px] font-mono text-[#9DB25E] font-bold">{s.unit}</span>
+                          <span className="text-base sm:text-lg font-sans font-bold text-[#F5F5F2]">
+                            {s.value} <span className="text-[11px] font-mono text-[#9DB25E] font-bold">{s.unit}</span>
                           </span>
                         </div>
                       ))}
                     </div>
 
                     {/* Flavor & Guarantee Row */}
-                    <div className="flex items-center justify-between pb-5 border-b border-white/10 text-xs">
+                    <div className="flex items-center justify-between pb-4 border-b border-white/10 text-xs">
                       {product.flavors.length > 1 ? (
                         <div className="flex items-center gap-1.5 flex-wrap">
                           {product.flavors.map((f) => {
@@ -554,7 +568,7 @@ export default function ProductCatalog() {
                                 key={f.name}
                                 type="button"
                                 onClick={() => setSelectedCardFlavors((prev) => ({ ...prev, [product.id]: f.name }))}
-                                className={`px-2.5 py-1 rounded-md text-[11px] font-editorial font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer border ${
+                                className={`px-2.5 py-1 rounded-md text-[11px] font-sans font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer border ${
                                   isSelected
                                     ? "bg-[#596238] border-[#8FA355] text-white shadow-sm"
                                     : "bg-[#1E1E1C] border-white/10 text-[#A8A7A3] hover:text-white hover:border-white/25"
@@ -569,74 +583,55 @@ export default function ProductCatalog() {
                       ) : (
                         <div className="flex items-center gap-2">
                           <span className="w-2.5 h-2.5 rounded-full border border-white/20" style={{ backgroundColor: product.flavors[0]?.color || '#DE8A36' }} />
-                          <span className="font-editorial text-xs font-semibold text-[#D4D3CD]">
+                          <span className="font-sans text-xs font-semibold text-[#D4D3CD]">
                             {product.flavors[0]?.name}
                           </span>
                         </div>
                       )}
                       <button
                         type="button"
-                        onClick={() => setSelectedProduct(product)}
-                        className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-mono text-[#9DB25E] hover:text-white bg-[#596238]/20 hover:bg-[#596238]/35 px-2.5 py-1 rounded border border-[#596238]/40 transition-all cursor-pointer"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.dispatchEvent(new CustomEvent("open-lab-reports", { detail: product.id.includes("creatine") ? "creapure-creatine-coa" : "whey-matrix-coa" }));
+                        }}
+                        className="flex items-center gap-1.5 text-xs font-mono text-[#9DB25E] hover:text-white bg-[#596238]/20 hover:bg-[#596238]/40 px-3 py-1.5 rounded border border-[#596238]/40 transition-all cursor-pointer font-semibold"
                         title="View Official 3rd-Party HPLC Lab Test Report"
                       >
-                        <Check className="w-3.5 h-3.5" />
-                        <span>{product.labReportUrl ? "HPLC REPORT AVAILABLE" : "HPLC VERIFIED"}</span>
+                        <Check className="w-4 h-4" />
+                        <span>{product.labReportUrl ? "VIEW LAB REPORT" : "HPLC VERIFIED"}</span>
                       </button>
                     </div>
                   </div>
 
-                  {/* Pricing & Checkout Action */}
-                  <div className="pt-5 flex items-center justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[9px] font-mono text-[#8E8D88] uppercase tracking-wider block">
-                          PROTOCOL PRICE
-                        </span>
-                        <span className="px-1.5 py-0.2 bg-[#596238]/25 text-[#9DB25E] text-[9px] font-mono font-bold rounded border border-[#596238]/35">
-                          SAVE 19%
-                        </span>
-                      </div>
-                      <div className="flex items-baseline gap-2">
-                        <span className="font-display text-3xl font-black text-[#F5F5F2]">
-                          {product.price}
-                        </span>
-                        {product.originalPrice && (
-                          <span className="text-xs font-mono line-through text-[#777773]">
-                            {product.originalPrice}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                  {/* Bottom Action Suite: View Packaging & ADD TO CART */}
+                  <div className="pt-5 flex items-center justify-between gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setSelectedProduct(product)}
+                      title="View Packaging & Supplement Facts"
+                      className="px-4 py-3.5 bg-[#222220] hover:bg-[#2C2C29] border border-white/10 hover:border-white/20 text-[#F5F5F2] rounded-lg transition-colors cursor-pointer text-xs font-mono font-bold flex items-center gap-2"
+                    >
+                      <Images className="w-4 h-4" />
+                      <span className="hidden sm:inline">PACKAGING</span>
+                    </button>
 
-                    <div className="flex items-center gap-2">
-                      <button
-                        type="button"
-                        onClick={() => setSelectedProduct(product)}
-                        title="View Packaging & Lab Facts"
-                        className="p-3.5 bg-[#222220] hover:bg-[#2C2C29] border border-white/10 hover:border-white/20 text-[#F5F5F2] rounded-lg transition-colors cursor-pointer shadow-sm"
-                      >
-                        <Images className="w-4 h-4" />
-                      </button>
-
-                      <button
-                        type="button"
-                        onClick={() =>
-                          addToCart(
-                            {
-                              ...product,
-                              thumbnail: currentThumbnail,
-                            },
-                            1,
-                            currentSelectedFlavor
-                          )
-                        }
-                        className="px-6 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-editorial text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-lg border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.3)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.5)] hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
-                      >
-                        <span>ADD TO CART</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        addToCart(
+                          {
+                            ...product,
+                            thumbnail: currentThumbnail,
+                          },
+                          1,
+                          currentSelectedFlavor
+                        )
+                      }
+                      className="flex-1 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-sans text-xs sm:text-sm font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-lg border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.3)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.5)] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+                    >
+                      <span>ADD TO CART</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </button>
                   </div>
                 </div>
 

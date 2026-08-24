@@ -11,7 +11,7 @@ export default function AboutFounders() {
     { src: "/founders/divesh/divesh-3.jpg", label: "STAGE PERFORMANCE" },
     { src: "/founders/divesh/divesh-4.jpg", label: "DISCIPLINE & CRAFT" },
     { src: "/founders/divesh/divesh-5.jpg", label: "MUSCLE DENSITY" },
-    { src: "/founders/divesh/divesh-6.jpg", label: "ATHLETE PROTOCOL" },
+    { src: "/founders/divesh/divesh-6.jpg", label: "DAILY TRAINING" },
   ];
 
   const ashishImages = [
@@ -50,7 +50,7 @@ export default function AboutFounders() {
                 <span className="w-1 h-1 bg-[#F4F4F1]" />
               </span>
               <p className="font-mono text-xs sm:text-sm font-bold text-[#9DB25E] tracking-widest uppercase">
-                HERITAGE &amp; LEADERSHIP // STAGE AND STEEL LABS
+                HERITAGE &amp; LEADERSHIP // STAGE AND STEEL LAB
               </p>
             </div>
 
@@ -69,7 +69,7 @@ export default function AboutFounders() {
             </p>
             <div className="flex items-center gap-4 text-[10px] font-mono text-[#8E8D88] uppercase tracking-wider">
               <span className="flex items-center gap-1.5 font-bold text-[#9DB25E]">
-                <ShieldCheck className="w-3.5 h-3.5" /> 100% ATHLETE OWNED
+                <ShieldCheck className="w-3.5 h-3.5" /> 100% FOUNDER OWNED
               </span>
               <span>•</span>
               <span>DECADE+ FIELD TESTED</span>
@@ -93,7 +93,7 @@ export default function AboutFounders() {
               <div className="flex items-center justify-between pb-6 mb-6 border-b border-white/10">
                 <span className="inline-flex items-center gap-2 px-3 py-1 bg-[#596238]/20 border border-[#596238]/40 rounded text-[10px] font-mono font-bold tracking-widest text-[#9DB25E] uppercase">
                   <Trophy className="w-3.5 h-3.5" />
-                  CO-FOUNDER // ELITE ATHLETE
+                  CO-FOUNDER // CHAMPION ATHLETE &amp; FORMULATOR
                 </span>
                 <span className="text-[10px] font-mono text-[#8E8D88] uppercase tracking-widest">
                   16+ YEARS TRAINING
@@ -204,7 +204,7 @@ export default function AboutFounders() {
               <div className="p-4 bg-[#0D0D0C] border border-white/10 rounded-xl mb-6">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-[9px] font-mono text-[#8E8D88] uppercase tracking-widest">
-                    DIRECT ATHLETE LINE:
+                    DIRECT FOUNDER LINE:
                   </span>
                   <span className="font-mono text-xs font-bold text-[#9DB25E]">
                     +91 97791 59169
@@ -350,7 +350,7 @@ export default function AboutFounders() {
               <div className="p-4 bg-[#0D0D0C] border border-white/10 rounded-xl mb-6">
                 <div className="flex items-center justify-between mb-3">
                   <span className="text-[9px] font-mono text-[#8E8D88] uppercase tracking-widest">
-                    DIRECT ATHLETE LINE:
+                    DIRECT FOUNDER LINE:
                   </span>
                   <span className="font-mono text-xs font-bold text-[#9DB25E]">
                     +91 99991 93383

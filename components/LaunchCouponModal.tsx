@@ -130,7 +130,7 @@ export default function LaunchCouponModal() {
           </h2>
           
           <p className="text-xs sm:text-sm font-mono text-[#A8A7A3] uppercase tracking-wider mb-6 max-w-sm">
-            STAGE PROTOCOL ACTIVATION // CLAIM 10% DISCOUNT ON ALL PURE WHEY, CREATINE &amp; EAA AMINOS.
+            EXCLUSIVE LAUNCH OFFER // CLAIM 10% DISCOUNT ON ALL PURE WHEY, CREATINE &amp; EAA AMINOS.
           </p>
 
           {/* Flash Promo Box with Coupon Code */}
@@ -188,7 +188,7 @@ export default function LaunchCouponModal() {
               ) : (
                 <>
                   <Zap className="w-4 h-4 fill-current text-[#9DB25E]" />
-                  <span>CLAIM DISCOUNT &amp; SHOP PROTOCOLS</span>
+                  <span>CLAIM DISCOUNT &amp; SHOP PRODUCTS</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}

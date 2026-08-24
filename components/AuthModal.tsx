@@ -114,12 +114,12 @@ export default function AuthModal() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[10px] font-mono font-bold tracking-widest text-[#75804c] uppercase">
-                STAGE & STEEL LABS // AUTH
+                STAGE & STEEL LAB // AUTH
               </span>
             </div>
             <h2 className="text-2xl font-editorial font-bold tracking-wide uppercase text-white">
               {authMode === "signin" && "ACCESS TERMINAL"}
-              {authMode === "signup" && "CREATE ATHLETE PROFILE"}
+              {authMode === "signup" && "CREATE MEMBER ACCOUNT"}
               {authMode === "forgot" && "RECOVER CREDENTIALS"}
             </h2>
             <p className="text-xs text-[#9c9e99] mt-0.5">
@@ -343,7 +343,7 @@ export default function AuthModal() {
         {/* Footer Security Stamp */}
         <div className="bg-[#121312] px-6 py-3 border-t border-[#292a26] flex items-center justify-between text-[10px] font-mono text-[#777873]">
           <span>ENCRYPTION // TLS 1.3</span>
-          <span>STAGE & STEEL PROTOCOL</span>
+          <span>STAGE & STEEL LAB</span>
         </div>
 
       </div>

@@ -323,11 +323,11 @@ export default function CheckoutModal() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="text-[10px] font-mono font-bold tracking-widest text-[#9DB25E] uppercase">
-                STAGE & STEEL LABS // SECURE CHECKOUT
+                STAGE & STEEL LAB // SECURE CHECKOUT
               </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-editorial font-bold tracking-wide uppercase text-white">
-              {orderSuccess ? "PROTOCOL DISPATCH CONFIRMED" : "DISPATCH TERMINAL & PAYMENT"}
+              {orderSuccess ? "ORDER DISPATCH CONFIRMED" : "DISPATCH TERMINAL & PAYMENT"}
             </h2>
           </div>
 
@@ -533,7 +533,7 @@ export default function CheckoutModal() {
               {/* Personal Details */}
               <div>
                 <span className="text-[10px] font-mono tracking-widest text-[#9DB25E] uppercase font-bold block mb-2">
-                  01. ATHLETE CONTACT DETAILS
+                  01. CUSTOMER CONTACT DETAILS
                 </span>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div>

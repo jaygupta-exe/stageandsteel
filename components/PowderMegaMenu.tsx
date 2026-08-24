@@ -55,7 +55,7 @@ export default function PowderMegaMenu({
     },
     {
       num: "03",
-      title: "EAA AMINOS",
+      title: "EAA",
       href: "#products",
       category: "ESSENTIAL AMINO ACIDS",
       spec: "6.45G EAAS // 4G BCAAS // COLA",
@@ -76,7 +76,7 @@ export default function PowderMegaMenu({
       title: "CONTACT",
       href: "#contact",
       category: "SUPPORT & B2B",
-      spec: "ATHLETE DESK & WHOLESALE",
+      spec: "CUSTOMER DESK & WHOLESALE",
       desc: "Direct support desk and specialized guidance from founders & certified sports nutritionists.",
       badge: "24/7 DESK",
     },
@@ -121,7 +121,7 @@ export default function PowderMegaMenu({
         >
           <span>STAGE</span>
           <Zap className="w-3.5 h-3.5 text-[#596238] fill-current" />
-          <span>STEEL LABS</span>
+          <span>STEEL LAB</span>
         </Link>
 
         {/* Right: Tactical Corner-Brackets CTA Button */}
@@ -221,7 +221,7 @@ export default function PowderMegaMenu({
           <div>
             <div className="flex items-center justify-between pb-4 mb-5 border-b border-[#F4F4F1]/10">
               <span className="text-[10px] font-mono text-[#A8B778] tracking-widest uppercase">
-                FORMULA PROTOCOL // {activeItem.num}
+                PRODUCT SPECIFICATION // {activeItem.num}
               </span>
               <span className="px-2 py-0.5 bg-[#596238]/20 border border-[#596238]/40 text-[9px] font-mono text-[#A8B778]">
                 {activeItem.badge}

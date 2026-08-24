@@ -66,7 +66,7 @@ export default function OrderTrackerModal({ isOpen, onClose }: OrderTrackerModal
                 DELHIVERY B2C LOGISTICS // LIVE RADAR
               </span>
               <h3 className="text-lg font-editorial font-bold uppercase text-white">
-                TRACK PROTOCOL DISPATCH
+                TRACK YOUR SHIPMENT
               </h3>
             </div>
           </div>

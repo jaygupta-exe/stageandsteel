@@ -14,7 +14,7 @@ export const AVAILABLE_COUPONS: Coupon[] = [
     type: "percentage",
     value: 10,
     minOrderAmount: 0,
-    description: "Launch Special: 10% OFF on all Stage & Steel protocols",
+    description: "Launch Special: 10% OFF on all Stage & Steel products",
     isActive: true,
   },
   {
@@ -22,7 +22,7 @@ export const AVAILABLE_COUPONS: Coupon[] = [
     type: "percentage",
     value: 10,
     minOrderAmount: 0,
-    description: "Official 10% Athlete Stack Discount",
+    description: "Official 10% Member Stack Discount",
     isActive: true,
   },
   {

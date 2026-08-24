@@ -67,7 +67,7 @@ export default function ContactSection() {
       cleanPhone: "919999193383",
       type: "ashish" as const,
       avatar: "/founders/ashish/ashish-1.jpg",
-      note: "Mindset, Lifestyle & Athlete Support Desk",
+      note: "Mindset, Lifestyle & Customer Support Desk",
     },
     {
       name: "Divesh Mehan",
@@ -76,7 +76,7 @@ export default function ContactSection() {
       cleanPhone: "919779159169",
       type: "divesh" as const,
       avatar: "/founders/divesh/divesh-1.jpg",
-      note: "Formulation Protocols & Elite Guidance",
+      note: "Product Formulations & Direct Guidance",
     },
   ];
 
@@ -96,7 +96,7 @@ export default function ContactSection() {
                 <span className="w-1 h-1 bg-[#F4F4F1]" />
               </span>
               <p className="font-mono text-xs sm:text-sm font-bold text-[#9DB25E] tracking-widest uppercase">
-                DIRECT CHANNELS // STAGE & STEEL ATHLETE DESK
+                DIRECT CHANNELS // STAGE &amp; STEEL SUPPORT DESK
               </p>
             </div>
 
@@ -111,11 +111,11 @@ export default function ContactSection() {
 
           <div className="flex flex-col gap-3 max-w-md">
             <p className="text-xs sm:text-sm font-sans text-[#C4C3BE] leading-relaxed">
-              Have questions about formulations, your order dispatch, wholesale inquiries, or personalized athletic stack guidance? Reach out directly to our founders.
+              Have questions about formulations, your order dispatch, wholesale inquiries, or personalized product stack guidance? Reach out directly to our founders.
             </p>
             <div className="flex items-center gap-4 text-[10px] font-mono text-[#8E8D88] uppercase tracking-wider">
               <span className="flex items-center gap-1.5 font-bold text-[#9DB25E]">
-                <Clock className="w-3.5 h-3.5" /> 24/7 ATHLETE DESK
+                <Clock className="w-3.5 h-3.5" /> 24/7 CUSTOMER DESK
               </span>
               <span>•</span>
               <span>DIRECT WHATSAPP &amp; CALL</span>

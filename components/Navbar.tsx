@@ -9,6 +9,7 @@ import PowderParticleCanvas from "./PowderParticleCanvas";
 import PowderMegaMenu from "./PowderMegaMenu";
 import OrderTrackerModal from "./OrderTrackerModal";
 import OrderHistoryModal from "./OrderHistoryModal";
+import LabReportsModal from "./LabReportsModal";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
 
@@ -96,9 +97,9 @@ export default function Navbar({ navbarRef }: NavbarProps) {
     <>
       <header
         ref={navbarRef}
-        className="relative w-full border-b border-[#151515]/10 bg-[#A8A7A3]/80 backdrop-blur-xs z-50 shrink-0 opacity-0"
+        className="relative w-full border-b border-[#151515]/10 bg-[#A8A7A3]/85 backdrop-blur-xs z-50 shrink-0 opacity-0"
       >
-        <div className="max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-16 h-20 sm:h-22 lg:h-24 grid grid-cols-3 items-center">
+        <div className="max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-16 h-22 sm:h-24 lg:h-28 grid grid-cols-3 items-center">
           
           {/* 1. Left: Scoop Menu Trigger & Action Buttons */}
           <div className="flex items-center space-x-2.5 sm:space-x-4 justify-start">
@@ -115,7 +116,7 @@ export default function Navbar({ navbarRef }: NavbarProps) {
                 aria-label="Search"
                 className="p-2 text-[#151515] hover:text-[#596238] transition-colors duration-200 focus:outline-hidden hover:scale-105 active:scale-95 cursor-pointer"
               >
-                <Search className="w-4.5 h-4.5 stroke-[1.8]" />
+                <Search className="w-5 h-5 stroke-[1.8]" />
               </button>
 
               {/* User Account / Auth Trigger */}
@@ -135,7 +136,7 @@ export default function Navbar({ navbarRef }: NavbarProps) {
                       className="w-5 h-5 rounded-full ring-1 ring-[#596238] object-cover"
                     />
                   ) : (
-                    <User className="w-4.5 h-4.5 stroke-[1.8]" />
+                    <User className="w-5 h-5 stroke-[1.8]" />
                   )}
                   {user && (
                     <span className="hidden xl:inline-block text-[11px] font-mono font-semibold max-w-[100px] truncate">
@@ -151,11 +152,11 @@ export default function Navbar({ navbarRef }: NavbarProps) {
                       <div className="w-9 h-9 rounded-full bg-[#596238] text-white flex items-center justify-center font-bold text-sm">
                         {user.displayName
                           ? user.displayName.charAt(0).toUpperCase()
-                          : user.email?.charAt(0).toUpperCase() || "A"}
+                          : user.email?.charAt(0).toUpperCase() || "M"}
                       </div>
                       <div className="overflow-hidden">
                         <div className="text-xs font-bold text-white truncate">
-                          {user.displayName || "Athlete Profile"}
+                          {user.displayName || "Member Profile"}
                         </div>
                         <div className="text-[10px] font-mono text-[#8c8e88] truncate">
                           {user.email}
@@ -166,7 +167,7 @@ export default function Navbar({ navbarRef }: NavbarProps) {
                     <div className="py-2 space-y-1">
                       <div className="px-2 py-1.5 text-[10px] font-mono text-[#75804c] flex items-center gap-1.5 uppercase">
                         <ShieldCheck className="w-3.5 h-3.5" />
-                        <span>AUTHENTICATED ATHLETE</span>
+                        <span>AUTHENTICATED MEMBER</span>
                       </div>
 
                       <button
@@ -205,7 +206,7 @@ export default function Navbar({ navbarRef }: NavbarProps) {
                 onClick={toggleCart}
                 className="p-2 text-[#151515] hover:text-[#596238] transition-colors duration-200 relative focus:outline-hidden hover:scale-105 active:scale-95 cursor-pointer flex items-center"
               >
-                <ShoppingBag className="w-4.5 h-4.5 stroke-[1.8]" />
+                <ShoppingBag className="w-5 h-5 stroke-[1.8]" />
                 {totalCount > 0 && (
                   <span className="absolute -top-1 -right-1 min-w-4.5 h-4.5 px-1 bg-[#596238] text-white text-[9px] font-mono font-bold rounded-full flex items-center justify-center ring-2 ring-[#A8A7A3] shadow-sm animate-in zoom-in">
                     {totalCount}
@@ -215,14 +216,14 @@ export default function Navbar({ navbarRef }: NavbarProps) {
             </div>
           </div>
 
-          {/* 2. Center: Brand Logo Centered */}
+          {/* 2. Center: Brand Logo Centered - Noticeably Bigger */}
           <div className="flex items-center justify-center">
             <Link
               href="/"
               onClick={handleLogoClick}
               className="group flex items-center justify-center gap-2.5 focus:outline-hidden cursor-pointer"
             >
-              <div className="relative h-14 sm:h-16 md:h-18 lg:h-20 w-48 sm:w-60 md:w-72 lg:w-80">
+              <div className="relative h-16 sm:h-20 md:h-24 lg:h-26 w-56 sm:w-72 md:w-80 lg:w-96">
                 <Image
                   src="/logo stage and steel.png"
                   alt="Stage & Steel Logo"
@@ -232,8 +233,8 @@ export default function Navbar({ navbarRef }: NavbarProps) {
                   className="object-contain object-center filter drop-shadow-xs transition-transform duration-200 group-hover:scale-105"
                 />
               </div>
-              <span className="hidden xl:inline-block text-[10px] font-mono tracking-widest text-[#777773] border-l border-[#151515]/20 pl-2 uppercase font-bold group-hover:text-[#151515] transition-colors">
-                LABS &reg;
+              <span className="hidden xl:inline-block text-[11px] font-mono tracking-widest text-[#555550] border-l border-[#151515]/20 pl-2 uppercase font-bold group-hover:text-[#151515] transition-colors">
+                LAB &reg;
               </span>
             </Link>
           </div>
@@ -299,6 +300,9 @@ export default function Navbar({ navbarRef }: NavbarProps) {
         isOpen={isOrderHistoryOpen}
         onClose={() => setIsOrderHistoryOpen(false)}
       />
+
+      {/* Official 3rd-Party HPLC Lab Test Reports Zoom Modal */}
+      <LabReportsModal />
     </>
   );
 }

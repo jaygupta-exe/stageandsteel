@@ -31,6 +31,8 @@ export default function HeroSection() {
   const wheyFloatRef = useRef<HTMLDivElement | null>(null);
   const creatineRef = useRef<HTMLDivElement | null>(null);
   const creatineFloatRef = useRef<HTMLDivElement | null>(null);
+  const eaaRef = useRef<HTMLDivElement | null>(null);
+  const eaaFloatRef = useRef<HTMLDivElement | null>(null);
 
   // Parallax Refs
   const parallaxHeadlineRef = useRef<HTMLDivElement | null>(null);
@@ -61,6 +63,7 @@ export default function HeroSection() {
             circleRef.current,
             wheyRef.current,
             creatineRef.current,
+            eaaRef.current,
             featureStripRef.current,
           ],
           { opacity: 1, y: 0, x: 0, scale: 1 }
@@ -144,13 +147,23 @@ export default function HeroSection() {
         );
       }
 
-      // Creatine Jar
+      // Creatine Jar (Left)
       if (creatineRef.current) {
         tl.fromTo(
           creatineRef.current,
           { opacity: 0, y: 25, scale: 0.92 },
           { opacity: 1, y: 0, scale: 1, duration: 0.75, ease: "power3.out" },
           0.7
+        );
+      }
+
+      // EAA Jar (Right)
+      if (eaaRef.current) {
+        tl.fromTo(
+          eaaRef.current,
+          { opacity: 0, y: 25, scale: 0.92 },
+          { opacity: 1, y: 0, scale: 1, duration: 0.75, ease: "power3.out" },
+          0.76
         );
       }
 
@@ -215,6 +228,18 @@ export default function HeroSection() {
             yoyo: true,
             ease: "sine.inOut",
             delay: 0.4,
+          });
+        }
+
+        // EAA floating (subtle offset float)
+        if (eaaFloatRef.current) {
+          gsap.to(eaaFloatRef.current, {
+            y: -6,
+            duration: 2.3,
+            repeat: -1,
+            yoyo: true,
+            ease: "sine.inOut",
+            delay: 0.7,
           });
         }
       }
@@ -284,13 +309,13 @@ export default function HeroSection() {
   return (
     <div
       ref={containerRef}
-      className="min-h-screen lg:h-screen lg:max-h-screen flex flex-col justify-between bg-[#A8A7A3] text-[#151515] relative selection:bg-[#596238] selection:text-[#F4F4F1] overflow-x-hidden"
+      className="min-h-[100dvh] flex flex-col justify-between bg-[#A8A7A3] text-[#151515] relative selection:bg-[#596238] selection:text-[#F4F4F1] overflow-x-hidden"
     >
       {/* 1. TOP NAVBAR */}
       <Navbar navbarRef={navbarRef} />
 
       {/* 2. HERO MAIN SECTION */}
-      <section className="relative w-full flex-1 flex flex-col justify-center overflow-hidden bg-[#A8A7A3] py-4 lg:py-6">
+      <section className="relative w-full flex-1 flex flex-col justify-center overflow-hidden bg-[#A8A7A3] py-4 sm:py-6 lg:py-8">
         
         {/* Background Micro Grain */}
         <div
@@ -302,7 +327,7 @@ export default function HeroSection() {
         <AmbientDust />
 
         {/* Main Hero Container - Spacious 2-Column Luxury Layout */}
-        <div className="relative z-10 w-full max-w-[1720px] mx-auto px-6 sm:px-10 lg:px-16 my-auto">
+        <div className="relative z-10 w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-16 my-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
             
             {/* ========================================================================= */}
@@ -312,41 +337,33 @@ export default function HeroSection() {
               ref={parallaxHeadlineRef}
               className="order-2 lg:order-1 lg:col-span-6 xl:col-span-6 flex flex-col justify-center z-20 will-change-transform"
             >
-              {/* Category Sub-Tag & Continuous Flashing Promo Badge */}
+              {/* Category Sub-Tag & Continuous Readable Promo Badge */}
               <div
                 ref={subtagRef}
                 className="flex flex-wrap items-center gap-2.5 mb-3 sm:mb-4 opacity-0 will-change-transform"
               >
-                <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-[#151515] text-[#F4F4F1] border border-[#596238]/40 shadow-xs">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#596238] animate-ping" />
-                  <span className="text-[10px] font-mono font-bold tracking-widest text-[#A8B778] uppercase">
-                    STAGE PROTOCOL // 2026
-                  </span>
-                </div>
-
-                {/* Continuous Flashing Promo Modal Trigger */}
+                {/* Continuous Steady & High-Contrast Promo Modal Trigger */}
                 <button
                   type="button"
                   onClick={() => {
                     soundFX.playClick();
                     window.dispatchEvent(new CustomEvent("open-launch-promo"));
                   }}
-                  className="group inline-flex items-center gap-2 px-3 py-1 bg-[#141413] hover:bg-[#1E1E1C] border border-[#8FA355] text-[#9DB25E] rounded-full text-[10px] font-mono font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(143,163,85,0.4)] hover:shadow-[0_0_25px_rgba(143,163,85,0.7)] animate-pulse"
+                  className="group inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#141413] hover:bg-[#1E1E1C] border border-[#8FA355] text-[#9DB25E] rounded-full text-xs font-mono font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(143,163,85,0.3)] hover:shadow-[0_0_25px_rgba(143,163,85,0.6)] hover:scale-[1.02]"
                 >
                   <span className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#9DB25E] opacity-75" />
                     <span className="relative inline-flex rounded-full h-2 w-2 bg-[#8FA355]" />
                   </span>
-                  <span className="flex items-center gap-1">
-                    <Zap className="w-3 h-3 text-[#9DB25E] fill-current" />
-                    <span>FLASH CODE: <span className="text-[#F4F4F1] bg-[#596238] px-1 py-0.2 rounded font-mono">LAUNCH10</span> (10% OFF)</span>
+                  <span className="flex items-center gap-1.5">
+                    <Zap className="w-3.5 h-3.5 text-[#9DB25E] fill-current" />
+                    <span>FLASH CODE: <span className="text-[#F4F4F1] bg-[#596238] px-1.5 py-0.5 rounded font-mono font-bold">LAUNCH10</span> (10% OFF)</span>
                   </span>
-                  <ArrowRight className="w-3 h-3 text-[#9DB25E] group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#9DB25E] group-hover:translate-x-1 transition-transform" />
                 </button>
               </div>
 
               {/* Commanding Huge Headline */}
-              <h1 className="condensed-title text-[56px] sm:text-[80px] md:text-[96px] lg:text-[90px] xl:text-[112px] 2xl:text-[128px] font-black uppercase select-none leading-[0.84] tracking-tight">
+              <h1 className="condensed-title text-[56px] sm:text-[80px] md:text-[96px] lg:text-[86px] xl:text-[108px] 2xl:text-[124px] font-black uppercase select-none leading-[0.84] tracking-tight">
                 <span className="block overflow-hidden">
                   <span
                     ref={line1Ref}
@@ -373,56 +390,57 @@ export default function HeroSection() {
                 </span>
               </h1>
 
-              {/* Sub-headline / Brand Philosophy */}
-              <div ref={descRef} className="mt-3.5 sm:mt-5 max-w-lg opacity-0 will-change-transform">
-                <div className="flex items-center gap-2 mb-1.5">
-                  <span className="w-2.5 h-[2px] bg-[#596238]" />
-                  <p className="font-editorial text-xs sm:text-sm font-bold text-[#151515] tracking-wider uppercase leading-snug">
-                    ENGINEERED FOR STAGE. BUILT ON DISCIPLINE.
+              {/* Sub-headline / Brand Philosophy - Enriched Font Size & Contrast */}
+              <div ref={descRef} className="mt-3.5 sm:mt-5 max-w-xl opacity-0 will-change-transform">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="w-3 h-[2px] bg-[#596238]" />
+                  <p className="font-editorial text-sm sm:text-base font-bold text-[#151515] tracking-wider uppercase leading-snug">
+                    ENGINEERED FOR EVERYONE.
                   </p>
                 </div>
-                <p className="mt-1 text-xs sm:text-sm font-sans text-[#151515]/80 leading-relaxed max-w-md">
-                  Pure microfiltered whey concentrate delivering 25g protein per scoop and German Creapure® creatine engineered for athletes who demand uncompromising bioavailability and measured output.
+                <p className="mt-1 text-sm sm:text-base font-sans text-[#151515] font-medium leading-relaxed max-w-lg">
+                  Pure microfiltered whey concentrate delivering 25g protein per scoop and German Creapure® creatine engineered for everyone who demands uncompromising bioavailability, pure quality, and measured output.
                 </p>
               </div>
 
               {/* Action Buttons */}
               <div
                 ref={ctaGroupRef}
-                className="mt-6 flex flex-wrap items-center gap-3.5 opacity-0 will-change-transform"
+                className="mt-6 sm:mt-7 flex flex-wrap items-center gap-3.5 opacity-0 will-change-transform"
               >
                 <Link
                   href="#products"
-                  className="group relative inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 bg-[#151515] text-[#F4F4F1] font-editorial text-xs sm:text-sm font-bold tracking-widest uppercase hover:bg-[#596238] hover:translate-x-1 transition-all duration-200 shadow-lg focus:outline-hidden"
+                  className="group relative inline-flex items-center gap-2.5 px-7 sm:px-9 py-4 bg-[#151515] text-[#F4F4F1] font-editorial text-sm sm:text-base font-bold tracking-widest uppercase hover:bg-[#596238] hover:translate-x-1 transition-all duration-200 shadow-xl focus:outline-hidden rounded-xs"
                 >
                   <span className="transition-transform duration-200">SHOP SUPPLEMENTS</span>
-                  <ArrowRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" />
+                  <ArrowRight className="w-4.5 h-4.5 transition-transform duration-200 group-hover:translate-x-1" />
                 </Link>
 
-                <Link
-                  href="#products"
+                <button
+                  type="button"
                   onClick={() => {
-                    window.dispatchEvent(new CustomEvent("filter-category", { detail: "ALL" }));
+                    soundFX.playClick();
+                    window.dispatchEvent(new CustomEvent("open-lab-reports"));
                   }}
-                  className="group relative inline-flex items-center gap-2 px-6 py-3.5 border border-[#151515] bg-[#A8A7A3]/30 hover:bg-[#151515] text-[#151515] hover:text-[#F4F4F1] font-editorial text-xs sm:text-sm font-bold tracking-widest uppercase transition-all duration-200 focus:outline-hidden"
+                  className="group relative inline-flex items-center gap-2 px-7 sm:px-8 py-4 border-2 border-[#151515] bg-[#A8A7A3]/40 hover:bg-[#151515] text-[#151515] hover:text-[#F4F4F1] font-editorial text-sm sm:text-base font-bold tracking-widest uppercase transition-all duration-200 focus:outline-hidden cursor-pointer rounded-xs"
                 >
                   <span>LAB RESULTS</span>
-                  <ArrowUpRight className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                </Link>
+                  <ArrowUpRight className="w-4.5 h-4.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                </button>
               </div>
 
-              {/* Technical Footnote Telemetry */}
+              {/* Technical Footnote Telemetry - Enhanced Readability */}
               <div
                 ref={footnoteRef}
-                className="mt-5 pt-3 border-t border-[#151515]/15 flex flex-wrap items-center gap-3 text-[10px] sm:text-[11px] font-mono text-[#555550] uppercase tracking-wider opacity-0 will-change-transform"
+                className="mt-6 pt-3.5 border-t border-[#151515]/20 flex flex-wrap items-center gap-3 text-xs sm:text-sm font-mono text-[#252522] font-semibold uppercase tracking-wider opacity-0 will-change-transform"
               >
                 <span className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#596238]" />
+                  <span className="w-2 h-2 rounded-full bg-[#596238]" />
                   BATCH: SS-2026-X
                 </span>
-                <span className="text-[#151515]/20">•</span>
+                <span className="text-[#151515]/30">•</span>
                 <span>100% DOPING FREE</span>
-                <span className="text-[#151515]/20">•</span>
+                <span className="text-[#151515]/30">•</span>
                 <span>ZERO PROPRIETARY BLENDS</span>
               </div>
             </div>
@@ -441,6 +459,8 @@ export default function HeroSection() {
                 wheyFloatRef={wheyFloatRef}
                 creatineRef={creatineRef}
                 creatineFloatRef={creatineFloatRef}
+                eaaRef={eaaRef}
+                eaaFloatRef={eaaFloatRef}
               />
             </div>
 

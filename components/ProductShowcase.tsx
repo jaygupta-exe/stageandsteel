@@ -11,6 +11,8 @@ interface ProductShowcaseProps {
   wheyFloatRef?: React.RefObject<HTMLDivElement | null>;
   creatineRef?: React.RefObject<HTMLDivElement | null>;
   creatineFloatRef?: React.RefObject<HTMLDivElement | null>;
+  eaaRef?: React.RefObject<HTMLDivElement | null>;
+  eaaFloatRef?: React.RefObject<HTMLDivElement | null>;
   parallaxRef?: React.RefObject<HTMLDivElement | null>;
 }
 
@@ -21,6 +23,8 @@ export default function ProductShowcase({
   wheyFloatRef,
   creatineRef,
   creatineFloatRef,
+  eaaRef,
+  eaaFloatRef,
   parallaxRef,
 }: ProductShowcaseProps) {
   const container3DRef = useRef<HTMLDivElement | null>(null);
@@ -103,19 +107,20 @@ export default function ProductShowcase({
         </div>
       </div>
 
-      {/* 2. 3D Interactive Products Composition Stage with Preserved 3D Depth */}
+      {/* 2. 3D Interactive Products Composition Stage with Preserved 3D Depth (Trio: Creatine, Whey, EAA) */}
       <div
         ref={card3DRef}
-        className="relative z-10 w-full max-w-[360px] sm:max-w-[440px] lg:max-w-[500px] h-[300px] sm:h-[400px] lg:h-[460px] xl:h-[520px] flex items-center justify-center [transform-style:preserve-3d] will-change-transform"
+        className="relative z-10 w-full max-w-[400px] sm:max-w-[480px] lg:max-w-[540px] h-[300px] sm:h-[400px] lg:h-[460px] xl:h-[520px] flex items-center justify-center [transform-style:preserve-3d] will-change-transform"
       >
-        {/* Realistic Ambient Studio Ground Shadows */}
-        <div className="absolute bottom-2 sm:bottom-4 w-[80%] h-7 contact-shadow rounded-full blur-md opacity-90 pointer-events-none [transform:translateZ(0px)]" />
-        <div className="absolute bottom-1 left-4 sm:left-6 w-[40%] h-5 contact-shadow rounded-full blur-sm opacity-95 pointer-events-none [transform:translateZ(0px)]" />
+        {/* Realistic Ambient Studio Ground Shadows for All 3 Products */}
+        <div className="absolute bottom-2 sm:bottom-4 w-[85%] h-7 contact-shadow rounded-full blur-md opacity-90 pointer-events-none [transform:translateZ(0px)]" />
+        <div className="absolute bottom-1 left-3 sm:left-4 w-[35%] h-5 contact-shadow rounded-full blur-sm opacity-95 pointer-events-none [transform:translateZ(0px)]" />
+        <div className="absolute bottom-1 right-3 sm:right-4 w-[35%] h-5 contact-shadow rounded-full blur-sm opacity-95 pointer-events-none [transform:translateZ(0px)]" />
 
-        {/* MAIN PRODUCT: Stage & Steel Whey Protein Tub (Center / Dominant) */}
+        {/* 1. CENTER PRODUCT: Stage & Steel Whey Protein Tub (Dominant) */}
         <div
           ref={wheyRef}
-          className="relative z-20 w-[190px] sm:w-[260px] lg:w-[300px] xl:w-[340px] opacity-0 will-change-transform [transform:translateZ(35px)]"
+          className="relative z-20 w-[170px] sm:w-[230px] lg:w-[265px] xl:w-[300px] opacity-0 will-change-transform [transform:translateZ(30px)]"
         >
           <div
             ref={wheyFloatRef}
@@ -127,16 +132,16 @@ export default function ProductShowcase({
               fill
               priority
               unoptimized
-              sizes="(max-width: 640px) 190px, (max-width: 1024px) 260px, 340px"
+              sizes="(max-width: 640px) 170px, (max-width: 1024px) 230px, 300px"
               className="object-contain filter drop-shadow-[0_25px_35px_rgba(0,0,0,0.45)] pointer-events-none select-none"
             />
           </div>
         </div>
 
-        {/* SECONDARY PRODUCT: Stage & Steel Creatine Monohydrate (Foreground Layer with higher 3D pop) */}
+        {/* 2. LEFT PRODUCT: Stage & Steel Creatine Monohydrate */}
         <div
           ref={creatineRef}
-          className="absolute z-30 bottom-2 -left-2 sm:bottom-3 sm:left-2 lg:-left-2 xl:-left-4 w-[110px] sm:w-[145px] lg:w-[170px] xl:w-[190px] opacity-0 will-change-transform [transform:translateZ(70px)]"
+          className="absolute z-30 bottom-2 -left-3 sm:bottom-3 sm:-left-4 lg:-left-6 xl:-left-8 w-[100px] sm:w-[135px] lg:w-[155px] xl:w-[175px] opacity-0 will-change-transform [transform:translateZ(65px)]"
         >
           <div
             ref={creatineFloatRef}
@@ -148,7 +153,28 @@ export default function ProductShowcase({
               fill
               priority
               unoptimized
-              sizes="(max-width: 640px) 110px, (max-width: 1024px) 145px, 190px"
+              sizes="(max-width: 640px) 100px, (max-width: 1024px) 135px, 175px"
+              className="object-contain filter drop-shadow-[0_18px_25px_rgba(0,0,0,0.4)] pointer-events-none select-none"
+            />
+          </div>
+        </div>
+
+        {/* 3. RIGHT PRODUCT: Stage & Steel Essential Amino Acids (EAA) */}
+        <div
+          ref={eaaRef}
+          className="absolute z-30 bottom-2 -right-3 sm:bottom-3 sm:-right-4 lg:-right-6 xl:-right-8 w-[100px] sm:w-[135px] lg:w-[155px] xl:w-[175px] opacity-0 will-change-transform [transform:translateZ(60px)]"
+        >
+          <div
+            ref={eaaFloatRef}
+            className="relative aspect-[1500/2100] w-full will-change-transform"
+          >
+            <Image
+              src="/eaa-cutout.png"
+              alt="Stage & Steel Essential Amino Acids (EAA) - Cola 255g"
+              fill
+              priority
+              unoptimized
+              sizes="(max-width: 640px) 100px, (max-width: 1024px) 135px, 175px"
               className="object-contain filter drop-shadow-[0_18px_25px_rgba(0,0,0,0.4)] pointer-events-none select-none"
             />
           </div>
