@@ -21,7 +21,9 @@ export interface ProductData {
   servings: string;
   netWeight: string;
   thumbnail: string;
+  flavorThumbnails?: Record<string, string>;
   gallery: ProductImageSlide[];
+  flavorGalleries?: Record<string, ProductImageSlide[]>;
   accentColor: string;
   batchCode: string;
   flavors: { name: string; color: string; inStock: boolean }[];
@@ -36,12 +38,14 @@ interface ProductModalProps {
   isOpen: boolean;
   onClose: () => void;
   product: ProductData | null;
+  initialFlavor?: string;
 }
 
 export default function ProductModal({
   isOpen,
   onClose,
   product,
+  initialFlavor,
 }: ProductModalProps) {
   const { addToCart } = useCart();
   const [activeSlide, setActiveSlide] = useState<number>(0);
@@ -53,27 +57,31 @@ export default function ProductModal({
     if (product) {
       setActiveSlide(0);
       setQuantity(1);
-      if (product.flavors.length > 0) {
+      if (initialFlavor && product.flavors.some((f) => f.name.toLowerCase() === initialFlavor.toLowerCase())) {
+        const matched = product.flavors.find((f) => f.name.toLowerCase() === initialFlavor.toLowerCase());
+        setSelectedFlavor(matched?.name || product.flavors[0]?.name || "");
+      } else if (product.flavors.length > 0) {
         setSelectedFlavor(product.flavors[0].name);
       }
     }
-  }, [product]);
+  }, [product, initialFlavor]);
 
   // Handle keyboard navigation and Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
+      const currentGallery = product?.flavorGalleries?.[selectedFlavor] || product?.gallery || [];
       if (e.key === "ArrowLeft") {
         setActiveSlide((prev) =>
-          product && product.gallery.length > 0
-            ? (prev - 1 + product.gallery.length) % product.gallery.length
+          currentGallery.length > 0
+            ? (prev - 1 + currentGallery.length) % currentGallery.length
             : 0
         );
       }
       if (e.key === "ArrowRight") {
         setActiveSlide((prev) =>
-          product && product.gallery.length > 0
-            ? (prev + 1) % product.gallery.length
+          currentGallery.length > 0
+            ? (prev + 1) % currentGallery.length
             : 0
         );
       }
@@ -86,20 +94,22 @@ export default function ProductModal({
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "unset";
     };
-  }, [isOpen, onClose, product]);
+  }, [isOpen, onClose, product, selectedFlavor]);
 
   if (!isOpen || !product) return null;
 
-  const currentSlide = product.gallery[activeSlide] || product.gallery[0];
+  const currentGallery =
+    (selectedFlavor && product.flavorGalleries?.[selectedFlavor]) || product.gallery;
+  const currentSlide = currentGallery[activeSlide] || currentGallery[0];
 
   const handlePrev = () => {
     setActiveSlide((prev) =>
-      (prev - 1 + product.gallery.length) % product.gallery.length
+      (prev - 1 + currentGallery.length) % currentGallery.length
     );
   };
 
   const handleNext = () => {
-    setActiveSlide((prev) => (prev + 1) % product.gallery.length);
+    setActiveSlide((prev) => (prev + 1) % currentGallery.length);
   };
 
   return (
@@ -139,7 +149,7 @@ export default function ProductModal({
             {/* Top Info Bar inside White Area */}
             <div className="flex items-center justify-between w-full mb-2 z-10">
               <span className="text-[11px] font-mono tracking-widest text-[#151515] uppercase bg-[#151515]/5 px-3 py-1 border border-black/10 font-bold rounded">
-                VIEW {activeSlide + 1} OF {product.gallery.length} // {currentSlide?.label}
+                VIEW {activeSlide + 1} OF {currentGallery.length} // {currentSlide?.label}
               </span>
               <span className="hidden sm:inline-block text-[10px] font-mono text-[#777773] uppercase">
                 USE ARROWS OR THUMBNAILS
@@ -149,7 +159,7 @@ export default function ProductModal({
             {/* Seamless Main Image Display */}
             <div className="relative w-full h-[380px] sm:h-[450px] bg-transparent flex items-center justify-center my-auto group">
               <div className="relative w-full h-full p-2 flex items-center justify-center">
-                {product.gallery.map((slide, idx) => (
+                {currentGallery.map((slide, idx) => (
                   <div
                     key={slide.url}
                     className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
@@ -171,7 +181,7 @@ export default function ProductModal({
               </div>
 
               {/* Slider Left Arrow */}
-              {product.gallery.length > 1 && (
+              {currentGallery.length > 1 && (
                 <button
                   type="button"
                   onClick={handlePrev}
@@ -183,7 +193,7 @@ export default function ProductModal({
               )}
 
               {/* Slider Right Arrow */}
-              {product.gallery.length > 1 && (
+              {currentGallery.length > 1 && (
                 <button
                   type="button"
                   onClick={handleNext}
@@ -196,9 +206,9 @@ export default function ProductModal({
             </div>
 
             {/* Thumbnail Strip (Pure White Backgrounds) */}
-            {product.gallery.length > 1 && (
+            {currentGallery.length > 1 && (
               <div className="grid grid-cols-3 gap-2 sm:gap-3 pt-4 border-t border-black/10 mt-2 z-10">
-                {product.gallery.map((slide, idx) => {
+                {currentGallery.map((slide, idx) => {
                   const isActive = idx === activeSlide;
                   return (
                     <button
@@ -475,7 +485,16 @@ export default function ProductModal({
                 <button
                   type="button"
                   onClick={() => {
-                    addToCart(product, quantity, selectedFlavor);
+                    const flavorThumbnail =
+                      (selectedFlavor && product.flavorThumbnails?.[selectedFlavor]) || product.thumbnail;
+                    addToCart(
+                      {
+                        ...product,
+                        thumbnail: flavorThumbnail,
+                      },
+                      quantity,
+                      selectedFlavor
+                    );
                     onClose();
                   }}
                   className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-editorial text-xs sm:text-sm font-bold tracking-widest uppercase rounded-lg transition-all duration-200 cursor-pointer border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.35)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.55)] active:scale-98"

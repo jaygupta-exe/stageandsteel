@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Stage & Steel - Technical Architecture & Deliverables Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Oswald:wght@500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  @page {
+    size: A4;
+    margin: 14mm 14mm 14mm 14mm;
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: #0d0e0d;
+    color: #e5e7eb;
+    margin: 0;
+    padding: 0;
+    font-size: 11.5pt;
+    line-height: 1.5;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #141712 0%, #1f241a 100%);
+    border: 1px solid #363d2e;
+    border-radius: 12px;
+    padding: 24px 28px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #2e3527;
+    padding-bottom: 16px;
+    margin-bottom: 16px;
+  }
+
+  .brand-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 26pt;
+    letter-spacing: 3px;
+    color: #F4F4F1;
+    margin: 0;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .brand-subtitle {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 9pt;
+    letter-spacing: 2px;
+    color: #9DB25E;
+    margin-top: 6px;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+
+  .badge-container {
+    text-align: right;
+  }
+
+  .badge {
+    display: inline-block;
+    background: #596238;
+    color: #ffffff;
+    font-size: 8.5pt;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 6px 14px;
+    border-radius: 4px;
+    text-transform: uppercase;
+  }
+
+  .meta-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+
+  .meta-item {
+    background: rgba(0, 0, 0, 0.35);
+    border: 1px solid #2e3527;
+    padding: 8px 12px;
+    border-radius: 6px;
+  }
+
+  .meta-label {
+    font-size: 7.5pt;
+    color: #8b9581;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 600;
+  }
+
+  .meta-value {
+    font-size: 9.5pt;
+    color: #ffffff;
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 14pt;
+    letter-spacing: 1.5px;
+    color: #ffffff;
+    text-transform: uppercase;
+    margin: 24px 0 12px 0;
+    border-bottom: 2px solid #596238;
+    padding-bottom: 6px;
+  }
+
+  .section-num {
+    background: #596238;
+    color: #ffffff;
+    font-size: 10pt;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .card {
+    background: #151714;
+    border: 1px solid #2a3024;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 14px;
+    page-break-inside: avoid;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 8px;
+  }
+
+  .card-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 11pt;
+    font-weight: 700;
+    color: #9DB25E;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .card-badge {
+    font-size: 7.5pt;
+    background: #252b1e;
+    color: #b7c784;
+    border: 1px solid #444f37;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-weight: 600;
+  }
+
+  .feature-list {
+    margin: 0;
+    padding-left: 18px;
+  }
+
+  .feature-list li {
+    margin-bottom: 6px;
+    font-size: 9.5pt;
+    color: #d1d5db;
+  }
+
+  .feature-list li strong {
+    color: #f3f4f6;
+  }
+
+  .highlight-box {
+    background: linear-gradient(180deg, #1b2016 0%, #151812 100%);
+    border-left: 4px solid #9DB25E;
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin: 14px 0;
+    font-size: 9.5pt;
+  }
+
+  /* Table styling */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 14px 0;
+    font-size: 9.5pt;
+  }
+
+  th {
+    background: #1c2217;
+    color: #9DB25E;
+    font-family: 'Space Grotesk', sans-serif;
+    text-align: left;
+    padding: 10px 12px;
+    border: 1px solid #333d2b;
+    font-size: 8.5pt;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  td {
+    padding: 10px 12px;
+    border: 1px solid #262c20;
+    color: #e5e7eb;
+    background: #131512;
+  }
+
+  tr:nth-child(even) td {
+    background: #171a15;
+  }
+
+  .price-cell {
+    font-weight: 700;
+    color: #9DB25E;
+    font-family: 'Space Grotesk', sans-serif;
+    white-space: nowrap;
+  }
+
+  .total-row td {
+    background: #20271b !important;
+    font-weight: 700;
+    font-size: 11pt;
+    color: #ffffff;
+    border-top: 2px solid #596238;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 14px;
+  }
+
+  .summary-card {
+    background: #151813;
+    border: 1px solid #2c3424;
+    padding: 14px;
+    border-radius: 8px;
+    text-align: center;
+  }
+
+  .summary-card h4 {
+    margin: 0 0 6px 0;
+    color: #8b9581;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .summary-card .value {
+    font-size: 12pt;
+    font-weight: 700;
+    color: #9DB25E;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .footer {
+    margin-top: 30px;
+    border-top: 1px solid #2a3024;
+    padding-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 8pt;
+    color: #717a6a;
+  }
+</style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-top">
+      <div>
+        <h1 class="brand-title">STAGE & STEEL</h1>
+        <div class="brand-subtitle">Headless D2C Sports Nutrition Platform — Complete Technical Audit & Commercial Proposal</div>
+      </div>
+      <div class="badge-container">
+        <div class="badge">Production Build v1.0</div>
+        <div style="font-size: 7.5pt; color: #8b9581; margin-top: 5px;">Built with Next.js 16 + React 19</div>
+      </div>
+    </div>
+    <div class="meta-grid">
+      <div class="meta-item">
+        <div class="meta-label">Architecture</div>
+        <div class="meta-value">Headless D2C Stack</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Logistics Engine</div>
+        <div class="meta-value">Delhivery Direct API</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Payment Engine</div>
+        <div class="meta-value">Cashfree Seamless SDK</div>
+      </div>
+      <div class="meta-item">
+        <div class="meta-label">Database & Auth</div>
+        <div class="meta-value">Google Firebase / Cloud</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="highlight-box">
+    <strong>Executive Overview:</strong> This platform is a fully custom, enterprise-grade headless D2C e-commerce engine engineered for ultra-high conversion, instant loading speeds (<1s), automated shipping fulfillment, and luxury athletic brand aesthetics. Unlike template-based solutions (Shopify/WooCommerce), this system operates with <strong>zero recurring monthly app subscription costs</strong> and delivers proprietary 3D/Canvas simulations and sound engineering.
+  </div>
+
+  <!-- 1. VISUAL EXPERIENCE -->
+  <div class="section-heading"><span class="section-num">01</span> Visual Experience & Custom Animation Engine</div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">High-Value Interactive UI/UX Elements</span>
+      <span class="card-badge">Custom 2D/3D Canvas & Web Audio</span>
+    </div>
+    <ul class="feature-list">
+      <li><strong>Custom 2D/3D Canvas Powder Simulator (<code>PowderParticleCanvas.tsx</code>):</strong> Real-time physics engine rendering realistic supplement micro-dust and billowing chalk smoke with particle velocity, air drag resistance, radial gradients, and smooth alpha decay.</li>
+      <li><strong>Interactive Supplement Scoop Animation (<code>SupplementScoop.tsx</code>):</strong> 3D tilting scoop experience triggering real-time interactive powder pouring upon user engagement and cart additions.</li>
+      <li><strong>Ambient Floating Gym Dust (<code>AmbientDust.tsx</code>):</strong> Atmospheric micro-particle background creating an authentic hardcore athletic visual aura.</li>
+      <li><strong>Custom Web Audio API Sound Synthesizer (<code>sound.ts</code>):</strong> Zero-latency mathematical audio oscillators generating tactile mechanical clicks and dual-tone harmonic "Add-to-Cart" chimes without heavy external audio file loading.</li>
+      <li><strong>Interactive Powder Mega Menu (<code>PowderMegaMenu.tsx</code>):</strong> Multi-level interactive navigation menu with live visual category transitions and instant catalog filtering.</li>
+      <li><strong>Brutalist Typography & Luxury Dark Theme:</strong> Integrated Google Fonts (<em>Oswald, Barlow Condensed, Space Grotesk, Inter</em>) styled with military-grade olive accents.</li>
+    </ul>
+  </div>
+
+  <!-- 2. PRODUCT CATALOG -->
+  <div class="section-heading"><span class="section-num">02</span> Product Catalog & Lab-Tested Transparency Suite</div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Conversion-Driven Product Architecture</span>
+      <span class="card-badge">Trust & Lab COA Engine</span>
+    </div>
+    <ul class="feature-list">
+      <li><strong>Dynamic Category Matrix:</strong> Real-time category filtering across <em>All Products, Protein Matrix, Creatine Lab,</em> and <em>EAA Aminos</em> with direct URL hash synchronization (<code>#protein</code>, <code>#creatine</code>, <code>#eaa</code>).</li>
+      <li><strong>Interactive Product Deep-Dive Modal (<code>ProductModal.tsx</code>):</strong> Multi-angle high-resolution gallery (Front pack, Supplement facts, Amino profile & Directions).</li>
+      <li><strong>Official Lab Test COA Viewer:</strong> Embedded authentic Certificate of Analysis (COA) lab reports directly in product view to build unbreakable consumer trust.</li>
+      <li><strong>Per-Scoop Nutritional Breakdown:</strong> Batch code verification badge, 25g protein/energy matrix stats, and live flavor switching with instant stock/price updates.</li>
+    </ul>
+  </div>
+
+  <!-- PAGE BREAK FOR CLEAN PRINTING -->
+  <div class="page-break"></div>
+
+  <!-- 3. AUTH & USER PROFILES -->
+  <div class="section-heading"><span class="section-num">03</span> Authentication, Security & User Accounts</div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Firebase Cloud Authentication (<code>AuthContext.tsx</code>, <code>AuthModal.tsx</code>)</span>
+      <span class="card-badge">Social + Email Auth</span>
+    </div>
+    <ul class="feature-list">
+      <li><strong>Google 1-Tap & OAuth Popup Login:</strong> Instant, frictionless social sign-in.</li>
+      <li><strong>Secure Email/Password Authentication:</strong> Encrypted user registration and credential management.</li>
+      <li><strong>Frictionless Guest Checkout Mode:</strong> Customers can complete transactions in seconds without mandatory sign-up.</li>
+      <li><strong>State Synchronization:</strong> Persistent session management across page refreshes and devices.</li>
+    </ul>
+  </div>
+
+  <!-- 4. CART & COUPON ENGINE -->
+  <div class="section-heading"><span class="section-num">04</span> Smart Cart Drawer & Dynamic Coupon Engine</div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Revenue Optimization & Promotion Management</span>
+      <span class="card-badge">Dynamic Discount Rules</span>
+    </div>
+    <ul class="feature-list">
+      <li><strong>Slide-Out Cart Drawer (<code>CartDrawer.tsx</code>):</strong> Smooth side-drawer cart with live quantity modification, instant subtotal recalculations, and savings indicators.</li>
+      <li><strong>Dual-Mode Discount Engine (<code>lib/coupons.ts</code>):</strong>
+        <ul>
+          <li><strong>Percentage Discounts:</strong> Code-based discounts (<code>LAUNCH10</code>, <code>STAGE10</code>, <code>DIVESH10</code>, <code>ASHISH10</code>) with customizable discount caps.</li>
+          <li><strong>Flat Discounts:</strong> Minimum order threshold discounts (e.g., <code>LAUNCH200</code> for orders above ₹1,500).</li>
+        </ul>
+      </li>
+      <li><strong>Instant Client Validation:</strong> Real-time feedback banners with clear savings notifications.</li>
+    </ul>
+  </div>
+
+  <!-- 5. PAYMENT GATEWAY -->
+  <div class="section-heading"><span class="section-num">05</span> Cashfree Payment Gateway Integration</div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Seamless In-App Payments (<code>CheckoutModal.tsx</code>, <code>/api/cashfree/*</code>)</span>
+      <span class="card-badge">Zero Redirection Drops</span>
+    </div>
+    <ul class="feature-list">
+      <li><strong>Server-to-Server Session Generation:</strong> Secure REST API creating cryptographic payment sessions.</li>
+      <li><strong>In-App Modal Checkout:</strong> High-converting modern modal supporting UPI (GPay, PhonePe, Paytm), Credit/Debit Cards, NetBanking, and Wallets without leaving the domain.</li>
+      <li><strong>Server-Side Signature & Verification:</strong> Secure endpoint verifying payment completion before triggering order dispatch.</li>
+    </ul>
+  </div>
+
+  <!-- 6. LOGISTICS AUTOMATION -->
+  <div class="section-heading"><span class="section-num">06</span> Delhivery Logistics & Automated Shipping API</div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Full Courier Automation (<code>/api/delhivery/*</code>, <code>OrderTrackerModal.tsx</code>)</span>
+      <span class="card-badge">Automated AWB & Live Tracking</span>
+    </div>
+    <ul class="feature-list">
+      <li><strong>Live 6-Digit PIN Code Serviceability Engine:</strong> Real-time validation against Delhivery database with auto-fill for City and State upon entering PIN code.</li>
+      <li><strong>Instant Auto-Shipment Dispatch:</strong> Automated AWB (Waybill) creation directly upon verified payment.</li>
+      <li><strong>Embedded Live Tracking Modal:</strong> 4-stage visual timeline (<em>Manifested → In Transit → Out for Delivery → Delivered</em>) directly on website.</li>
+    </ul>
+  </div>
+
+  <!-- PAGE BREAK FOR CLEAN PRINTING -->
+  <div class="page-break"></div>
+
+  <!-- 7. ORDER HISTORY & DATABASE -->
+  <div class="section-heading"><span class="section-num">07</span> Cloud Database & Customer Order History</div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Cloud Firestore Persistence (<code>lib/orders.ts</code>, <code>OrderHistoryModal.tsx</code>)</span>
+      <span class="card-badge">Real-Time Data Layer</span>
+    </div>
+    <ul class="feature-list">
+      <li><strong>Order Storage:</strong> Complete order snapshots, customer info, itemized SKUs, payment gateway IDs, and AWB tracking numbers saved in Firestore.</li>
+      <li><strong>Customer Order Portal:</strong> Logged-in users can review past purchases, download itemized breakdown receipts, and check real-time courier statuses.</li>
+    </ul>
+  </div>
+
+  <!-- 8. NOTIFICATION ENGINE -->
+  <div class="section-heading"><span class="section-num">08</span> Multi-Channel Notification & WhatsApp Sync</div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Automated Customer Communications (<code>/api/send-confirmation</code>)</span>
+      <span class="card-badge">Resend HTML Email + WhatsApp</span>
+    </div>
+    <ul class="feature-list">
+      <li><strong>Branded Transactional HTML Emails:</strong> Instant invoice emails dispatched via Resend API with itemized table, total amount, and direct tracking buttons.</li>
+      <li><strong>WhatsApp Order Sync:</strong> Instant dynamic WhatsApp notification link generated for immediate client updates.</li>
+      <li><strong>Floating WhatsApp Support Widget (<code>WhatsAppWidget.tsx</code>):</strong> Always-available customer service trigger.</li>
+    </ul>
+  </div>
+
+  <!-- 9. SEO & STRUCTURED DATA -->
+  <div class="section-heading"><span class="section-num">09</span> Advanced SEO, Social Media & Structured Data</div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Google Rich Results & Rank Ready Architecture (<code>app/page.tsx</code>)</span>
+      <span class="card-badge">JSON-LD Schema Markup</span>
+    </div>
+    <ul class="feature-list">
+      <li><strong>JSON-LD Structured Data:</strong> <code>Organization</code> schema, <code>WebSite</code> search action schema, and <code>Product</code>/<code>ItemList</code> schemas with pricing, ratings, and shipping details.</li>
+      <li><strong>OpenGraph & Twitter Card Protocols:</strong> High-resolution social previews for WhatsApp, Instagram, and Twitter links.</li>
+    </ul>
+  </div>
+
+  <!-- 10. LEGAL & POLICIES -->
+  <div class="section-heading"><span class="section-num">10</span> Legal & Compliance Infrastructure</div>
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">Regulatory Compliance Pages</span>
+      <span class="card-badge">SSR Pages + Modal Views</span>
+    </div>
+    <ul class="feature-list">
+      <li>Dedicated regulatory compliant pages and interactive modals for <strong>Privacy Policy</strong>, <strong>Refund Policy</strong>, <strong>Shipping Policy</strong>, and <strong>Terms & Conditions</strong>.</li>
+    </ul>
+  </div>
+
+  <!-- COMMERCIAL PROPOSAL / PRICING BREAKDOWN -->
+  <div class="section-heading"><span class="section-num">11</span> Commercial Value & Deliverables Quotation</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 50%;">Module / Deliverable Scope</th>
+        <th style="width: 32%;">Key Architectural Value</th>
+        <th style="width: 18%;">Market Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>01. Custom Headless Next.js 16 UI/UX & Animations</strong></td>
+        <td>Custom Canvas 2D/3D Particle Engine, Web Audio Synthesizer, Sub-1s page speeds</td>
+        <td class="price-cell">₹35,000</td>
+      </tr>
+      <tr>
+        <td><strong>02. Cashfree Payment Gateway Integration</strong></td>
+        <td>Server-to-server security, in-app modal checkout, multi-channel UPI/Cards</td>
+        <td class="price-cell">₹15,000</td>
+      </tr>
+      <tr>
+        <td><strong>03. Delhivery Logistics & Automated Shipping API</strong></td>
+        <td>Live PIN code validation, automated AWB generation, real-time tracking modal</td>
+        <td class="price-cell">₹22,000</td>
+      </tr>
+      <tr>
+        <td><strong>04. Cloud Database & Authentication (Firebase)</strong></td>
+        <td>Google 1-Tap Auth, Guest checkout, Firestore user profile & order history portal</td>
+        <td class="price-cell">₹18,000</td>
+      </tr>
+      <tr>
+        <td><strong>05. Multi-Channel Notification Engine</strong></td>
+        <td>Automated Resend transactional HTML emails + instant WhatsApp order sync</td>
+        <td class="price-cell">₹10,000</td>
+      </tr>
+      <tr>
+        <td><strong>06. Advanced SEO & Google Schema Data</strong></td>
+        <td>Full JSON-LD structured schemas for Products, Offers, Ratings & Organization</td>
+        <td class="price-cell">₹10,000</td>
+      </tr>
+      <tr>
+        <td><strong>07. Dynamic Coupon Engine & Cart Architecture</strong></td>
+        <td>Percentage/Flat coupon validation with cart threshold criteria & real-time drawer</td>
+        <td class="price-cell">₹8,000</td>
+      </tr>
+      <tr class="total-row">
+        <td colspan="2"><strong>TOTAL DELIVERABLE VALUATION (CUSTOM ENTERPRISE STACK)</strong></td>
+        <td class="price-cell" style="font-size: 13pt; color: #9DB25E;">₹1,18,000</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="summary-grid">
+    <div class="summary-card">
+      <h4>Platform Type</h4>
+      <div class="value">Headless D2C</div>
+    </div>
+    <div class="summary-card">
+      <h4>Monthly App Fees</h4>
+      <div class="value">₹0 / Month</div>
+    </div>
+    <div class="summary-card">
+      <h4>Fulfillment Mode</h4>
+      <div class="value">100% Automated</div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div><strong>STAGE & STEEL</strong> — Athlete-Grade Sports Nutrition E-Commerce System</div>
+    <div>Confidential & Proprietary Deliverables Document</div>
+  </div>
+
+</body>
+</html>

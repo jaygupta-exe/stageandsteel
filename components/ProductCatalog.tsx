@@ -221,9 +221,13 @@ export default function ProductCatalog() {
       servings: "85 Servings",
       netWeight: "300G (0.66 LBS)",
       thumbnail: "/creatine-cutout.png",
+      flavorThumbnails: {
+        "Orange": "/creatine-cutout.png",
+        "Pineapple": "/pineapple-creatine-cutout.png",
+      },
       gallery: [
         {
-          label: "01 FRONT PACKAGING",
+          label: "01 FRONT PACKAGING (ORANGE)",
           url: "/creatine/front.png",
         },
         {
@@ -235,6 +239,36 @@ export default function ProductCatalog() {
           url: "/creatine/usage.png",
         },
       ],
+      flavorGalleries: {
+        "Orange": [
+          {
+            label: "01 FRONT PACKAGING (ORANGE)",
+            url: "/creatine/front.png",
+          },
+          {
+            label: "02 NUTRITION FACTS",
+            url: "/creatine/nutrition.png",
+          },
+          {
+            label: "03 DIRECTIONS & USAGE",
+            url: "/creatine/usage.png",
+          },
+        ],
+        "Pineapple": [
+          {
+            label: "01 FRONT PACKAGING (PINEAPPLE)",
+            url: "/creatine/pineapple-front.png",
+          },
+          {
+            label: "02 NUTRITION FACTS",
+            url: "/creatine/nutrition.png",
+          },
+          {
+            label: "03 DIRECTIONS & USAGE",
+            url: "/creatine/usage.png",
+          },
+        ],
+      },
       accentColor: "#DE8A36",
       batchCode: "BATCH CR-2026-GER",
       flavors: [
@@ -411,6 +445,14 @@ export default function ProductCatalog() {
         {/* Two-Column Flagship Cards - Modern Luxury Monolithic Design */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-10 max-w-6xl mx-auto">
           {filteredProducts.map((product) => {
+            const currentSelectedFlavor = selectedCardFlavors[product.id] || product.flavors[0]?.name || "Standard";
+            const currentThumbnail =
+              (product.flavorThumbnails && currentSelectedFlavor && product.flavorThumbnails[currentSelectedFlavor]) ||
+              product.thumbnail;
+            const currentGallery =
+              (product.flavorGalleries && currentSelectedFlavor && product.flavorGalleries[currentSelectedFlavor]) ||
+              product.gallery;
+
             return (
               <div
                 key={product.id}
@@ -449,7 +491,7 @@ export default function ProductCatalog() {
                     {/* Floating Product Image */}
                     <div className="relative w-full h-full flex items-center justify-center transition-all duration-500 ease-out group-hover/stage:scale-108 group-hover/stage:-translate-y-2">
                       <Image
-                        src={product.thumbnail}
+                        src={currentThumbnail}
                         alt={product.name}
                         fill
                         priority
@@ -466,7 +508,7 @@ export default function ProductCatalog() {
                     </span>
                     <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded bg-[#596238]/20 border border-[#596238]/40 text-[#9DB25E] text-[10px] font-mono font-bold tracking-wider uppercase group-hover/stage:bg-[#596238] group-hover/stage:text-[#F4F4F1] transition-all duration-200">
                       <Images className="w-3.5 h-3.5" />
-                      <span>VIEW PACKAGING ({product.gallery.length})</span>
+                      <span>VIEW PACKAGING ({currentGallery.length})</span>
                     </div>
                   </div>
                 </div>
@@ -579,7 +621,16 @@ export default function ProductCatalog() {
 
                       <button
                         type="button"
-                        onClick={() => addToCart(product, 1, selectedCardFlavors[product.id] || product.flavors[0]?.name)}
+                        onClick={() =>
+                          addToCart(
+                            {
+                              ...product,
+                              thumbnail: currentThumbnail,
+                            },
+                            1,
+                            currentSelectedFlavor
+                          )
+                        }
                         className="px-6 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-editorial text-xs font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-lg border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.3)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.5)] hover:scale-[1.02] active:scale-[0.98] flex items-center gap-2"
                       >
                         <span>ADD TO CART</span>
@@ -616,6 +667,7 @@ export default function ProductCatalog() {
         isOpen={Boolean(selectedProduct)}
         onClose={() => setSelectedProduct(null)}
         product={selectedProduct}
+        initialFlavor={selectedProduct ? selectedCardFlavors[selectedProduct.id] : undefined}
       />
     </section>
   );
