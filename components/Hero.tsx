@@ -3,12 +3,13 @@
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Zap, Sparkles } from "lucide-react";
 import gsap from "gsap";
 import ProductShowcase from "./ProductShowcase";
 import Navbar from "./Navbar";
 import FeatureStrip from "./FeatureStrip";
 import AmbientDust from "./AmbientDust";
+import { soundFX } from "@/lib/sound";
 
 export default function HeroSection() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -311,10 +312,10 @@ export default function HeroSection() {
               ref={parallaxHeadlineRef}
               className="order-2 lg:order-1 lg:col-span-6 xl:col-span-6 flex flex-col justify-center z-20 will-change-transform"
             >
-              {/* Category Sub-Tag */}
+              {/* Category Sub-Tag & Continuous Flashing Promo Badge */}
               <div
                 ref={subtagRef}
-                className="flex items-center gap-2 mb-2 sm:mb-3 opacity-0 will-change-transform"
+                className="flex flex-wrap items-center gap-2.5 mb-3 sm:mb-4 opacity-0 will-change-transform"
               >
                 <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-[#151515] text-[#F4F4F1] border border-[#596238]/40 shadow-xs">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#596238] animate-ping" />
@@ -322,9 +323,26 @@ export default function HeroSection() {
                     STAGE PROTOCOL // 2026
                   </span>
                 </div>
-                <span className="text-[10px] sm:text-[11px] font-mono tracking-widest text-[#151515]/70 uppercase">
-                  SPORTS NUTRITION LABS
-                </span>
+
+                {/* Continuous Flashing Promo Modal Trigger */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    soundFX.playClick();
+                    window.dispatchEvent(new CustomEvent("open-launch-promo"));
+                  }}
+                  className="group inline-flex items-center gap-2 px-3 py-1 bg-[#141413] hover:bg-[#1E1E1C] border border-[#8FA355] text-[#9DB25E] rounded-full text-[10px] font-mono font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(143,163,85,0.4)] hover:shadow-[0_0_25px_rgba(143,163,85,0.7)] animate-pulse"
+                >
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#9DB25E] opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#8FA355]" />
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Zap className="w-3 h-3 text-[#9DB25E] fill-current" />
+                    <span>FLASH CODE: <span className="text-[#F4F4F1] bg-[#596238] px-1 py-0.2 rounded font-mono">LAUNCH10</span> (10% OFF)</span>
+                  </span>
+                  <ArrowRight className="w-3 h-3 text-[#9DB25E] group-hover:translate-x-1 transition-transform" />
+                </button>
               </div>
 
               {/* Commanding Huge Headline */}
@@ -374,7 +392,7 @@ export default function HeroSection() {
                 className="mt-6 flex flex-wrap items-center gap-3.5 opacity-0 will-change-transform"
               >
                 <Link
-                  href="#"
+                  href="#products"
                   className="group relative inline-flex items-center gap-2.5 px-6 sm:px-8 py-3.5 bg-[#151515] text-[#F4F4F1] font-editorial text-xs sm:text-sm font-bold tracking-widest uppercase hover:bg-[#596238] hover:translate-x-1 transition-all duration-200 shadow-lg focus:outline-hidden"
                 >
                   <span className="transition-transform duration-200">SHOP SUPPLEMENTS</span>
@@ -382,7 +400,10 @@ export default function HeroSection() {
                 </Link>
 
                 <Link
-                  href="#"
+                  href="#products"
+                  onClick={() => {
+                    window.dispatchEvent(new CustomEvent("filter-category", { detail: "ALL" }));
+                  }}
                   className="group relative inline-flex items-center gap-2 px-6 py-3.5 border border-[#151515] bg-[#A8A7A3]/30 hover:bg-[#151515] text-[#151515] hover:text-[#F4F4F1] font-editorial text-xs sm:text-sm font-bold tracking-widest uppercase transition-all duration-200 focus:outline-hidden"
                 >
                   <span>LAB RESULTS</span>

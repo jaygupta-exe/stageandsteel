@@ -23,6 +23,12 @@ export default function LaunchCouponModal() {
     }
   }, []);
 
+  useEffect(() => {
+    const handleOpen = () => setIsOpen(true);
+    window.addEventListener("open-launch-promo", handleOpen);
+    return () => window.removeEventListener("open-launch-promo", handleOpen);
+  }, []);
+
   const handleClose = () => {
     soundFX.playClick();
     setIsOpen(false);
@@ -51,7 +57,34 @@ export default function LaunchCouponModal() {
     }, 600);
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return (
+      <aside
+        aria-label="Special Discount Promotion"
+        className="fixed bottom-20 left-4 sm:left-6 z-40 animate-in fade-in slide-in-from-bottom-3 duration-300"
+      >
+        <button
+          type="button"
+          onClick={() => {
+            soundFX.playClick();
+            setIsOpen(true);
+          }}
+          className="group relative flex items-center gap-2.5 px-3.5 py-2 bg-[#141413]/95 backdrop-blur-md border-2 border-[#8FA355] text-[#F4F4F1] rounded-full shadow-[0_0_20px_rgba(143,163,85,0.5)] hover:shadow-[0_0_35px_rgba(143,163,85,0.85)] transition-all duration-300 cursor-pointer hover:scale-105 animate-pulse"
+        >
+          <span className="absolute -top-1 -right-1 flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#9DB25E] opacity-80" />
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#8FA355]" />
+          </span>
+          <Zap className="w-3.5 h-3.5 text-[#9DB25E] fill-current" />
+          <span className="text-[10px] sm:text-[11px] font-mono font-bold tracking-widest text-[#9DB25E] uppercase flex items-center gap-1.5">
+            <span>FLASH CODE:</span>
+            <span className="text-white bg-[#596238] px-1.5 py-0.2 rounded text-[10px]">LAUNCH10</span>
+            <span className="hidden sm:inline text-[#D4D3CD]">10% OFF</span>
+          </span>
+        </button>
+      </aside>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/85 backdrop-blur-md p-4 sm:p-6 animate-in fade-in duration-300 select-none">
