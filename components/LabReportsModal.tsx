@@ -240,7 +240,6 @@ export default function LabReportsModal() {
               >
                 <ShieldCheck className="w-4 h-4 text-[#9DB25E]" />
                 <span>{report.category}</span>
-                <span className="text-[11px] font-mono text-white/70">({report.batchCode})</span>
               </button>
             );
           })}
