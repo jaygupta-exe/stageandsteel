@@ -37,7 +37,7 @@ const LAB_REPORTS: LabReportData[] = [
   {
     id: "whey-matrix-coa",
     productName: "100% Microfiltered Whey Protein (Belgian Chocolate & Salted Caramel)",
-    category: "PROTEIN MATRIX",
+    category: "PROTEIN",
     batchCode: "BATCH SS-2026-BC/SC",
     testDate: "JANUARY 2026",
     testedProtein: "25.1g per 33g Scoop",
@@ -56,7 +56,7 @@ const LAB_REPORTS: LabReportData[] = [
   {
     id: "creapure-creatine-coa",
     productName: "German Micronized Creatine Monohydrate (200 Mesh)",
-    category: "CREATINE LAB",
+    category: "CREATINE",
     batchCode: "BATCH CR-2026-GER",
     testDate: "JANUARY 2026",
     testedProtein: "3,000mg Pure Creatine + 40mg Vit C",
@@ -232,15 +232,15 @@ export default function LabReportsModal() {
                   setZoomLevel(1);
                   setPanPosition({ x: 0, y: 0 });
                 }}
-                className={`px-4 py-2 text-xs font-editorial font-bold uppercase tracking-wider rounded-lg transition-all flex items-center gap-2 shrink-0 cursor-pointer border ${
+                className={`px-4 py-2.5 text-xs sm:text-sm font-sans font-bold uppercase tracking-wide rounded-lg transition-all flex items-center gap-2 shrink-0 cursor-pointer border ${
                   isActive
                     ? "bg-[#596238] border-[#8FA355] text-white shadow-md"
                     : "bg-[#101110] border-white/10 text-[#A8A7A3] hover:text-white hover:border-white/30"
                 }`}
               >
-                <ShieldCheck className="w-3.5 h-3.5 text-[#9DB25E]" />
+                <ShieldCheck className="w-4 h-4 text-[#9DB25E]" />
                 <span>{report.category}</span>
-                <span className="text-[10px] font-mono text-white/70">({report.batchCode})</span>
+                <span className="text-[11px] font-mono text-white/70">({report.batchCode})</span>
               </button>
             );
           })}

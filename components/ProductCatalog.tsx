@@ -109,7 +109,7 @@ export default function ProductCatalog() {
     {
       id: "whey-mocha-protein",
       name: "STAGE WHEY - CAFE MOCHA",
-      subtitle: "MICROFILTERED WHEY MATRIX // COFFEE INFUSION",
+      subtitle: "MICROFILTERED PURE WHEY // COFFEE INFUSION",
       category: "PROTEIN",
       price: "₹2,599",
       originalPrice: "₹4,299",
@@ -160,7 +160,7 @@ export default function ProductCatalog() {
     {
       id: "whey-salted-caramel",
       name: "STAGE WHEY - SALTED CARAMEL",
-      subtitle: "MICROFILTERED 100% PURE WHEY MATRIX",
+      subtitle: "MICROFILTERED 100% PURE WHEY",
       category: "PROTEIN",
       price: "₹3,499",
       originalPrice: "₹4,299",

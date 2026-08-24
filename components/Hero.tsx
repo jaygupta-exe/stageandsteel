@@ -96,8 +96,8 @@ export default function HeroSection() {
         tl.fromTo(
           subtagRef.current,
           { opacity: 0, y: 15 },
-          { opacity: 1, y: 0, duration: 0.5 },
-          0.1
+          { opacity: 1, y: 0, duration: 0.8 },
+          0.2
         );
       }
 
@@ -422,9 +422,9 @@ export default function HeroSection() {
                     soundFX.playClick();
                     window.dispatchEvent(new CustomEvent("open-lab-reports"));
                   }}
-                  className="group relative inline-flex items-center gap-2 px-7 sm:px-8 py-4 border-2 border-[#151515] bg-[#A8A7A3]/40 hover:bg-[#151515] text-[#151515] hover:text-[#F4F4F1] font-editorial text-sm sm:text-base font-bold tracking-widest uppercase transition-all duration-200 focus:outline-hidden cursor-pointer rounded-xs"
+                  className="group relative inline-flex items-center gap-2 px-7 sm:px-8 py-4 border-2 border-[#151515] bg-[#A8A7A3]/40 hover:bg-[#151515] text-[#151515] hover:text-[#F4F4F1] font-sans text-sm sm:text-base font-bold tracking-widest uppercase transition-all duration-200 focus:outline-hidden cursor-pointer rounded-xs"
                 >
-                  <span>LAB RESULTS</span>
+                  <span>LAB REPORTS</span>
                   <ArrowUpRight className="w-4.5 h-4.5 transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                 </button>
               </div>

@@ -17,7 +17,7 @@ export default function LaunchCouponModal() {
     if (!hasSeen) {
       const timer = setTimeout(() => {
         setIsOpen(true);
-      }, 1200); // Trigger after 1.2s on first site visit
+      }, 4500); // Trigger gently after 4.5s on first visit
 
       return () => clearTimeout(timer);
     }
@@ -61,7 +61,7 @@ export default function LaunchCouponModal() {
     return (
       <aside
         aria-label="Special Discount Promotion"
-        className="fixed bottom-20 left-4 sm:left-6 z-40 animate-in fade-in slide-in-from-bottom-3 duration-300"
+        className="fixed bottom-20 left-4 sm:left-6 z-40 animate-in fade-in slide-in-from-bottom-3 duration-500"
       >
         <button
           type="button"
@@ -69,11 +69,10 @@ export default function LaunchCouponModal() {
             soundFX.playClick();
             setIsOpen(true);
           }}
-          className="group relative flex items-center gap-2.5 px-3.5 py-2 bg-[#141413]/95 backdrop-blur-md border-2 border-[#8FA355] text-[#F4F4F1] rounded-full shadow-[0_0_20px_rgba(143,163,85,0.5)] hover:shadow-[0_0_35px_rgba(143,163,85,0.85)] transition-all duration-300 cursor-pointer hover:scale-105 animate-pulse"
+          className="group relative flex items-center gap-2.5 px-3.5 py-2 bg-[#141413] backdrop-blur-md border border-[#8FA355]/80 text-[#F4F4F1] rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] hover:shadow-[0_0_25px_rgba(143,163,85,0.5)] transition-all duration-300 cursor-pointer hover:scale-105"
         >
-          <span className="absolute -top-1 -right-1 flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#9DB25E] opacity-80" />
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#8FA355]" />
+          <span className="relative flex h-2 w-2">
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#8FA355]" />
           </span>
           <Zap className="w-3.5 h-3.5 text-[#9DB25E] fill-current" />
           <span className="text-[10px] sm:text-[11px] font-mono font-bold tracking-widest text-[#9DB25E] uppercase flex items-center gap-1.5">
