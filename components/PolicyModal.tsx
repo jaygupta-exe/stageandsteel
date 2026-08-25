@@ -152,7 +152,7 @@ export default function PolicyModal({
                   1. ELIGIBILITY FOR RETURN &amp; REPLACEMENT
                 </h4>
                 <p>
-                  At <strong>Stage &amp; Steel</strong>, we uphold uncompromising quality standards. Given that our products are consumable dietary nutraceuticals (Whey Protein, Creatine Monohydrate, Essential Amino Acids), we offer a <strong>7-Day Free Replacement</strong> under the following conditions:
+                  At <strong>Stage &amp; Steel</strong>, we uphold uncompromising quality standards. Given that our products are consumable dietary nutraceuticals (Whey Protein, Yeast Protein, Creatine Monohydrate, Essential Amino Acids), we offer a <strong>7-Day Free Replacement</strong> under the following conditions:
                 </p>
                 <ul className="space-y-2 list-disc pl-5 text-[#A3A29E]">
                   <li>The product received is physically damaged in transit or defective.</li>
@@ -256,7 +256,7 @@ export default function PolicyModal({
                   3. SHIPPING CHARGES
                 </h4>
                 <p>
-                  We provide <strong>FREE EXPRESS SHIPPING</strong> on all prepaid orders nationwide across all product lines (Stage Whey, Creatine, and EAA).
+                  We provide <strong>FREE EXPRESS SHIPPING</strong> on all prepaid orders nationwide across all product lines (Stage Whey, Yeast Protein, Creatine, and EAA).
                 </p>
               </div>
 

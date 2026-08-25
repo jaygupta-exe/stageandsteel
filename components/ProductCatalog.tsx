@@ -107,9 +107,9 @@ export default function ProductCatalog() {
         "Mix 1 rounded scoop (33g) with 200–250ml cold water or skimmed milk in a shaker cup. Consume immediately post-workout or between meals for optimal protein synthesis.",
     },
     {
-      id: "whey-mocha-protein",
-      name: "STAGE WHEY - CAFE MOCHA",
-      subtitle: "MICROFILTERED PURE WHEY // COFFEE INFUSION",
+      id: "yeast-mocha-protein",
+      name: "STAGE YEAST PROTEIN - CAFE MOCHA",
+      subtitle: "BIO-FERMENTED PURE YEAST PROTEIN // COFFEE INFUSION",
       category: "PROTEIN",
       price: "₹2,599",
       originalPrice: "₹4,299",
@@ -141,9 +141,10 @@ export default function ProductCatalog() {
         { label: "ENERGY", value: "124.61", unit: "KCAL" },
       ],
       description:
-        "Artisanal roast Cafe Mocha whey concentrate combining 24.6g ultra-clean microfiltered protein per 35g scoop (124.61 kcal) with authentic coffee aroma. 28 servings per box. Naturally sweetened with premium Monk Fruit extract for clean bio-availability without sugar spikes.",
+        "Artisanal roast Cafe Mocha bio-fermented yeast protein combining 24.6g ultra-clean sustainable protein per 35g scoop (124.61 kcal) with authentic coffee aroma. 28 servings per box. Naturally sweetened with premium Monk Fruit extract for clean bio-availability without sugar spikes.",
       nutritionFacts: [
         { name: "Protein per Scoop (35g)", amount: "24.6g", dailyValue: "49%" },
+        { name: "Protein Source", amount: "Bio-Fermented Yeast Protein" },
         { name: "Energy / Calories", amount: "124.61 kcal" },
         { name: "Servings per Box", amount: "28 Servings" },
         { name: "Scoop Size", amount: "35g" },
@@ -155,7 +156,7 @@ export default function ProductCatalog() {
         { name: "DigeZyme® Multi-Enzyme Complex", amount: "100mg" },
       ],
       suggestedUse:
-        "Mix 1 scoop (35g) with 200–250ml ice-cold water or milk in a shaker cup. Perfect as a morning kickstarter or high-octane post-workout fuel.",
+        "Mix 1 scoop (35g) with 200–250ml ice-cold water or plant milk in a shaker cup. Perfect as a morning kickstarter or high-octane post-workout fuel.",
     },
     {
       id: "whey-salted-caramel",

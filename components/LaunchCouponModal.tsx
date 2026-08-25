@@ -129,7 +129,7 @@ export default function LaunchCouponModal() {
           </h2>
           
           <p className="text-xs sm:text-sm font-mono text-[#A8A7A3] uppercase tracking-wider mb-6 max-w-sm">
-            EXCLUSIVE LAUNCH OFFER // CLAIM 10% DISCOUNT ON ALL PURE WHEY, CREATINE &amp; EAA AMINOS.
+            EXCLUSIVE LAUNCH OFFER // CLAIM 10% DISCOUNT ON ALL PROTEIN, CREATINE &amp; EAA AMINOS.
           </p>
 
           {/* Flash Promo Box with Coupon Code */}

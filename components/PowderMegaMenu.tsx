@@ -39,9 +39,9 @@ export default function PowderMegaMenu({
       num: "01",
       title: "PROTEIN",
       href: "#products",
-      category: "MICROFILTERED CONCENTRATE",
+      category: "WHEY & FERMENTED YEAST MATRIX",
       spec: "25G PROTEIN // PER SCOOP",
-      desc: "Instantized 100% Pure Whey Concentrate matrix for optimal recovery and lean muscle growth.",
+      desc: "Instantized 100% Pure Whey Concentrate & Bio-Fermented Yeast Protein matrix for optimal recovery and lean muscle growth.",
       badge: "LAB FLAGSHIP",
     },
     {
