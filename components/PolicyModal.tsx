@@ -379,9 +379,19 @@ export default function PolicyModal({
 
         {/* Modal Footer */}
         <div className="p-4 sm:p-5 bg-[#171716] border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-mono text-[#8E8D88]">
-          <div className="flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+          <div className="flex items-center gap-3">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
             <span>FSSAI LIC: 10724997000182 // NEW DELHI, INDIA</span>
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                window.dispatchEvent(new CustomEvent("open-lab-reports", { detail: "fssai-license" }));
+              }}
+              className="text-[10px] text-[#9DB25E] hover:text-[#B8D16D] font-bold underline uppercase cursor-pointer"
+            >
+              [VIEW CERTIFICATE]
+            </button>
           </div>
 
           <button

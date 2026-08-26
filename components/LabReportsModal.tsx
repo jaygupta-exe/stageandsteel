@@ -35,9 +35,28 @@ interface LabReportData {
 
 const LAB_REPORTS: LabReportData[] = [
   {
+    id: "fssai-license",
+    productName: "Food Safety and Standards Authority of India (FSSAI) License",
+    category: "FSSAI LICENSE",
+    batchCode: "LIC NO. 10724997000182",
+    testDate: "CENTRAL REGISTRATION",
+    testedProtein: "100% COMPLIANT",
+    labelClaim: "Govt. of India Certified",
+    purityScore: "100% Certified Safe",
+    heavyMetals: "NIL / VERIFIED SAFE",
+    imageUrl: "/fssaijpeg.jpeg",
+    labName: "Food Safety and Standards Authority of India (Govt. of India)",
+    summaryPoints: [
+      "Official FSSAI License Number: 10724997000182 (Government of India)",
+      "Registered Business: S AND S NUTRITION PARTNERS / Stage & Steel Labs",
+      "Full Compliance with Food Safety and Standards (Health Supplements / Nutraceuticals) Norms",
+      "Licensed for Manufacturing, Storage, Packaging & Pan-India Distribution",
+    ],
+  },
+  {
     id: "whey-matrix-coa",
     productName: "100% Microfiltered Whey Protein (Belgian Chocolate & Salted Caramel)",
-    category: "PROTEIN",
+    category: "WHEY PROTEIN",
     batchCode: "BATCH SS-2026-BC/SC",
     testDate: "JANUARY 2026",
     testedProtein: "25.1g per 33g Scoop",
@@ -333,7 +352,11 @@ export default function LabReportsModal() {
 
             {/* Bottom Viewer Guidance Footer */}
             <div className="px-4 py-2.5 bg-[#0E0E0D] border-t border-white/10 flex items-center justify-between text-[11px] font-mono text-[#8E8D88] shrink-0">
-              <span>NABL ACCREDITED LAB TESTING • AOAC HPLC VERIFIED</span>
+              <span>
+                {currentReport.id === "fssai-license"
+                  ? "FOOD SAFETY AND STANDARDS ACT, 2006 • GOVT OF INDIA LICENSED"
+                  : "NABL ACCREDITED LAB TESTING • AOAC HPLC VERIFIED"}
+              </span>
               <span className="hidden sm:inline text-[#9DB25E] font-bold">100% UNCOMPROMISED ACCURACY</span>
             </div>
           </div>
@@ -344,7 +367,9 @@ export default function LabReportsModal() {
               {/* Product Heading */}
               <div>
                 <span className="text-xs font-mono text-[#9DB25E] uppercase tracking-widest font-bold block mb-1">
-                  OFFICIAL CERTIFICATE OF ANALYSIS
+                  {currentReport.id === "fssai-license"
+                    ? "CENTRAL FOOD SAFETY REGISTRATION"
+                    : "OFFICIAL CERTIFICATE OF ANALYSIS"}
                 </span>
                 <h3 className="font-display text-2xl sm:text-3xl font-black uppercase text-[#F5F5F2] leading-tight mb-2">
                   {currentReport.productName}
@@ -358,7 +383,7 @@ export default function LabReportsModal() {
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-3.5 bg-[#0D0D0C] border border-white/10 rounded-xl">
                   <span className="text-[10px] font-mono text-[#8E8D88] uppercase block mb-1">
-                    TESTED PROTEIN / PURITY
+                    {currentReport.id === "fssai-license" ? "REGISTRATION STATUS" : "TESTED PROTEIN / PURITY"}
                   </span>
                   <span className="font-display text-xl font-black text-[#9DB25E] block">
                     {currentReport.testedProtein}
@@ -370,7 +395,7 @@ export default function LabReportsModal() {
 
                 <div className="p-3.5 bg-[#0D0D0C] border border-white/10 rounded-xl">
                   <span className="text-[10px] font-mono text-[#8E8D88] uppercase block mb-1">
-                    HEAVY METALS SCREEN
+                    {currentReport.id === "fssai-license" ? "SAFETY COMPLIANCE" : "HEAVY METALS SCREEN"}
                   </span>
                   <span className="font-display text-xl font-black text-emerald-400 block">
                     PASSED / NIL
@@ -385,7 +410,7 @@ export default function LabReportsModal() {
               <div className="p-4 sm:p-5 bg-[#0D0D0C] border border-[#596238]/40 rounded-xl space-y-3">
                 <span className="text-[11px] font-mono text-[#9DB25E] uppercase font-bold tracking-wider block flex items-center gap-1.5">
                   <Award className="w-4 h-4 text-[#9DB25E]" />
-                  LAB FINDINGS &amp; CERTIFICATION
+                  {currentReport.id === "fssai-license" ? "OFFICIAL LICENSING PARTICULARS" : "LAB FINDINGS & CERTIFICATION"}
                 </span>
                 <ul className="space-y-2 text-xs font-sans text-[#D4D3CD]">
                   {currentReport.summaryPoints.map((point, i) => (

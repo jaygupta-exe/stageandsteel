@@ -16,6 +16,7 @@ import {
   Send,
   Sparkles,
 } from "lucide-react";
+import { soundFX } from "@/lib/sound";
 
 function InstagramIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
@@ -288,9 +289,17 @@ export default function ContactSection() {
             </div>
 
             <div className="p-2.5 bg-[#0D0D0C] border border-white/10 rounded-lg flex items-center justify-between text-[10px] font-mono text-[#8E8D88]">
-              <span className="flex items-center gap-1.5 text-[#9DB25E] font-bold">
-                <ShieldCheck className="w-3.5 h-3.5" /> FSSAI REGISTERED
-              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  soundFX.playClick();
+                  window.dispatchEvent(new CustomEvent("open-lab-reports", { detail: "fssai-license" }));
+                }}
+                className="flex items-center gap-1.5 text-[#9DB25E] hover:text-[#B8D16D] font-bold transition-colors cursor-pointer"
+                title="View Official FSSAI Certificate"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" /> FSSAI REGISTERED (VIEW LIC)
+              </button>
               <span>DELHIVERY DISPATCH HUB</span>
             </div>
           </div>
@@ -311,6 +320,16 @@ export default function ContactSection() {
 
           {/* Legal & Policy Modals Bar */}
           <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 text-[11px]">
+            <button
+              type="button"
+              onClick={() => {
+                soundFX.playClick();
+                window.dispatchEvent(new CustomEvent("open-lab-reports", { detail: "fssai-license" }));
+              }}
+              className="text-[#9DB25E] hover:text-white transition-colors uppercase cursor-pointer font-bold flex items-center gap-1"
+            >
+              <ShieldCheck className="w-3 h-3" /> FSSAI CERTIFICATE
+            </button>
             <button
               type="button"
               onClick={() => openPolicy("refund")}
