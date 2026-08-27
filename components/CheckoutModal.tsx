@@ -204,11 +204,31 @@ export default function CheckoutModal() {
 
       await cashfree.checkout(checkoutOptions);
 
-      // 4. Verify payment status after modal interaction
-      const verifyRes = await fetch(`/api/cashfree/verify-order?orderId=${orderId}`);
-      const verifyData = await verifyRes.json();
+      // 4. Poll for payment status with retries (Handles UPI app-switch delay)
+      let isPaymentPaid = false;
+      let finalVerifyData: any = null;
 
-      if (verifyData.orderStatus === "PAID") {
+      // Poll up to 8 times with a 1.5s delay to allow bank/UPI settlement
+      for (let attempt = 0; attempt < 8; attempt++) {
+        try {
+          const verifyRes = await fetch(`/api/cashfree/verify-order?orderId=${orderId}`);
+          const verifyData = await verifyRes.json();
+          finalVerifyData = verifyData;
+
+          if (verifyData.orderStatus === "PAID") {
+            isPaymentPaid = true;
+            break;
+          } else if (verifyData.orderStatus === "FAILED" || verifyData.orderStatus === "USER_DROPPED") {
+            break;
+          }
+        } catch (pollErr) {
+          console.warn(`Payment verify attempt ${attempt + 1} error:`, pollErr);
+        }
+        // Wait 1.5 seconds before next poll
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+      }
+
+      if (isPaymentPaid) {
         // Automatically create Delhivery Express Shipment
         let waybill = `DELHIVERY_${Date.now()}`;
         try {
@@ -296,11 +316,11 @@ export default function CheckoutModal() {
           emailSent,
         });
         clearCart();
-      } else if (verifyData.orderStatus === "FAILED" || verifyData.orderStatus === "USER_DROPPED") {
-        setError("Payment was not completed. If money was deducted, it will be refunded within 24-48 hours.");
-      } else if (verifyData.orderStatus === "ACTIVE") {
-        // Modal was dismissed or payment is pending
-        console.log("Cashfree modal closed or payment pending for order:", orderId);
+      } else if (finalVerifyData?.orderStatus === "FAILED" || finalVerifyData?.orderStatus === "USER_DROPPED") {
+        setError("Payment was not completed or was cancelled. If money was deducted, it will be refunded within 24-48 hours.");
+      } else if (finalVerifyData?.orderStatus === "ACTIVE") {
+        // If payment is still processing after polling, redirect directly to order-success to keep verifying
+        window.location.href = `/order-success?order_id=${encodeURIComponent(orderId)}&status=PENDING`;
       }
     } catch (err: any) {
       console.error("Payment error:", err);
