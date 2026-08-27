@@ -196,10 +196,10 @@ export default function CheckoutModal() {
       const mode = (environment || "SANDBOX").toLowerCase() === "production" ? "production" : "sandbox";
       const cashfree = await load({ mode });
 
-      // 3. Open Cashfree Checkout Modal
+      // 3. Open Cashfree Hosted Checkout (Seamless redirect for mobile UPI & Cards)
       const checkoutOptions = {
         paymentSessionId,
-        redirectTarget: "_modal" as const,
+        redirectTarget: "_self" as const,
       };
 
       await cashfree.checkout(checkoutOptions);
