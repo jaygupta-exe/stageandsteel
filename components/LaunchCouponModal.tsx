@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { X, Sparkles, Copy, Check, Zap, Tag, ArrowRight, ShieldCheck } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 import { soundFX } from "@/lib/sound";
 
 export default function LaunchCouponModal() {
+  const pathname = usePathname();
   const { applyCoupon, appliedCoupon } = useCart();
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -56,6 +58,10 @@ export default function LaunchCouponModal() {
       }
     }, 600);
   };
+
+  if (pathname === "/order-success") {
+    return null;
+  }
 
   if (!isOpen) {
     return (

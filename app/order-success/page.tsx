@@ -109,7 +109,7 @@ function OrderSuccessContent() {
       </header>
 
       {/* Main Status Container */}
-      <main className="flex-1 max-w-2xl w-full mx-auto px-4 py-10 sm:py-16 flex items-center justify-center">
+      <main className="flex-1 max-w-2xl w-full mx-auto px-4 py-10 pb-32 sm:py-16 sm:pb-36 flex items-center justify-center">
         <div className="w-full bg-[#161715] border border-[#333530] p-6 sm:p-10 shadow-2xl relative overflow-hidden">
           {/* Top Accent Strip */}
           <div
