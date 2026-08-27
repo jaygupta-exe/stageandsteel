@@ -70,6 +70,33 @@ export function validateCoupon(inputCode: string, subtotal: number): ValidationR
   }
 
   const cleanCode = inputCode.trim().toUpperCase();
+
+  // Hidden internal test code for ₹1 live PG testing (Not shown on website)
+  if (cleanCode === "STAGE1TEST") {
+    if (subtotal <= 1) {
+      return {
+        isValid: false,
+        discountAmount: 0,
+        finalAmount: subtotal,
+        message: "Subtotal is already ₹1.",
+      };
+    }
+    const discount = subtotal - 1;
+    return {
+      isValid: true,
+      coupon: {
+        code: "STAGE1TEST",
+        type: "flat",
+        value: discount,
+        description: "Internal Verification Stack",
+        isActive: true,
+      },
+      discountAmount: discount,
+      finalAmount: 1,
+      message: "Verification Code Applied! Total Payable: ₹1.",
+    };
+  }
+
   const coupon = AVAILABLE_COUPONS.find(
     (c) => c.code.toUpperCase() === cleanCode && c.isActive
   );
