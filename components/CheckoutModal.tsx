@@ -208,7 +208,7 @@ export default function CheckoutModal() {
       const verifyRes = await fetch(`/api/cashfree/verify-order?orderId=${orderId}`);
       const verifyData = await verifyRes.json();
 
-      if (verifyData.orderStatus === "PAID" || verifyData.success) {
+      if (verifyData.orderStatus === "PAID") {
         // Automatically create Delhivery Express Shipment
         let waybill = `DELHIVERY_${Date.now()}`;
         try {
@@ -296,6 +296,11 @@ export default function CheckoutModal() {
           emailSent,
         });
         clearCart();
+      } else if (verifyData.orderStatus === "FAILED" || verifyData.orderStatus === "USER_DROPPED") {
+        setError("Payment was not completed. If money was deducted, it will be refunded within 24-48 hours.");
+      } else if (verifyData.orderStatus === "ACTIVE") {
+        // Modal was dismissed or payment is pending
+        console.log("Cashfree modal closed or payment pending for order:", orderId);
       }
     } catch (err: any) {
       console.error("Payment error:", err);
