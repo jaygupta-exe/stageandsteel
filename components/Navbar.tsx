@@ -169,7 +169,6 @@ export default function Navbar({ navbarRef }: NavbarProps) {
                         <ShieldCheck className="w-3.5 h-3.5" />
                         <span>AUTHENTICATED MEMBER</span>
                       </div>
-
                       <button
                         type="button"
                         onClick={() => {
@@ -181,6 +180,17 @@ export default function Navbar({ navbarRef }: NavbarProps) {
                         <Package className="w-3.5 h-3.5 text-[#9DB25E]" />
                         <span>MY ORDERS</span>
                       </button>
+
+                      {user.email?.toLowerCase() === "jaynirala82@gmail.com" && (
+                        <Link
+                          href="/admin"
+                          onClick={() => setIsUserMenuOpen(false)}
+                          className="w-full flex items-center gap-2 px-2 py-2 text-xs font-mono bg-emerald-950/40 text-emerald-300 border border-emerald-500/30 hover:bg-emerald-900/60 transition-colors uppercase tracking-wider font-bold"
+                        >
+                          <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
+                          <span>ADMIN CMS PANEL</span>
+                        </Link>
+                      )}
                     </div>
 
                     <div className="pt-2 border-t border-[#292a26]">

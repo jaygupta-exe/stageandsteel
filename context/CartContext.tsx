@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { soundFX } from "@/lib/sound";
 
-import { Coupon, validateCoupon } from "@/lib/coupons";
+import { Coupon, validateCoupon, getAllCoupons, DEFAULT_COUPONS } from "@/lib/coupons";
 
 export interface CartItem {
   id: string;
@@ -72,6 +72,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
   const [couponCodeStored, setCouponCodeStored] = useState<string>("");
+  const [liveCoupons, setLiveCoupons] = useState<Coupon[]>(DEFAULT_COUPONS);
+
+  // Fetch dynamic coupons from Firestore
+  useEffect(() => {
+    getAllCoupons().then((list) => {
+      if (list && list.length > 0) {
+        setLiveCoupons(list);
+      }
+    });
+  }, []);
 
   // Load cart and coupon from localStorage
   useEffect(() => {
@@ -112,7 +122,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Recalculate discount whenever subtotal or coupon changes
   let discountAmount = 0;
   if (appliedCoupon && subtotal > 0) {
-    const result = validateCoupon(appliedCoupon.code, subtotal);
+    const result = validateCoupon(appliedCoupon.code, subtotal, liveCoupons);
     if (result.isValid) {
       discountAmount = result.discountAmount;
     }
@@ -121,19 +131,19 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Restore coupon from storage on initial load once subtotal is known
   useEffect(() => {
     if (couponCodeStored && subtotal > 0 && !appliedCoupon) {
-      const result = validateCoupon(couponCodeStored, subtotal);
+      const result = validateCoupon(couponCodeStored, subtotal, liveCoupons);
       if (result.isValid && result.coupon) {
         setAppliedCoupon(result.coupon);
       }
     }
-  }, [couponCodeStored, subtotal, appliedCoupon]);
+  }, [couponCodeStored, subtotal, appliedCoupon, liveCoupons]);
 
   const finalTotal = Math.max(0, subtotal - discountAmount);
   const formattedDiscountAmount = `₹${discountAmount.toLocaleString("en-IN")}`;
   const formattedFinalTotal = `₹${finalTotal.toLocaleString("en-IN")}`;
 
   const applyCoupon = (inputCode: string) => {
-    const result = validateCoupon(inputCode, subtotal);
+    const result = validateCoupon(inputCode, subtotal, liveCoupons);
     if (result.isValid && result.coupon) {
       soundFX.playClick();
       setAppliedCoupon(result.coupon);

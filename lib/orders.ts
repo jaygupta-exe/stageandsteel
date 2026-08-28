@@ -6,6 +6,9 @@ import {
   orderBy,
   getDocs,
   addDoc,
+  doc,
+  updateDoc,
+  deleteDoc,
   Timestamp,
 } from "@/lib/firebase";
 
@@ -86,5 +89,79 @@ export async function getUserOrders(userId: string): Promise<OrderRecord[]> {
   } catch (err) {
     console.error("Failed to fetch user orders:", err);
     return [];
+  }
+}
+
+/**
+ * [ADMIN] Get all orders in the entire system, sorted newest first.
+ */
+export async function getAllOrders(): Promise<OrderRecord[]> {
+  if (!db) return [];
+
+  try {
+    const ordersRef = collection(db, "orders");
+    const q = query(ordersRef, orderBy("createdAt", "desc"));
+    const snapshot = await getDocs(q);
+    return snapshot.docs.map((docSnap) => ({
+      ...docSnap.data(),
+      id: docSnap.id,
+    })) as OrderRecord[];
+  } catch (err) {
+    console.error("Failed to fetch all orders for admin:", err);
+    return [];
+  }
+}
+
+/**
+ * [ADMIN] Update the status of an order.
+ */
+export async function updateOrderStatus(
+  orderDocId: string,
+  status: OrderRecord["status"]
+): Promise<boolean> {
+  if (!db) throw new Error("Firestore not initialized.");
+
+  try {
+    const docRef = doc(db, "orders", orderDocId);
+    await updateDoc(docRef, { status });
+    return true;
+  } catch (err) {
+    console.error(`Failed to update status for order ${orderDocId}:`, err);
+    throw err;
+  }
+}
+
+/**
+ * [ADMIN] Update or attach a shipping waybill / tracking ID.
+ */
+export async function updateOrderWaybill(
+  orderDocId: string,
+  waybill: string
+): Promise<boolean> {
+  if (!db) throw new Error("Firestore not initialized.");
+
+  try {
+    const docRef = doc(db, "orders", orderDocId);
+    await updateDoc(docRef, { waybill: waybill.trim() });
+    return true;
+  } catch (err) {
+    console.error(`Failed to update waybill for order ${orderDocId}:`, err);
+    throw err;
+  }
+}
+
+/**
+ * [ADMIN] Delete an order record (e.g. test orders).
+ */
+export async function deleteOrder(orderDocId: string): Promise<boolean> {
+  if (!db) throw new Error("Firestore not initialized.");
+
+  try {
+    const docRef = doc(db, "orders", orderDocId);
+    await deleteDoc(docRef);
+    return true;
+  } catch (err) {
+    console.error(`Failed to delete order ${orderDocId}:`, err);
+    throw err;
   }
 }
