@@ -59,7 +59,7 @@ export default function LaunchCouponModal() {
     }, 600);
   };
 
-  if (pathname === "/order-success") {
+  if (pathname && (pathname.startsWith("/admin") || pathname === "/order-success")) {
     return null;
   }
 

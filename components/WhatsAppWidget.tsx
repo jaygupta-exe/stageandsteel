@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { usePathname } from "next/navigation";
 
 const WHATSAPP_NUMBER = "919779159169"; // Divesh Mehan
 const PREFILLED_MESSAGE = encodeURIComponent(
@@ -9,7 +10,12 @@ const PREFILLED_MESSAGE = encodeURIComponent(
 const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}?text=${PREFILLED_MESSAGE}`;
 
 export default function WhatsAppWidget() {
+  const pathname = usePathname();
   const [isHovered, setIsHovered] = useState(false);
+
+  if (pathname && pathname.startsWith("/admin")) {
+    return null;
+  }
 
   return (
     <a
