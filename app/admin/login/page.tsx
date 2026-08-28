@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { isAdminUser } from "@/lib/adminAuth";
 import { ShieldCheck, Lock, Mail, ArrowRight, Loader2, Sparkles, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-export default function AdminLoginPage() {
+function AdminLoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get("redirect") || "/admin";
@@ -210,5 +210,22 @@ export default function AdminLoginPage() {
         Stage & Steel Nutrition © 2026 • Encrypted Administrator Clearance Required
       </footer>
     </div>
+  );
+}
+
+export default function AdminLoginPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#070907] text-white flex flex-col items-center justify-center p-6">
+          <Loader2 className="w-8 h-8 text-emerald-400 animate-spin mb-4" />
+          <p className="text-xs font-mono text-neutral-400 uppercase tracking-widest">
+            Loading Stage & Steel Admin Portal...
+          </p>
+        </div>
+      }
+    >
+      <AdminLoginForm />
+    </Suspense>
   );
 }
