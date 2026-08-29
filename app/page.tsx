@@ -140,6 +140,23 @@ function StructuredData() {
         seller: { "@type": "Organization", name: "Stage & Steel" },
       },
     },
+    {
+      "@type": "Product",
+      name: "Stage & Steel Liquid L-Carnitine 2000mg — Mix Fruit",
+      description:
+        "High-potency liquid L-Carnitine delivering 2000mg active L-Carnitine per serving in Mix Fruit flavor. Stimulant-free fat metabolizer & endurance fuel.",
+      brand: { "@type": "Brand", name: "Stage & Steel" },
+      sku: "SS-LC-MF-450ML",
+      image: "https://stageandsteel.in/l%20carnitine%20liquid.png",
+      offers: {
+        "@type": "Offer",
+        url: "https://stageandsteel.in/#products",
+        priceCurrency: "INR",
+        price: "1299",
+        availability: "https://schema.org/PreOrder",
+        seller: { "@type": "Organization", name: "Stage & Steel" },
+      },
+    },
   ];
 
   const productListSchema = {

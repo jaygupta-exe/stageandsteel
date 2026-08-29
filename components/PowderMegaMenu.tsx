@@ -64,6 +64,15 @@ export default function PowderMegaMenu({
     },
     {
       num: "04",
+      title: "COMING SOON",
+      href: "#products",
+      category: "L-CARNITINE LIQUID",
+      spec: "2000MG // FAT METABOLIZER // MIX FRUIT",
+      desc: "High-potency pure Liquid L-Carnitine delivering 2000mg per serving in mouthwatering Mix Fruit flavor for rapid fat oxidation and stimulant-free energy.",
+      badge: "LAB PIPELINE",
+    },
+    {
+      num: "05",
       title: "ABOUT US",
       href: "#about",
       category: "MEET THE FOUNDERS",
@@ -72,7 +81,7 @@ export default function PowderMegaMenu({
       badge: "FOUNDERS & VISION",
     },
     {
-      num: "05",
+      num: "06",
       title: "CONTACT",
       href: "#contact",
       category: "SUPPORT & B2B",
@@ -167,6 +176,8 @@ export default function PowderMegaMenu({
                       window.dispatchEvent(new CustomEvent("filter-category", { detail: "CREATINE" }));
                     } else if (item.title.includes("EAA")) {
                       window.dispatchEvent(new CustomEvent("filter-category", { detail: "EAA" }));
+                    } else if (item.title.includes("SOON")) {
+                      window.dispatchEvent(new CustomEvent("filter-category", { detail: "COMING_SOON" }));
                     }
                     onClose();
                   }}

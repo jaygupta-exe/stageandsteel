@@ -70,6 +70,10 @@ export default function Navbar({ navbarRef }: NavbarProps) {
       window.dispatchEvent(new CustomEvent("filter-category", { detail: "PROTEIN" }));
     } else if (linkName === "CREATINE") {
       window.dispatchEvent(new CustomEvent("filter-category", { detail: "CREATINE" }));
+    } else if (linkName === "EAA") {
+      window.dispatchEvent(new CustomEvent("filter-category", { detail: "EAA" }));
+    } else if (linkName === "COMING SOON") {
+      window.dispatchEvent(new CustomEvent("filter-category", { detail: "COMING_SOON" }));
     }
   };
 

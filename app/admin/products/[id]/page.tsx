@@ -269,8 +269,22 @@ export default function ProductEditPage({ params }: { params: Promise<{ id: stri
               <option value="PROTEIN">PROTEIN</option>
               <option value="CREATINE">CREATINE</option>
               <option value="EAA">EAA</option>
+              <option value="L-CARNITINE">L-CARNITINE</option>
               <option value="PRE-WORKOUT">PRE-WORKOUT</option>
             </select>
+          </div>
+
+          <div className="flex items-center gap-3 pt-6">
+            <input
+              type="checkbox"
+              id="isComingSoon"
+              checked={Boolean(formData.isComingSoon)}
+              onChange={(e) => setFormData({ ...formData, isComingSoon: e.target.checked })}
+              className="w-4 h-4 rounded border-neutral-700 text-emerald-500 focus:ring-emerald-500 bg-[#141a15]"
+            />
+            <label htmlFor="isComingSoon" className="text-neutral-300 font-mono text-xs cursor-pointer select-none">
+              Mark as Coming Soon (Lab Pipeline)
+            </label>
           </div>
 
           <div className="md:col-span-2">

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { X, ChevronLeft, ChevronRight, ShieldCheck, Award, Check, ArrowRight, Plus, Minus } from "lucide-react";
+import { X, ChevronLeft, ChevronRight, ShieldCheck, Award, Check, ArrowRight, Plus, Minus, Bell, MessageCircle, Sparkles } from "lucide-react";
 
 import { useCart } from "@/context/CartContext";
 
@@ -32,6 +32,8 @@ export interface ProductData {
   nutritionFacts: { name: string; amount: string; dailyValue?: string }[];
   suggestedUse: string;
   labReportUrl?: string;
+  isComingSoon?: boolean;
+  comingSoonDate?: string;
 }
 
 interface ProductModalProps {
@@ -125,9 +127,15 @@ export default function ProductModal({
               <span className="w-2 h-2 rounded-full bg-[#8FA355] animate-pulse" />
               <span>STAGE &amp; STEEL LAB // {product.batchCode}</span>
             </div>
-            <span className="hidden md:inline-block px-2.5 py-0.5 bg-[#596238]/20 border border-[#596238]/40 text-[10px] font-mono text-[#9DB25E] uppercase rounded font-bold">
-              HPLC 3RD-PARTY VERIFIED • 100% PURE
-            </span>
+            {product.isComingSoon ? (
+              <span className="inline-block px-2.5 py-0.5 bg-amber-500/20 border border-amber-500/40 text-[10px] font-mono text-amber-400 uppercase rounded font-bold animate-pulse">
+                LAB PIPELINE // COMING SOON
+              </span>
+            ) : (
+              <span className="hidden md:inline-block px-2.5 py-0.5 bg-[#596238]/20 border border-[#596238]/40 text-[10px] font-mono text-[#9DB25E] uppercase rounded font-bold">
+                HPLC 3RD-PARTY VERIFIED • 100% PURE
+              </span>
+            )}
           </div>
 
           <button
@@ -440,11 +448,11 @@ export default function ProductModal({
             {/* Bottom E-Commerce Actions & Price */}
             <div className="pt-6 mt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4">
               
-              {/* Price & Quantity */}
+              {/* Price & Quantity / Status */}
               <div className="flex items-center gap-6 w-full sm:w-auto justify-between sm:justify-start">
                 <div>
                   <span className="text-[9px] font-mono text-[#8E8D88] tracking-widest uppercase block font-bold">
-                    PRICE // TAX INCLUDED
+                    {product.isComingSoon ? "EXPECTED LAUNCH PRICE" : "PRICE // TAX INCLUDED"}
                   </span>
                   <div className="flex items-baseline gap-2">
                     <span className="font-display text-3xl sm:text-4xl font-black text-[#F5F5F2]">
@@ -458,50 +466,71 @@ export default function ProductModal({
                   </div>
                 </div>
 
-                {/* Quantity Selector */}
-                <div className="flex items-center border border-white/15 bg-[#0D0D0C] rounded-lg overflow-hidden">
-                  <button
-                    type="button"
-                    onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="p-2.5 text-[#8E8D88] hover:text-[#F5F5F2] hover:bg-white/5 transition-colors cursor-pointer"
-                  >
-                    <Minus className="w-3.5 h-3.5" />
-                  </button>
-                  <span className="px-3 text-xs font-mono font-bold text-[#F5F5F2]">
-                    {quantity}
+                {/* Quantity Selector (Only if not coming soon) */}
+                {!product.isComingSoon ? (
+                  <div className="flex items-center border border-white/15 bg-[#0D0D0C] rounded-lg overflow-hidden">
+                    <button
+                      type="button"
+                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
+                      className="p-2.5 text-[#8E8D88] hover:text-[#F5F5F2] hover:bg-white/5 transition-colors cursor-pointer"
+                    >
+                      <Minus className="w-3.5 h-3.5" />
+                    </button>
+                    <span className="px-3 text-xs font-mono font-bold text-[#F5F5F2]">
+                      {quantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity((q) => q + 1)}
+                      className="p-2.5 text-[#8E8D88] hover:text-[#F5F5F2] hover:bg-white/5 transition-colors cursor-pointer"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
+                ) : (
+                  <span className="px-3 py-1.5 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono text-[10px] uppercase tracking-wider rounded-md font-bold flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>DROPPING SOON</span>
                   </span>
-                  <button
-                    type="button"
-                    onClick={() => setQuantity((q) => q + 1)}
-                    className="p-2.5 text-[#8E8D88] hover:text-[#F5F5F2] hover:bg-white/5 transition-colors cursor-pointer"
-                  >
-                    <Plus className="w-3.5 h-3.5" />
-                  </button>
-                </div>
+                )}
               </div>
 
-              {/* Order Now Button */}
+              {/* Order Now or Notify Me Button */}
               <div className="w-full sm:w-auto">
-                <button
-                  type="button"
-                  onClick={() => {
-                    const flavorThumbnail =
-                      (selectedFlavor && product.flavorThumbnails?.[selectedFlavor]) || product.thumbnail;
-                    addToCart(
-                      {
-                        ...product,
-                        thumbnail: flavorThumbnail,
-                      },
-                      quantity,
-                      selectedFlavor
-                    );
-                    onClose();
-                  }}
-                  className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-editorial text-xs sm:text-sm font-bold tracking-widest uppercase rounded-lg transition-all duration-200 cursor-pointer border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.35)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.55)] active:scale-98"
-                >
-                  <span>ADD TO CART</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+                {product.isComingSoon ? (
+                  <a
+                    href={`https://wa.me/919779159169?text=${encodeURIComponent(
+                      `Hi Stage & Steel team! I want to be notified as soon as ${product.name} launches. Please add me to the early access list!`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-3.5 bg-amber-600 hover:bg-amber-500 text-[#111110] font-sans text-xs sm:text-sm font-black tracking-widest uppercase rounded-lg transition-all duration-200 cursor-pointer border border-amber-400/50 shadow-[0_4px_25px_rgba(217,119,6,0.35)] hover:shadow-[0_4px_30px_rgba(217,119,6,0.55)] active:scale-98"
+                  >
+                    <Bell className="w-4 h-4" />
+                    <span>NOTIFY ME ON LAUNCH</span>
+                  </a>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const flavorThumbnail =
+                        (selectedFlavor && product.flavorThumbnails?.[selectedFlavor]) || product.thumbnail;
+                      addToCart(
+                        {
+                          ...product,
+                          thumbnail: flavorThumbnail,
+                        },
+                        quantity,
+                        selectedFlavor
+                      );
+                      onClose();
+                    }}
+                    className="w-full sm:w-auto inline-flex items-center justify-center gap-3 px-8 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-editorial text-xs sm:text-sm font-bold tracking-widest uppercase rounded-lg transition-all duration-200 cursor-pointer border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.35)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.55)] active:scale-98"
+                  >
+                    <span>ADD TO CART</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </button>
+                )}
               </div>
 
             </div>

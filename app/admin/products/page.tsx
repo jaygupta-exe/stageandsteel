@@ -94,7 +94,7 @@ export default function AdminProductsPage() {
     }
   };
 
-  const categories = ["ALL", "PROTEIN", "CREATINE", "EAA"];
+  const categories = ["ALL", "PROTEIN", "CREATINE", "EAA", "L-CARNITINE"];
 
   return (
     <div className="space-y-6">

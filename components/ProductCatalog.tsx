@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { ArrowRight, ArrowUpRight, ShieldCheck, Images, Check, Sparkles, Zap, Flame } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ShieldCheck, Images, Check, Sparkles, Zap, Flame, Bell } from "lucide-react";
 import ProductModal, { ProductData } from "./ProductModal";
 import { useCart } from "@/context/CartContext";
 import { DEFAULT_PRODUCTS, getAllProducts } from "@/lib/products";
@@ -43,6 +43,8 @@ export default function ProductCatalog() {
         setActiveCategory("CREATINE");
       } else if (hash.includes("eaa") || hash.includes("amino")) {
         setActiveCategory("EAA");
+      } else if (hash.includes("carnitine") || hash.includes("soon") || hash.includes("pipeline")) {
+        setActiveCategory("COMING_SOON");
       }
     };
 
@@ -61,6 +63,7 @@ export default function ProductCatalog() {
     { id: "PROTEIN", label: "PROTEIN", count: `0${productsList.filter((p) => p.category === "PROTEIN").length}`.slice(-2) },
     { id: "CREATINE", label: "CREATINE", count: `0${productsList.filter((p) => p.category === "CREATINE").length}`.slice(-2) },
     { id: "EAA", label: "EAA", count: `0${productsList.filter((p) => p.category === "EAA").length}`.slice(-2) },
+    { id: "COMING_SOON", label: "COMING SOON", count: `0${productsList.filter((p) => p.isComingSoon || p.category === "L-CARNITINE").length}`.slice(-2) },
   ];
 
   const products = productsList;
@@ -68,6 +71,8 @@ export default function ProductCatalog() {
   const filteredProducts =
     activeCategory === "ALL"
       ? products
+      : activeCategory === "COMING_SOON"
+      ? products.filter((p) => p.isComingSoon || p.category === "L-CARNITINE")
       : products.filter((p) => p.category === activeCategory);
 
   return (
@@ -173,10 +178,17 @@ export default function ProductCatalog() {
 
                   {/* Top Meta Bar */}
                   <div className="w-full flex items-center justify-between z-10">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#121211]/90 backdrop-blur-md border border-[#596238]/40 rounded text-[10px] font-mono font-bold tracking-widest text-[#9DB25E] uppercase shadow-sm">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#8FA355]" />
-                      {product.category}
-                    </span>
+                    {product.isComingSoon ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-amber-500/20 backdrop-blur-md border border-amber-500/50 rounded text-[10px] font-mono font-bold tracking-widest text-amber-400 uppercase shadow-sm animate-pulse">
+                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                        COMING SOON // {product.category}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#121211]/90 backdrop-blur-md border border-[#596238]/40 rounded text-[10px] font-mono font-bold tracking-widest text-[#9DB25E] uppercase shadow-sm">
+                        <span className="w-1.5 h-1.5 rounded-full bg-[#8FA355]" />
+                        {product.category}
+                      </span>
+                    )}
                     <span className="text-[10px] font-mono text-[#A3A29E] uppercase tracking-widest bg-white/5 px-2.5 py-1 rounded border border-white/5">
                       {product.servings} • {product.netWeight}
                     </span>
@@ -215,11 +227,11 @@ export default function ProductCatalog() {
                 {/* 2. TITANIUM SPECS & CONVERSION SUITE */}
                 <div className="p-6 sm:p-8 flex flex-col justify-between flex-1 bg-[#151514]">
                   <div>
-                    {/* 1. TOP: PROMINENT PRODUCT PRICE ROW (User: "aur price upar ana chahiye baki sb niche") */}
+                    {/* 1. TOP: PROMINENT PRODUCT PRICE ROW */}
                     <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
                       <div>
                         <span className="text-[10px] font-mono text-[#8E8D88] uppercase tracking-wider block font-bold">
-                          PRODUCT PRICE
+                          {product.isComingSoon ? "EXPECTED LAUNCH PRICE" : "PRODUCT PRICE"}
                         </span>
                         <div className="flex items-baseline gap-2.5 mt-0.5">
                           <span className="font-sans text-3xl sm:text-4xl font-extrabold text-[#F5F5F2] tracking-tight">
@@ -234,12 +246,25 @@ export default function ProductCatalog() {
                       </div>
 
                       <div className="flex flex-col items-end gap-1">
-                        <span className="px-2.5 py-0.5 bg-[#596238]/30 text-[#9DB25E] text-[11px] font-mono font-bold rounded border border-[#596238]/40">
-                          SAVE 19%
-                        </span>
-                        <span className="text-[10px] font-mono text-[#8E8D88] uppercase">
-                          FREE DELIVERY
-                        </span>
+                        {product.isComingSoon ? (
+                          <>
+                            <span className="px-2.5 py-0.5 bg-amber-500/20 text-amber-400 text-[11px] font-mono font-bold rounded border border-amber-500/40 animate-pulse">
+                              LAB PIPELINE
+                            </span>
+                            <span className="text-[10px] font-mono text-[#8E8D88] uppercase">
+                              DROPPING SOON
+                            </span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="px-2.5 py-0.5 bg-[#596238]/30 text-[#9DB25E] text-[11px] font-mono font-bold rounded border border-[#596238]/40">
+                              SAVE 19%
+                            </span>
+                            <span className="text-[10px] font-mono text-[#8E8D88] uppercase">
+                              FREE DELIVERY
+                            </span>
+                          </>
+                        )}
                       </div>
                     </div>
 
@@ -316,7 +341,7 @@ export default function ProductCatalog() {
                     </div>
                   </div>
 
-                  {/* Bottom Action Suite: View Packaging & ADD TO CART */}
+                  {/* Bottom Action Suite: View Packaging & Action Button */}
                   <div className="pt-5 flex items-center justify-between gap-3">
                     <button
                       type="button"
@@ -328,23 +353,34 @@ export default function ProductCatalog() {
                       <span className="hidden sm:inline">PACKAGING</span>
                     </button>
 
-                    <button
-                      type="button"
-                      onClick={() =>
-                        addToCart(
-                          {
-                            ...product,
-                            thumbnail: currentThumbnail,
-                          },
-                          1,
-                          currentSelectedFlavor
-                        )
-                      }
-                      className="flex-1 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-sans text-xs sm:text-sm font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-lg border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.3)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.5)] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
-                    >
-                      <span>ADD TO CART</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </button>
+                    {product.isComingSoon ? (
+                      <button
+                        type="button"
+                        onClick={() => setSelectedProduct(product)}
+                        className="flex-1 py-3.5 bg-amber-600 hover:bg-amber-500 text-[#111110] font-sans text-xs sm:text-sm font-black tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-lg border border-amber-400/50 shadow-[0_4px_20px_rgba(217,119,6,0.35)] hover:shadow-[0_4px_25px_rgba(217,119,6,0.55)] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+                      >
+                        <Bell className="w-4 h-4" />
+                        <span>NOTIFY ME ON LAUNCH</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          addToCart(
+                            {
+                              ...product,
+                              thumbnail: currentThumbnail,
+                            },
+                            1,
+                            currentSelectedFlavor
+                          )
+                        }
+                        className="flex-1 py-3.5 bg-[#596238] hover:bg-[#48502B] text-[#F4F4F1] font-sans text-xs sm:text-sm font-bold tracking-widest uppercase transition-all duration-200 cursor-pointer rounded-lg border border-[#7C8B4C]/40 shadow-[0_4px_20px_rgba(89,98,56,0.3)] hover:shadow-[0_4px_25px_rgba(89,98,56,0.5)] hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2"
+                      >
+                        <span>ADD TO CART</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
+                    )}
                   </div>
                 </div>
 

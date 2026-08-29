@@ -308,6 +308,48 @@ export const DEFAULT_PRODUCTS: ProductData[] = [
     suggestedUse:
       "Mix 1 scoop (8.5g) with 300–400ml cold water in your shaker during or immediately after high-intensity training. Sip throughout workout for sustained muscular endurance.",
   },
+  {
+    id: "stage-l-carnitine-liquid",
+    name: "STAGE L-CARNITINE LIQUID",
+    subtitle: "2000MG PURE L-CARNITINE // FAT METABOLIZER & ENERGY SUPPORT",
+    category: "L-CARNITINE",
+    price: "₹1,299",
+    originalPrice: "₹1,699",
+    servings: "30 Servings",
+    netWeight: "450 ML (15.2 FL OZ)",
+    thumbnail: "/l carnitine liquid.png",
+    gallery: [
+      {
+        label: "01 FRONT PACKAGING",
+        url: "/l carnitine liquid.png",
+      },
+    ],
+    accentColor: "#D12626",
+    batchCode: "BATCH LC-2026-MF",
+    isComingSoon: true,
+    flavors: [
+      { name: "Mix Fruit", color: "#D12626", inStock: false },
+    ],
+    specs: [
+      { label: "CARNITINE", value: "2000", unit: "MG" },
+      { label: "SERVING", value: "15", unit: "ML" },
+      { label: "VOLUME", value: "450", unit: "ML" },
+    ],
+    description:
+      "Stage & Steel High-Potency Liquid L-Carnitine delivering 2000mg active L-Carnitine per 15ml serving in mouthwatering Mix Fruit flavor. Formulated to transport long-chain fatty acids into cellular mitochondria for rapid ATP energy production, accelerated fat metabolism, and enhanced endurance without stimulants or crash.",
+    nutritionFacts: [
+      { name: "L-Carnitine (Pure Free-Form)", amount: "2,000mg" },
+      { name: "Serving Size", amount: "15ml (1 Tablespoon)" },
+      { name: "Servings per Bottle", amount: "30 Servings" },
+      { name: "Total Volume", amount: "450ml / 15.2163 oz" },
+      { name: "Flavor", amount: "Mix Fruit Infusion" },
+      { name: "Sugar / Fat / Stimulants", amount: "0g / 0g / 0mg" },
+      { name: "Energy / Calories", amount: "0 kcal" },
+      { name: "Vitamin B5 (Pantothenic Acid)", amount: "10mg (100% RDA)" },
+    ],
+    suggestedUse:
+      "Shake well before use. Consume 1 tablespoon (15ml) of Liquid L-Carnitine daily, preferably 30–45 minutes prior to workout or cardio sessions on an empty stomach for maximum fat metabolization.",
+  },
 ];
 
 /**
