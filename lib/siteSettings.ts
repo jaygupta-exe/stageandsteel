@@ -58,8 +58,9 @@ export async function saveSiteSettings(settings: Partial<SiteSettings>): Promise
   if (!db) throw new Error("Firestore not initialized.");
 
   try {
+    const cleanSettings = JSON.parse(JSON.stringify(settings));
     const docRef = doc(db, "site_settings", "global");
-    await setDoc(docRef, settings, { merge: true });
+    await setDoc(docRef, cleanSettings, { merge: true });
     return true;
   } catch (error) {
     console.error("Error saving site settings:", error);

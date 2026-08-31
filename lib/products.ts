@@ -428,14 +428,31 @@ export async function getProductById(id: string): Promise<ProductData | null> {
  */
 export async function saveProduct(product: ProductData): Promise<boolean> {
   if (!db) {
-    throw new Error("Firestore is not initialized.");
+    throw new Error("Firestore is not initialized. Please ensure Firebase configuration is valid.");
   }
 
   try {
+    // 1. Sanitize product payload by stripping undefined properties that can crash/stall Firestore
+    const cleanProduct = JSON.parse(JSON.stringify(product));
     const docRef = doc(db, "products", product.id);
-    await setDoc(docRef, product, { merge: true });
+
+    // 2. Wrap with a 10-second timeout guarantee
+    const savePromise = setDoc(docRef, cleanProduct, { merge: true });
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(
+        () =>
+          reject(
+            new Error(
+              "Save request timed out after 10s. Please check Firestore security rules and network connection."
+            )
+          ),
+        10000
+      )
+    );
+
+    await Promise.race([savePromise, timeoutPromise]);
     return true;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error saving product to Firestore:", error);
     throw error;
   }
@@ -451,7 +468,15 @@ export async function deleteProduct(id: string): Promise<boolean> {
 
   try {
     const docRef = doc(db, "products", id);
-    await deleteDoc(docRef);
+    const deletePromise = deleteDoc(docRef);
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(
+        () => reject(new Error("Delete request timed out after 10s.")),
+        10000
+      )
+    );
+
+    await Promise.race([deletePromise, timeoutPromise]);
     return true;
   } catch (error) {
     console.error(`Error deleting product ${id}:`, error);
@@ -467,8 +492,9 @@ export async function seedProducts(): Promise<{ count: number }> {
 
   let count = 0;
   for (const product of DEFAULT_PRODUCTS) {
+    const cleanProduct = JSON.parse(JSON.stringify(product));
     const docRef = doc(db, "products", product.id);
-    await setDoc(docRef, product, { merge: true });
+    await setDoc(docRef, cleanProduct, { merge: true });
     count++;
   }
   return { count };

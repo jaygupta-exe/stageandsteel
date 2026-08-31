@@ -71,8 +71,9 @@ export async function saveCoupon(coupon: Coupon): Promise<boolean> {
   if (!db) throw new Error("Firestore is not initialized.");
 
   const cleanCode = coupon.code.trim().toUpperCase();
+  const cleanPayload = JSON.parse(JSON.stringify({ ...coupon, code: cleanCode }));
   const docRef = doc(db, "coupons", cleanCode);
-  await setDoc(docRef, { ...coupon, code: cleanCode }, { merge: true });
+  await setDoc(docRef, cleanPayload, { merge: true });
   return true;
 }
 
