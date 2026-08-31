@@ -353,10 +353,24 @@ export const DEFAULT_PRODUCTS: ProductData[] = [
 ];
 
 /**
- * Fetch all products from Firestore, falling back to and merging with DEFAULT_PRODUCTS
- * so all catalog items are always available.
+ * Fetch all products from Firestore via Server API (falling back to direct Firestore & DEFAULT_PRODUCTS).
  */
 export async function getAllProducts(): Promise<ProductData[]> {
+  // If running in browser, try the Server API route first for maximum reliability
+  if (typeof window !== "undefined") {
+    try {
+      const res = await fetch("/api/admin/products", { cache: "no-store" });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+          return data.products;
+        }
+      }
+    } catch (apiErr) {
+      console.warn("Client fetch /api/admin/products failed, falling back to direct Firestore:", apiErr);
+    }
+  }
+
   if (!db) return DEFAULT_PRODUCTS;
 
   try {
@@ -378,7 +392,6 @@ export async function getAllProducts(): Promise<ProductData[]> {
     const allProducts: ProductData[] = [];
     const processedIds = new Set<string>();
 
-    // 1. Include default products (overridden with Firestore data if edited)
     for (const defProd of DEFAULT_PRODUCTS) {
       if (firestoreMap.has(defProd.id)) {
         allProducts.push(firestoreMap.get(defProd.id)!);
@@ -388,7 +401,6 @@ export async function getAllProducts(): Promise<ProductData[]> {
       processedIds.add(defProd.id);
     }
 
-    // 2. Add any additional custom products created through CMS
     firestoreMap.forEach((product, id) => {
       if (!processedIds.has(id)) {
         allProducts.push(product);
@@ -406,6 +418,10 @@ export async function getAllProducts(): Promise<ProductData[]> {
  * Fetch a single product by ID.
  */
 export async function getProductById(id: string): Promise<ProductData | null> {
+  const all = await getAllProducts();
+  const found = all.find((p) => p.id === id);
+  if (found) return found;
+
   if (!db) {
     return DEFAULT_PRODUCTS.find((p) => p.id === id) || null;
   }
@@ -424,28 +440,44 @@ export async function getProductById(id: string): Promise<ProductData | null> {
 }
 
 /**
- * Create or update a product in Firestore.
+ * Create or update a product in Firestore (Server API + Direct fallback).
  */
 export async function saveProduct(product: ProductData): Promise<boolean> {
+  const cleanProduct = JSON.parse(JSON.stringify(product));
+
+  // 1. Try server API route first in browser
+  if (typeof window !== "undefined") {
+    try {
+      const res = await fetch("/api/admin/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(cleanProduct),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Server failed to save product.");
+      }
+      return true;
+    } catch (apiErr: any) {
+      console.warn("API route save failed, attempting direct Firestore save:", apiErr);
+      if (!db) {
+        throw apiErr;
+      }
+    }
+  }
+
+  // 2. Direct Firestore fallback
   if (!db) {
     throw new Error("Firestore is not initialized. Please ensure Firebase configuration is valid.");
   }
 
   try {
-    // 1. Sanitize product payload by stripping undefined properties that can crash/stall Firestore
-    const cleanProduct = JSON.parse(JSON.stringify(product));
     const docRef = doc(db, "products", product.id);
-
-    // 2. Wrap with a 10-second timeout guarantee
     const savePromise = setDoc(docRef, cleanProduct, { merge: true });
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(
-        () =>
-          reject(
-            new Error(
-              "Save request timed out after 10s. Please check Firestore security rules and network connection."
-            )
-          ),
+        () => reject(new Error("Direct Firestore save timed out. Please verify Firestore rules.")),
         10000
       )
     );
@@ -462,6 +494,22 @@ export async function saveProduct(product: ProductData): Promise<boolean> {
  * Delete a product from Firestore.
  */
 export async function deleteProduct(id: string): Promise<boolean> {
+  if (typeof window !== "undefined") {
+    try {
+      const res = await fetch(`/api/admin/products?id=${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to delete product via API.");
+      }
+      return true;
+    } catch (apiErr) {
+      console.warn("API route delete failed, attempting direct Firestore delete:", apiErr);
+      if (!db) throw apiErr;
+    }
+  }
+
   if (!db) {
     throw new Error("Firestore is not initialized.");
   }
@@ -471,7 +519,7 @@ export async function deleteProduct(id: string): Promise<boolean> {
     const deletePromise = deleteDoc(docRef);
     const timeoutPromise = new Promise<never>((_, reject) =>
       setTimeout(
-        () => reject(new Error("Delete request timed out after 10s.")),
+        () => reject(new Error("Delete request timed out.")),
         10000
       )
     );
@@ -488,6 +536,22 @@ export async function deleteProduct(id: string): Promise<boolean> {
  * Pre-populate Firestore with the initial default products if collection is empty.
  */
 export async function seedProducts(): Promise<{ count: number }> {
+  if (typeof window !== "undefined") {
+    try {
+      const res = await fetch("/api/admin/products", {
+        method: "PUT",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to seed default catalog.");
+      }
+      return { count: data.count || DEFAULT_PRODUCTS.length };
+    } catch (apiErr) {
+      console.warn("API route seed failed, attempting direct Firestore seed:", apiErr);
+      if (!db) throw apiErr;
+    }
+  }
+
   if (!db) throw new Error("Firestore not initialized.");
 
   let count = 0;

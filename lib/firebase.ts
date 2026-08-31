@@ -49,15 +49,17 @@ let auth: Auth | undefined;
 let db: Firestore | undefined;
 let googleProvider: GoogleAuthProvider | undefined;
 
-if (typeof window !== "undefined") {
-  try {
+try {
+  if (isFirebaseConfigured) {
     app = getApps().length > 0 ? getApp() : initializeApp(firebaseConfig);
-    auth = getAuth(app);
     db = getFirestore(app);
-    googleProvider = new GoogleAuthProvider();
-  } catch (error) {
-    console.warn("Firebase initialization warning (credentials may be missing):", error);
+    if (typeof window !== "undefined") {
+      auth = getAuth(app);
+      googleProvider = new GoogleAuthProvider();
+    }
   }
+} catch (error) {
+  console.warn("Firebase initialization warning (credentials may be missing):", error);
 }
 
 export {
