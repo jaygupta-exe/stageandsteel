@@ -3,6 +3,7 @@ import { User } from "firebase/auth";
 // Default admin emails list. Can be extended via NEXT_PUBLIC_ADMIN_EMAILS env variable.
 export const DEFAULT_ADMIN_EMAILS = [
   "jaynirala82@gmail.com",
+  "stageandsteel26@gmail.com",
 ];
 
 export function getAdminEmails(): string[] {

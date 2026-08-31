@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { isAdminUser } from "@/lib/adminAuth";
+import { isAdminUser, getAdminEmails } from "@/lib/adminAuth";
 import { ShieldAlert, LogOut, ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import Link from "next/link";
 
@@ -66,8 +66,10 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
           </p>
 
           <div className="p-4 bg-neutral-900/80 rounded-xl border border-neutral-800 text-xs text-neutral-400 font-mono text-left mb-6">
-            <p className="text-neutral-300 font-semibold mb-1">Required Master Email:</p>
-            <p className="text-emerald-400">jaynirala82@gmail.com</p>
+            <p className="text-neutral-300 font-semibold mb-1">Authorized Admin Emails:</p>
+            {getAdminEmails().map((email) => (
+              <p key={email} className="text-emerald-400">{email}</p>
+            ))}
           </div>
 
           <div className="flex flex-col sm:flex-row gap-3">

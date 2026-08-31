@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { isAdminUser } from "@/lib/adminAuth";
+import { isAdminUser, getAdminEmails } from "@/lib/adminAuth";
 import { ShieldCheck, Lock, Mail, ArrowRight, Loader2, Sparkles, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
@@ -105,9 +105,9 @@ function AdminLoginForm() {
           )}
 
           {/* Admin Email Info Notice */}
-          <div className="mb-6 p-3.5 rounded-xl bg-neutral-900/60 border border-neutral-800 text-[11px] font-mono text-neutral-400 flex items-center justify-between">
-            <span>Configured Master Email:</span>
-            <span className="text-emerald-400 font-semibold">jaynirala82@gmail.com</span>
+          <div className="mb-6 p-3.5 rounded-xl bg-neutral-900/60 border border-neutral-800 text-[11px] font-mono text-neutral-400 flex flex-col sm:flex-row sm:items-center justify-between gap-1">
+            <span>Configured Admin Emails:</span>
+            <span className="text-emerald-400 font-semibold">{getAdminEmails().join(" / ")}</span>
           </div>
 
           {/* Google One-Click Login */}

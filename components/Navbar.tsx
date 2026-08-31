@@ -12,6 +12,7 @@ import OrderHistoryModal from "./OrderHistoryModal";
 import LabReportsModal from "./LabReportsModal";
 import { useAuth } from "@/context/AuthContext";
 import { useCart } from "@/context/CartContext";
+import { isAdminUser } from "@/lib/adminAuth";
 
 interface NavbarProps {
   navbarRef?: React.RefObject<HTMLElement | null>;
@@ -185,7 +186,7 @@ export default function Navbar({ navbarRef }: NavbarProps) {
                         <span>MY ORDERS</span>
                       </button>
 
-                      {user.email?.toLowerCase() === "jaynirala82@gmail.com" && (
+                      {isAdminUser(user) && (
                         <Link
                           href="/admin"
                           onClick={() => setIsUserMenuOpen(false)}
