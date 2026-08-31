@@ -353,7 +353,8 @@ export const DEFAULT_PRODUCTS: ProductData[] = [
 ];
 
 /**
- * Fetch all products from Firestore, falling back to DEFAULT_PRODUCTS if Firestore is empty or unconfigured.
+ * Fetch all products from Firestore, falling back to and merging with DEFAULT_PRODUCTS
+ * so all catalog items are always available.
  */
 export async function getAllProducts(): Promise<ProductData[]> {
   if (!db) return DEFAULT_PRODUCTS;
@@ -366,15 +367,35 @@ export async function getAllProducts(): Promise<ProductData[]> {
       return DEFAULT_PRODUCTS;
     }
 
-    const items: ProductData[] = [];
+    const firestoreMap = new Map<string, ProductData>();
     snapshot.forEach((docSnap) => {
-      items.push({
+      firestoreMap.set(docSnap.id, {
         ...docSnap.data(),
         id: docSnap.id,
       } as ProductData);
     });
 
-    return items;
+    const allProducts: ProductData[] = [];
+    const processedIds = new Set<string>();
+
+    // 1. Include default products (overridden with Firestore data if edited)
+    for (const defProd of DEFAULT_PRODUCTS) {
+      if (firestoreMap.has(defProd.id)) {
+        allProducts.push(firestoreMap.get(defProd.id)!);
+      } else {
+        allProducts.push(defProd);
+      }
+      processedIds.add(defProd.id);
+    }
+
+    // 2. Add any additional custom products created through CMS
+    firestoreMap.forEach((product, id) => {
+      if (!processedIds.has(id)) {
+        allProducts.push(product);
+      }
+    });
+
+    return allProducts;
   } catch (error) {
     console.warn("Error fetching products from Firestore, using default catalog:", error);
     return DEFAULT_PRODUCTS;
