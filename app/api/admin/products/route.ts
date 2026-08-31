@@ -1,56 +1,146 @@
 import { NextResponse } from "next/server";
-import { db, doc, setDoc, deleteDoc, getDoc, getDocs, collection } from "@/lib/firebase";
-import { ProductData } from "@/components/ProductModal";
 import { DEFAULT_PRODUCTS } from "@/lib/products";
+import { ProductData } from "@/components/ProductModal";
+import { db, doc, setDoc, deleteDoc, getDocs, collection } from "@/lib/firebase";
 
-// GET /api/admin/products - fetch products
+const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "stageandsteel-a179f";
+const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "";
+
+// Convert JS Object to Firestore REST Format
+function toFirestoreValue(val: any): any {
+  if (val === null || val === undefined) return { nullValue: null };
+  if (typeof val === "boolean") return { booleanValue: val };
+  if (typeof val === "number") {
+    return Number.isInteger(val) ? { integerValue: String(val) } : { doubleValue: val };
+  }
+  if (typeof val === "string") return { stringValue: val };
+  if (Array.isArray(val)) {
+    return { arrayValue: { values: val.map(toFirestoreValue) } };
+  }
+  if (typeof val === "object") {
+    const fields: Record<string, any> = {};
+    for (const [k, v] of Object.entries(val)) {
+      if (v !== undefined) {
+        fields[k] = toFirestoreValue(v);
+      }
+    }
+    return { mapValue: { fields } };
+  }
+  return { stringValue: String(val) };
+}
+
+// Convert Firestore REST Format to JS Object
+function fromFirestoreValue(val: any): any {
+  if (!val) return null;
+  if ("nullValue" in val) return null;
+  if ("booleanValue" in val) return val.booleanValue;
+  if ("integerValue" in val) return parseInt(val.integerValue, 10);
+  if ("doubleValue" in val) return parseFloat(val.doubleValue);
+  if ("stringValue" in val) return val.stringValue;
+  if ("arrayValue" in val) {
+    return (val.arrayValue.values || []).map(fromFirestoreValue);
+  }
+  if ("mapValue" in val) {
+    const obj: Record<string, any> = {};
+    for (const [k, v] of Object.entries(val.mapValue.fields || {})) {
+      obj[k] = fromFirestoreValue(v);
+    }
+    return obj;
+  }
+  return null;
+}
+
+// Direct REST save to Firestore
+async function saveProductViaRest(product: ProductData): Promise<boolean> {
+  const cleanProduct = JSON.parse(JSON.stringify(product));
+  const fields = toFirestoreValue(cleanProduct).mapValue?.fields || {};
+
+  const url = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/products/${encodeURIComponent(product.id)}?key=${FIREBASE_API_KEY}`;
+  
+  const res = await fetch(url, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ fields }),
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    const errJson = await res.json().catch(() => ({}));
+    throw new Error(errJson.error?.message || `Firestore REST API error ${res.status}: ${res.statusText}`);
+  }
+
+  return true;
+}
+
+// Direct REST delete from Firestore
+async function deleteProductViaRest(id: string): Promise<boolean> {
+  const url = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/products/${encodeURIComponent(id)}?key=${FIREBASE_API_KEY}`;
+  const res = await fetch(url, { method: "DELETE", cache: "no-store" });
+  if (!res.ok && res.status !== 404) {
+    const errJson = await res.json().catch(() => ({}));
+    throw new Error(errJson.error?.message || `Firestore REST DELETE error ${res.status}`);
+  }
+  return true;
+}
+
+// GET /api/admin/products
 export async function GET() {
   try {
-    if (!db) {
-      return NextResponse.json({ products: DEFAULT_PRODUCTS, source: "default" });
-    }
+    // Try REST first
+    if (FIREBASE_PROJECT_ID && FIREBASE_API_KEY) {
+      try {
+        const url = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/products?key=${FIREBASE_API_KEY}`;
+        const res = await fetch(url, { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          const docs = data.documents || [];
+          const firestoreMap = new Map<string, ProductData>();
 
-    const productsRef = collection(db, "products");
-    const snapshot = await getDocs(productsRef);
+          docs.forEach((docItem: any) => {
+            const id = docItem.name.split("/").pop();
+            const fields = docItem.fields || {};
+            const productObj: Record<string, any> = { id };
+            for (const [k, v] of Object.entries(fields)) {
+              productObj[k] = fromFirestoreValue(v);
+            }
+            productObj.id = id;
+            firestoreMap.set(id, productObj as ProductData);
+          });
 
-    if (snapshot.empty) {
-      return NextResponse.json({ products: DEFAULT_PRODUCTS, source: "default" });
-    }
+          const allProducts: ProductData[] = [];
+          const processedIds = new Set<string>();
 
-    const firestoreMap = new Map<string, ProductData>();
-    snapshot.forEach((docSnap) => {
-      firestoreMap.set(docSnap.id, {
-        ...docSnap.data(),
-        id: docSnap.id,
-      } as ProductData);
-    });
+          for (const defProd of DEFAULT_PRODUCTS) {
+            if (firestoreMap.has(defProd.id)) {
+              allProducts.push(firestoreMap.get(defProd.id)!);
+            } else {
+              allProducts.push(defProd);
+            }
+            processedIds.add(defProd.id);
+          }
 
-    const allProducts: ProductData[] = [];
-    const processedIds = new Set<string>();
+          firestoreMap.forEach((product, id) => {
+            if (!processedIds.has(id)) {
+              allProducts.push(product);
+            }
+          });
 
-    for (const defProd of DEFAULT_PRODUCTS) {
-      if (firestoreMap.has(defProd.id)) {
-        allProducts.push(firestoreMap.get(defProd.id)!);
-      } else {
-        allProducts.push(defProd);
+          return NextResponse.json({ products: allProducts, source: "firestore_rest" });
+        }
+      } catch (restErr) {
+        console.warn("REST GET products warning:", restErr);
       }
-      processedIds.add(defProd.id);
     }
 
-    firestoreMap.forEach((product, id) => {
-      if (!processedIds.has(id)) {
-        allProducts.push(product);
-      }
-    });
-
-    return NextResponse.json({ products: allProducts, source: "firestore" });
+    // Fallback to DEFAULT_PRODUCTS
+    return NextResponse.json({ products: DEFAULT_PRODUCTS, source: "default" });
   } catch (error: any) {
-    console.error("API GET products error:", error);
+    console.error("API GET error:", error);
     return NextResponse.json({ products: DEFAULT_PRODUCTS, error: error.message }, { status: 200 });
   }
 }
 
-// POST /api/admin/products - save or update a product
+// POST /api/admin/products
 export async function POST(req: Request) {
   try {
     const product: ProductData = await req.json();
@@ -62,29 +152,46 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!db) {
-      return NextResponse.json(
-        { error: "Firestore is not configured. Please ensure Firebase environment variables are set." },
-        { status: 500 }
-      );
+    // 1. Direct REST Save (Lightning fast, zero hang)
+    if (FIREBASE_PROJECT_ID && FIREBASE_API_KEY) {
+      try {
+        await saveProductViaRest(product);
+        return NextResponse.json({
+          success: true,
+          id: product.id,
+          message: "Product saved successfully via Firestore REST.",
+        });
+      } catch (restErr: any) {
+        console.warn("REST save failed, attempting SDK save:", restErr.message);
+      }
     }
 
-    const cleanProduct = JSON.parse(JSON.stringify(product));
-    const docRef = doc(db, "products", product.id);
+    // 2. SDK fallback
+    if (db) {
+      const cleanProduct = JSON.parse(JSON.stringify(product));
+      const docRef = doc(db, "products", product.id);
+      await setDoc(docRef, cleanProduct, { merge: true });
+      return NextResponse.json({
+        success: true,
+        id: product.id,
+        message: "Product saved successfully via Firestore SDK.",
+      });
+    }
 
-    await setDoc(docRef, cleanProduct, { merge: true });
-
-    return NextResponse.json({ success: true, id: product.id, message: "Product saved successfully." });
-  } catch (error: any) {
-    console.error("API POST save product error:", error);
     return NextResponse.json(
-      { error: error.message || "Failed to save product to Firestore." },
+      { error: "Firebase credentials missing or database unreachable." },
+      { status: 500 }
+    );
+  } catch (error: any) {
+    console.error("API POST error:", error);
+    return NextResponse.json(
+      { error: error.message || "Failed to save product." },
       { status: 500 }
     );
   }
 }
 
-// DELETE /api/admin/products?id=... - delete a product
+// DELETE /api/admin/products
 export async function DELETE(req: Request) {
   try {
     const { searchParams } = new URL(req.url);
@@ -94,41 +201,46 @@ export async function DELETE(req: Request) {
       return NextResponse.json({ error: "Product ID is required." }, { status: 400 });
     }
 
-    if (!db) {
-      return NextResponse.json({ error: "Firestore is not configured." }, { status: 500 });
+    if (FIREBASE_PROJECT_ID && FIREBASE_API_KEY) {
+      try {
+        await deleteProductViaRest(id);
+        return NextResponse.json({ success: true, id, message: "Product deleted via REST." });
+      } catch (restErr) {
+        console.warn("REST delete failed, trying SDK:", restErr);
+      }
     }
 
-    const docRef = doc(db, "products", id);
-    await deleteDoc(docRef);
+    if (db) {
+      const docRef = doc(db, "products", id);
+      await deleteDoc(docRef);
+      return NextResponse.json({ success: true, id, message: "Product deleted via SDK." });
+    }
 
-    return NextResponse.json({ success: true, id, message: "Product deleted successfully." });
+    return NextResponse.json({ error: "Firestore not initialized." }, { status: 500 });
   } catch (error: any) {
-    console.error("API DELETE product error:", error);
-    return NextResponse.json(
-      { error: error.message || "Failed to delete product." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: error.message || "Failed to delete product." }, { status: 500 });
   }
 }
 
-// PUT /api/admin/products - seed default catalog
+// PUT /api/admin/products - Seed Default Products
 export async function PUT() {
   try {
-    if (!db) {
-      return NextResponse.json({ error: "Firestore is not configured." }, { status: 500 });
-    }
-
     let count = 0;
     for (const product of DEFAULT_PRODUCTS) {
-      const cleanProduct = JSON.parse(JSON.stringify(product));
-      const docRef = doc(db, "products", product.id);
-      await setDoc(docRef, cleanProduct, { merge: true });
-      count++;
+      try {
+        await saveProductViaRest(product);
+        count++;
+      } catch (err) {
+        console.warn(`Failed to seed ${product.id}:`, err);
+      }
     }
 
-    return NextResponse.json({ success: true, count, message: `Successfully synced ${count} products.` });
+    return NextResponse.json({
+      success: true,
+      count,
+      message: `Successfully synced ${count} products to Firestore!`,
+    });
   } catch (error: any) {
-    console.error("API PUT seed error:", error);
-    return NextResponse.json({ error: error.message || "Failed to seed products." }, { status: 500 });
+    return NextResponse.json({ error: error.message || "Failed to seed catalog." }, { status: 500 });
   }
 }
