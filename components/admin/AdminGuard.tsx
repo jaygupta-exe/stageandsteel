@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
-import { isAdminUser, getAdminEmails } from "@/lib/adminAuth";
+import { isAdminUser } from "@/lib/adminAuth";
 import { ShieldAlert, LogOut, ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import Link from "next/link";
 
@@ -62,15 +62,8 @@ export default function AdminGuard({ children }: { children: React.ReactNode }) 
             Access Denied
           </h2>
           <p className="text-sm text-neutral-400 mb-6 leading-relaxed">
-            The account <span className="text-red-300 font-mono font-semibold">{user.email}</span> does not have Administrator privileges for Stage & Steel CMS.
+            The account <span className="text-red-300 font-mono font-semibold">{user.email}</span> does not have Administrator privileges. Please login with an authorized account.
           </p>
-
-          <div className="p-4 bg-neutral-900/80 rounded-xl border border-neutral-800 text-xs text-neutral-400 font-mono text-left mb-6">
-            <p className="text-neutral-300 font-semibold mb-1">Authorized Admin Emails:</p>
-            {getAdminEmails().map((email) => (
-              <p key={email} className="text-emerald-400">{email}</p>
-            ))}
-          </div>
 
           <div className="flex flex-col sm:flex-row gap-3">
             <button
