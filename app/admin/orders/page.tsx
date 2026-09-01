@@ -49,11 +49,20 @@ export default function AdminOrdersPage() {
   const loadOrders = async () => {
     setLoading(true);
     try {
-      const data = await getAllOrders();
-      setOrders(data);
-      setFilteredOrders(data);
+      const res = await fetch("/api/admin/orders", { cache: "no-store" });
+      const data = await res.json();
+      const list = data.orders || [];
+      setOrders(list);
+      setFilteredOrders(list);
     } catch (err) {
-      console.error("Error loading orders:", err);
+      console.error("Error loading orders from API, trying SDK fallback:", err);
+      try {
+        const sdkData = await getAllOrders();
+        setOrders(sdkData);
+        setFilteredOrders(sdkData);
+      } catch (sdkErr) {
+        console.error("SDK fetch error:", sdkErr);
+      }
     } finally {
       setLoading(false);
     }
@@ -86,7 +95,14 @@ export default function AdminOrdersPage() {
     setUpdatingStatusId(orderDocId);
     setMessage(null);
     try {
-      await updateOrderStatus(orderDocId, newStatus);
+      const res = await fetch("/api/admin/orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: orderDocId, status: newStatus }),
+      });
+      if (!res.ok) {
+        await updateOrderStatus(orderDocId, newStatus);
+      }
       setMessage({ type: "success", text: `Order status updated to ${newStatus}` });
       await loadOrders();
     } catch (err: any) {
@@ -100,7 +116,14 @@ export default function AdminOrdersPage() {
     setSavingWaybill(true);
     setMessage(null);
     try {
-      await updateOrderWaybill(orderDocId, waybillInput);
+      const res = await fetch("/api/admin/orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: orderDocId, waybill: waybillInput }),
+      });
+      if (!res.ok) {
+        await updateOrderWaybill(orderDocId, waybillInput);
+      }
       setMessage({ type: "success", text: "Waybill / Tracking ID updated successfully." });
       setEditingWaybillId(null);
       await loadOrders();
@@ -157,7 +180,12 @@ export default function AdminOrdersPage() {
 
     setMessage(null);
     try {
-      await deleteOrder(orderDocId);
+      const res = await fetch(`/api/admin/orders?orderId=${encodeURIComponent(orderDocId)}`, {
+        method: "DELETE",
+      });
+      if (!res.ok) {
+        await deleteOrder(orderDocId);
+      }
       setMessage({ type: "success", text: `Order ${orderId} deleted.` });
       await loadOrders();
     } catch (err: any) {
