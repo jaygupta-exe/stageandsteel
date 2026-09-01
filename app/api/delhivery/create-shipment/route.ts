@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createDelhiveryShipment } from "@/lib/orderFulfillment";
-import { db, doc, updateDoc } from "@/lib/firebase";
+
+const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "stageandsteel-a179f";
+const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "";
 
 export async function POST(req: Request) {
   try {
@@ -29,16 +31,28 @@ export async function POST(req: Request) {
       items: items || [],
     });
 
-    if (db) {
+    // Update Firestore via REST PATCH immediately
+    if (FIREBASE_PROJECT_ID && FIREBASE_API_KEY) {
       try {
-        const orderRef = doc(db, "orders", orderId);
-        await updateDoc(orderRef, {
-          waybill: shipResult.waybill,
-          delhiveryStatus: shipResult.success ? "MANIFESTED" : "MANUAL_REVIEW",
-          delhiveryDetails: shipResult.rawResponse || null,
+        const patchUrl = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/orders/${encodeURIComponent(
+          orderId
+        )}?updateMask.fieldPaths=waybill&updateMask.fieldPaths=delhiveryStatus&key=${FIREBASE_API_KEY}`;
+
+        await fetch(patchUrl, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            fields: {
+              waybill: { stringValue: shipResult.waybill },
+              delhiveryStatus: {
+                stringValue: shipResult.success ? "MANIFESTED" : "MANUAL_REVIEW",
+              },
+            },
+          }),
+          cache: "no-store",
         });
-      } catch (dbErr) {
-        console.warn("[Delhivery API] Firestore update error:", dbErr);
+      } catch (patchErr) {
+        console.warn("[Delhivery Create Shipment] REST Patch warning:", patchErr);
       }
     }
 

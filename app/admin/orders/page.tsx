@@ -137,12 +137,18 @@ export default function AdminOrdersPage() {
   const [dispatchingOrderId, setDispatchingOrderId] = useState<string | null>(null);
 
   const handleDispatchDelhivery = async (ord: OrderRecord) => {
+    if (dispatchingOrderId) return;
     setDispatchingOrderId(ord.orderId);
     setMessage(null);
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 12000);
+
     try {
       const res = await fetch("/api/delhivery/create-shipment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           orderId: ord.orderId,
           amount: ord.finalTotal,
@@ -155,22 +161,29 @@ export default function AdminOrdersPage() {
           items: ord.items,
         }),
       });
+      clearTimeout(timeoutId);
+
       const data = await res.json();
       if (data.waybill) {
         setMessage({
           type: "success",
-          text: `Delhivery shipment created! AWB: ${data.waybill}`,
+          text: `Delhivery shipment processed! AWB: ${data.waybill}`,
         });
         await loadOrders();
       } else {
         setMessage({
           type: "error",
-          text: `Delhivery notice: ${data.error || "Could not manifest shipment"}`,
+          text: `Delhivery response: ${data.error || "Could not manifest package"}`,
         });
       }
     } catch (err: any) {
-      setMessage({ type: "error", text: "Failed to dispatch: " + err.message });
+      if (err.name === "AbortError") {
+        setMessage({ type: "error", text: "Delhivery request timed out. Please retry." });
+      } else {
+        setMessage({ type: "error", text: "Failed to dispatch: " + (err.message || "Unknown error") });
+      }
     } finally {
+      clearTimeout(timeoutId);
       setDispatchingOrderId(null);
     }
   };
