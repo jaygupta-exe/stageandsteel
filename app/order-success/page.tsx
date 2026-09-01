@@ -13,10 +13,11 @@ import {
   ArrowLeft,
   Package,
   RotateCw,
+  ExternalLink,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
 
-const WHATSAPP_NUMBER = "919779159169"; // Divesh Mehan
+const WHATSAPP_NUMBER = "919779159169"; // Divesh Mehan (Stage & Steel Owner)
 
 function OrderSuccessContent() {
   const searchParams = useSearchParams();
@@ -29,6 +30,8 @@ function OrderSuccessContent() {
   const [status, setStatus] = useState<string>(initialStatus);
   const [loading, setLoading] = useState(true);
   const [orderDetails, setOrderDetails] = useState<any>(null);
+  const [waybill, setWaybill] = useState<string | null>(null);
+  const [dynamicWhatsappUrl, setDynamicWhatsappUrl] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -38,7 +41,7 @@ function OrderSuccessContent() {
       return;
     }
 
-    // Verify order status directly from server API
+    // Verify order status directly from server API & trigger fulfillment
     async function verifyOrder() {
       try {
         setLoading(true);
@@ -48,10 +51,12 @@ function OrderSuccessContent() {
         if (res.ok && data.success) {
           const currentStatus = (data.orderStatus || "PENDING").toUpperCase();
           setStatus(currentStatus);
-          setOrderDetails(data.paymentDetails || data);
+          setOrderDetails(data.order || data.paymentDetails || data);
+          if (data.waybill) setWaybill(data.waybill);
+          if (data.whatsappUrl) setDynamicWhatsappUrl(data.whatsappUrl);
 
           if (currentStatus === "PAID") {
-            // Clear cart since order has been paid
+            // Clear cart since order has been successfully paid
             clearCart();
           }
         } else {
@@ -69,16 +74,21 @@ function OrderSuccessContent() {
     verifyOrder();
   }, [orderId]);
 
-  const orderAmount = orderDetails?.order_amount || orderDetails?.orderAmount || 0;
+  const orderAmount =
+    orderDetails?.finalTotal ||
+    orderDetails?.order_amount ||
+    orderDetails?.orderAmount ||
+    0;
   const formattedAmount = orderAmount ? `₹${Number(orderAmount).toLocaleString("en-IN")}` : "Paid";
 
-  const whatsappMessage = encodeURIComponent(
+  const defaultWhatsappMessage = encodeURIComponent(
     `✅ *Stage & Steel Order Confirmed!*\n\n` +
       `📋 Order ID: *${orderId}*\n` +
       (orderAmount ? `💰 Amount: ₹${Number(orderAmount).toLocaleString("en-IN")}\n` : "") +
-      `\nPlease update me with the dispatch and tracking details. Thank you! 💪`
+      (waybill ? `🚚 Delhivery AWB: *${waybill}*\n` : "") +
+      `\nPlease update me with the dispatch details. Thank you! 💪`
   );
-  const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
+  const finalWhatsappUrl = dynamicWhatsappUrl || `https://wa.me/${WHATSAPP_NUMBER}?text=${defaultWhatsappMessage}`;
 
   const isPaid = status === "PAID";
   const isFailed = status === "FAILED" || status === "USER_DROPPED" || status === "CANCELLED";
@@ -126,7 +136,7 @@ function OrderSuccessContent() {
             <div className="py-16 text-center space-y-4">
               <RotateCw className="w-10 h-10 text-[#9DB25E] animate-spin mx-auto" />
               <p className="text-xs font-mono tracking-widest text-[#9c9e99] uppercase">
-                VERIFYING SECURE CASHFREE PG TRANSACTION...
+                VERIFYING SECURE CASHFREE PG TRANSACTION & DELHIVERY DISPATCH...
               </p>
             </div>
           ) : isPaid ? (
@@ -152,7 +162,7 @@ function OrderSuccessContent() {
               <div className="flex items-center justify-center gap-2.5 flex-wrap">
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#596238]/20 border border-[#596238]/40 text-[10px] font-mono text-[#9DB25E] font-bold">
                   <Mail className="w-3 h-3" />
-                  CONFIRMATION EMAIL QUEUED
+                  CONFIRMATION EMAIL SENT
                 </span>
                 <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#20211e] border border-[#333530] text-[10px] font-mono text-[#8c8e88]">
                   <ShieldCheck className="w-3 h-3 text-[#9DB25E]" />
@@ -176,11 +186,22 @@ function OrderSuccessContent() {
                   <span className="text-[#777873]">PAYMENT METHOD:</span>
                   <span className="font-bold text-white">CASHFREE PG (VERIFIED)</span>
                 </div>
-                <div className="flex justify-between border-b border-[#222420] pb-2">
-                  <span className="text-[#777873]">DISPATCH PARTNER:</span>
-                  <span className="font-bold text-[#9DB25E] flex items-center gap-1">
-                    <Truck className="w-3 h-3" /> DELHIVERY AIR EXPRESS
-                  </span>
+                <div className="flex justify-between border-b border-[#222420] pb-2 items-center">
+                  <span className="text-[#777873]">DELHIVERY TRACKING:</span>
+                  {waybill ? (
+                    <a
+                      href={`https://www.delhivery.com/track/package/${waybill}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-bold text-[#9DB25E] hover:underline flex items-center gap-1"
+                    >
+                      <Truck className="w-3 h-3" /> {waybill} <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
+                  ) : (
+                    <span className="font-bold text-[#9DB25E] flex items-center gap-1">
+                      <Truck className="w-3 h-3" /> DELHIVERY AIR EXPRESS
+                    </span>
+                  )}
                 </div>
                 <div className="flex justify-between items-center pt-1">
                   <span className="text-[#777873]">ORDER STATUS:</span>
@@ -193,7 +214,7 @@ function OrderSuccessContent() {
               {/* Action Buttons */}
               <div className="space-y-3 pt-2">
                 <a
-                  href={whatsappUrl}
+                  href={finalWhatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-3.5 bg-[#25D366] hover:bg-[#20BD5A] text-white font-editorial font-bold tracking-widest text-xs sm:text-sm uppercase transition-all flex items-center justify-center gap-2 shadow-lg shadow-[#25D366]/20"

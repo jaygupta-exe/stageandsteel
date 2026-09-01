@@ -111,6 +111,47 @@ export default function AdminOrdersPage() {
     }
   };
 
+  const [dispatchingOrderId, setDispatchingOrderId] = useState<string | null>(null);
+
+  const handleDispatchDelhivery = async (ord: OrderRecord) => {
+    setDispatchingOrderId(ord.orderId);
+    setMessage(null);
+    try {
+      const res = await fetch("/api/delhivery/create-shipment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: ord.orderId,
+          amount: ord.finalTotal,
+          customer: {
+            name: ord.customerName,
+            phone: ord.customerPhone,
+            email: ord.customerEmail,
+          },
+          shippingAddress: ord.shippingAddress,
+          items: ord.items,
+        }),
+      });
+      const data = await res.json();
+      if (data.waybill) {
+        setMessage({
+          type: "success",
+          text: `Delhivery shipment created! AWB: ${data.waybill}`,
+        });
+        await loadOrders();
+      } else {
+        setMessage({
+          type: "error",
+          text: `Delhivery notice: ${data.error || "Could not manifest shipment"}`,
+        });
+      }
+    } catch (err: any) {
+      setMessage({ type: "error", text: "Failed to dispatch: " + err.message });
+    } finally {
+      setDispatchingOrderId(null);
+    }
+  };
+
   const handleDeleteOrder = async (orderDocId: string, orderId: string) => {
     if (!confirm(`Are you sure you want to permanently delete order ${orderId}?`)) return;
 
@@ -357,6 +398,18 @@ export default function AdminOrdersPage() {
                     <td className="py-4 px-3 text-right">
                       <div className="flex items-center justify-end gap-2">
                         <button
+                          onClick={() => handleDispatchDelhivery(ord)}
+                          disabled={dispatchingOrderId === ord.orderId}
+                          className="p-2 rounded-lg bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-800 text-emerald-400 transition-colors cursor-pointer disabled:opacity-50"
+                          title="Generate Delhivery Shipment & AWB"
+                        >
+                          {dispatchingOrderId === ord.orderId ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Truck className="w-3.5 h-3.5" />
+                          )}
+                        </button>
+                        <button
                           onClick={() => setSelectedOrder(ord)}
                           className="p-2 rounded-lg bg-neutral-900 hover:bg-neutral-800 border border-neutral-700 text-neutral-300 hover:text-emerald-400 transition-colors cursor-pointer"
                           title="View Full Order & Address"
@@ -481,6 +534,34 @@ export default function AdminOrdersPage() {
                   ₹{selectedOrder.finalTotal?.toLocaleString("en-IN")}
                 </span>
               </div>
+            </div>
+
+            {/* Modal Actions */}
+            <div className="mt-6 flex flex-col sm:flex-row gap-3">
+              <button
+                type="button"
+                onClick={() => handleDispatchDelhivery(selectedOrder)}
+                disabled={dispatchingOrderId === selectedOrder.orderId}
+                className="flex-1 py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-bold uppercase tracking-wider text-xs flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50"
+              >
+                {dispatchingOrderId === selectedOrder.orderId ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Truck className="w-4 h-4" />
+                )}
+                {selectedOrder.waybill ? "Re-manifest / Update Delhivery AWB" : "Generate Delhivery Shipment"}
+              </button>
+
+              <a
+                href={`https://wa.me/91${selectedOrder.customerPhone?.replace(/[^0-9]/g, "").slice(-10)}?text=${encodeURIComponent(
+                  `Hi ${selectedOrder.customerName}, your Stage & Steel order ${selectedOrder.orderId} is being prepared! Tracking AWB: ${selectedOrder.waybill || "Generating..."}`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-3 px-5 rounded-xl bg-[#25D366] hover:bg-[#20BD5A] text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all"
+              >
+                Chat with Customer
+              </a>
             </div>
           </div>
         </div>

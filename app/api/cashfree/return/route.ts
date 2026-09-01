@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { fulfillPaidOrder } from "@/lib/orderFulfillment";
 
 export async function GET(req: Request) {
   try {
@@ -30,6 +31,8 @@ export async function GET(req: Request) {
         : `https://sandbox.cashfree.com/pg/orders/${orderId}`;
 
     let orderStatus = "PENDING";
+    let cashfreeData: any = null;
+
     try {
       const response = await fetch(cashfreeBaseUrl, {
         method: "GET",
@@ -43,11 +46,20 @@ export async function GET(req: Request) {
       });
 
       if (response.ok) {
-        const data = await response.json();
-        orderStatus = data.order_status || "PENDING";
+        cashfreeData = await response.json();
+        orderStatus = cashfreeData.order_status || "PENDING";
       }
     } catch (err) {
       console.error("Error verifying order on return:", err);
+    }
+
+    // If order is PAID, trigger server-side fulfillment (Delhivery + Firestore + Email)
+    if (orderStatus === "PAID") {
+      try {
+        await fulfillPaidOrder(orderId, cashfreeData);
+      } catch (fulfillErr) {
+        console.error("[Fulfillment] Return route fulfillment error:", fulfillErr);
+      }
     }
 
     return NextResponse.redirect(

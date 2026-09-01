@@ -163,6 +163,8 @@ export default function CheckoutModal() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           orderAmount: finalTotal,
+          subtotal,
+          discountAmount,
           couponCode: appliedCoupon?.code || null,
           customerDetails: {
             customerId: user?.uid || `cust_${Date.now()}`,
