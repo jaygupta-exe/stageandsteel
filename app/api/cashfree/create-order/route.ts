@@ -99,37 +99,35 @@ export async function POST(req: Request) {
       );
     }
 
-    // Pre-save pending order in Firestore with all details and address
-    try {
-      await savePendingOrder({
-        orderId: data.order_id,
-        userId: customerId,
-        customerName,
-        customerEmail,
-        customerPhone,
-        subtotal: subtotal || orderAmount,
-        discountAmount: discountAmount || 0,
-        couponCode: couponCode || null,
-        finalTotal: Number(orderAmount),
-        items: (items || []).map((i: any) => ({
-          id: i.id,
-          name: i.name,
-          flavor: i.flavor || "Default",
-          price: i.price,
-          numericPrice: i.numericPrice,
-          quantity: i.quantity || 1,
-          thumbnail: i.thumbnail || "",
-        })),
-        shippingAddress: shippingAddress || {
-          address: "",
-          city: "",
-          state: "",
-          pincode: "",
-        },
-      });
-    } catch (saveErr) {
-      console.error("Error saving pending order to Firestore:", saveErr);
-    }
+    // Pre-save pending order in Firestore asynchronously (non-blocking)
+    savePendingOrder({
+      orderId: data.order_id,
+      userId: customerId,
+      customerName,
+      customerEmail,
+      customerPhone,
+      subtotal: subtotal || orderAmount,
+      discountAmount: discountAmount || 0,
+      couponCode: couponCode || null,
+      finalTotal: Number(orderAmount),
+      items: (items || []).map((i: any) => ({
+        id: i.id,
+        name: i.name,
+        flavor: i.flavor || "Default",
+        price: i.price,
+        numericPrice: i.numericPrice,
+        quantity: i.quantity || 1,
+        thumbnail: i.thumbnail || "",
+      })),
+      shippingAddress: shippingAddress || {
+        address: "",
+        city: "",
+        state: "",
+        pincode: "",
+      },
+    }).catch((saveErr) => {
+      console.warn("Non-blocking savePendingOrder warning:", saveErr);
+    });
 
     return NextResponse.json({
       success: true,

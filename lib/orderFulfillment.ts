@@ -48,7 +48,7 @@ export async function savePendingOrder(payload: PendingOrderPayload): Promise<bo
 
   try {
     const orderDocRef = doc(db, "orders", payload.orderId);
-    await setDoc(
+    const savePromise = setDoc(
       orderDocRef,
       {
         orderId: payload.orderId,
@@ -74,10 +74,15 @@ export async function savePendingOrder(payload: PendingOrderPayload): Promise<bo
       },
       { merge: true }
     );
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error("Firestore save timeout")), 2500)
+    );
+
+    await Promise.race([savePromise, timeoutPromise]);
     console.log(`[Fulfillment] Pending order ${payload.orderId} saved to Firestore.`);
     return true;
   } catch (error) {
-    console.error("[Fulfillment] Failed to save pending order:", error);
+    console.warn("[Fulfillment] Save pending order warning (non-fatal):", error);
     return false;
   }
 }
@@ -312,14 +317,20 @@ export async function fulfillPaidOrder(orderId: string, paymentDetails?: any): P
   waybill: string;
   whatsappUrl: string;
 }> {
-  if (!db) {
-    throw new Error("Firestore is not initialized.");
+  let orderData: any = null;
+  if (db) {
+    try {
+      const orderDocRef = doc(db, "orders", orderId);
+      const snapPromise = getDoc(orderDocRef);
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Firestore getDoc timeout")), 2500)
+      );
+      const orderSnap: any = await Promise.race([snapPromise, timeoutPromise]);
+      orderData = orderSnap && orderSnap.exists() ? orderSnap.data() : null;
+    } catch (readErr) {
+      console.warn("[Fulfillment] Order snapshot read warning:", readErr);
+    }
   }
-
-  const orderDocRef = doc(db, "orders", orderId);
-  const orderSnap = await getDoc(orderDocRef);
-
-  let orderData: any = orderSnap.exists() ? orderSnap.data() : null;
 
   // If order was not yet pre-saved in Firestore, reconstruct from Cashfree payment details
   if (!orderData && paymentDetails) {
@@ -392,21 +403,31 @@ export async function fulfillPaidOrder(orderId: string, paymentDetails?: any): P
   const waybill = shipResult.waybill;
 
   // 2. Update Firestore Order Record
-  await setDoc(
-    orderDocRef,
-    {
-      ...orderData,
-      status: "PAID",
-      waybill,
-      delhiveryStatus: shipResult.success ? "MANIFESTED" : "MANUAL_REVIEW",
-      delhiveryDetails: shipResult.rawResponse || null,
-      paidAt: serverTimestamp(),
-      updatedAt: serverTimestamp(),
-    },
-    { merge: true }
-  );
-
-  console.log(`[Fulfillment] Order ${orderId} marked PAID in Firestore with Waybill: ${waybill}`);
+  if (db) {
+    try {
+      const orderDocRef = doc(db, "orders", orderId);
+      const updatePromise = setDoc(
+        orderDocRef,
+        {
+          ...orderData,
+          status: "PAID",
+          waybill,
+          delhiveryStatus: shipResult.success ? "MANIFESTED" : "MANUAL_REVIEW",
+          delhiveryDetails: shipResult.rawResponse || null,
+          paidAt: serverTimestamp(),
+          updatedAt: serverTimestamp(),
+        },
+        { merge: true }
+      );
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Firestore setDoc timeout")), 2500)
+      );
+      await Promise.race([updatePromise, timeoutPromise]);
+      console.log(`[Fulfillment] Order ${orderId} marked PAID in Firestore with Waybill: ${waybill}`);
+    } catch (saveErr) {
+      console.warn("[Fulfillment] Firestore save warning:", saveErr);
+    }
+  }
 
   // 3. Send Notification Emails
   await sendOrderEmails({
