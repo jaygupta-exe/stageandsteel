@@ -182,10 +182,15 @@ export default function CheckoutModal() {
         }),
       });
 
-      const data = await res.json();
+      let data: any = {};
+      try {
+        data = await res.json();
+      } catch (jsonErr) {
+        throw new Error("Unable to parse server response from payment gateway. Please try again.");
+      }
 
       if (!res.ok) {
-        throw new Error(data.error || "Failed to initiate payment gateway");
+        throw new Error(data.error || data.message || "Failed to initiate payment gateway");
       }
 
       const { paymentSessionId, orderId, environment } = data;
@@ -198,30 +203,43 @@ export default function CheckoutModal() {
       const mode = (environment || "SANDBOX").toLowerCase() === "production" ? "production" : "sandbox";
       const cashfree = await load({ mode });
 
-      // 3. Open Cashfree Hosted Checkout (Seamless redirect for mobile UPI & Cards)
+      // 3. Open Cashfree Hosted Checkout Modal (Seamless in-app popup for Cards, Netbanking & UPI)
       const checkoutOptions = {
         paymentSessionId,
-        redirectTarget: "_self" as const,
+        redirectTarget: "_modal" as const,
       };
 
-      await cashfree.checkout(checkoutOptions);
+      const result = await cashfree.checkout(checkoutOptions);
 
-      // 4. Poll for payment status with retries (Handles UPI app-switch delay)
+      if (result?.error) {
+        console.warn("Cashfree checkout notice:", result.error);
+        if (
+          result.error.message &&
+          !result.error.message.toLowerCase().includes("closed") &&
+          !result.error.message.toLowerCase().includes("drop")
+        ) {
+          throw new Error(result.error.message);
+        }
+      }
+
+      // 4. Poll for payment status with retries (Handles UPI / Bank settlement)
       let isPaymentPaid = false;
       let finalVerifyData: any = null;
 
-      // Poll up to 8 times with a 1.5s delay to allow bank/UPI settlement
-      for (let attempt = 0; attempt < 8; attempt++) {
+      // Poll up to 6 times with a 1.5s delay to allow bank/UPI settlement
+      for (let attempt = 0; attempt < 6; attempt++) {
         try {
           const verifyRes = await fetch(`/api/cashfree/verify-order?orderId=${orderId}`);
-          const verifyData = await verifyRes.json();
-          finalVerifyData = verifyData;
+          if (verifyRes.ok) {
+            const verifyData = await verifyRes.json();
+            finalVerifyData = verifyData;
 
-          if (verifyData.orderStatus === "PAID") {
-            isPaymentPaid = true;
-            break;
-          } else if (verifyData.orderStatus === "FAILED" || verifyData.orderStatus === "USER_DROPPED") {
-            break;
+            if (verifyData.orderStatus === "PAID") {
+              isPaymentPaid = true;
+              break;
+            } else if (verifyData.orderStatus === "FAILED" || verifyData.orderStatus === "USER_DROPPED") {
+              break;
+            }
           }
         } catch (pollErr) {
           console.warn(`Payment verify attempt ${attempt + 1} error:`, pollErr);
@@ -245,9 +263,11 @@ export default function CheckoutModal() {
               items,
             }),
           });
-          const shipData = await shipRes.json();
-          if (shipData.waybill) {
-            waybill = shipData.waybill;
+          if (shipRes.ok) {
+            const shipData = await shipRes.json().catch(() => ({}));
+            if (shipData.waybill) {
+              waybill = shipData.waybill;
+            }
           }
         } catch (shipErr) {
           console.warn("Delhivery auto-dispatch error:", shipErr);
@@ -303,9 +323,11 @@ export default function CheckoutModal() {
               couponCode: appliedCoupon?.code || null,
             }),
           });
-          const confirmData = await confirmRes.json();
-          whatsappUrl = confirmData.whatsappUrl || "";
-          emailSent = confirmData.emailSent || false;
+          if (confirmRes.ok) {
+            const confirmData = await confirmRes.json().catch(() => ({}));
+            whatsappUrl = confirmData.whatsappUrl || "";
+            emailSent = confirmData.emailSent || false;
+          }
         } catch (confirmErr) {
           console.warn("Order confirmation send warning:", confirmErr);
         }
@@ -320,9 +342,8 @@ export default function CheckoutModal() {
         clearCart();
       } else if (finalVerifyData?.orderStatus === "FAILED" || finalVerifyData?.orderStatus === "USER_DROPPED") {
         setError("Payment was not completed or was cancelled. If money was deducted, it will be refunded within 24-48 hours.");
-      } else if (finalVerifyData?.orderStatus === "ACTIVE") {
-        // If payment is still processing after polling, redirect directly to order-success to keep verifying
-        window.location.href = `/order-success?order_id=${encodeURIComponent(orderId)}&status=PENDING`;
+      } else {
+        setError("Payment was not completed. Please click Pay again to retry.");
       }
     } catch (err: any) {
       console.error("Payment error:", err);

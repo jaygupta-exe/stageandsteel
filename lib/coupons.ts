@@ -27,6 +27,22 @@ export const DEFAULT_COUPONS: Coupon[] = [
     description: "Launch Special: 10% OFF on all Stage & Steel products",
     isActive: true,
   },
+  {
+    code: "TEST1",
+    type: "flat",
+    value: 1,
+    minOrderAmount: 1,
+    description: "Tester Coupon: Pay ₹1 only for gateway verification",
+    isActive: true,
+  },
+  {
+    code: "RUPEE1",
+    type: "flat",
+    value: 1,
+    minOrderAmount: 1,
+    description: "Tester Coupon: Pay ₹1 only for gateway verification",
+    isActive: true,
+  },
 ];
 
 export const AVAILABLE_COUPONS: Coupon[] = DEFAULT_COUPONS;
@@ -271,7 +287,10 @@ export function validateCoupon(
   }
 
   let discount = 0;
-  if (coupon.type === "percentage") {
+  if (cleanCode === "TEST1" || cleanCode === "RUPEE1") {
+    // Special test coupon: make payable exactly ₹1 (Cashfree minimum is ₹1)
+    discount = Math.max(0, subtotal - 1);
+  } else if (coupon.type === "percentage") {
     discount = Math.round((subtotal * coupon.value) / 100);
     if (coupon.maxDiscount && discount > coupon.maxDiscount) {
       discount = coupon.maxDiscount;
@@ -280,13 +299,16 @@ export function validateCoupon(
     discount = Math.min(coupon.value, subtotal);
   }
 
-  const finalAmount = Math.max(0, subtotal - discount);
+  const finalAmount = Math.max(1, subtotal - discount);
 
   return {
     isValid: true,
     coupon,
     discountAmount: discount,
     finalAmount,
-    message: `Coupon "${coupon.code}" applied! You saved ₹${discount.toLocaleString("en-IN")}.`,
+    message:
+      cleanCode === "TEST1" || cleanCode === "RUPEE1"
+        ? `Test Coupon "${coupon.code}" applied! Total Payable is ₹1.`
+        : `Coupon "${coupon.code}" applied! You saved ₹${discount.toLocaleString("en-IN")}.`,
   };
 }

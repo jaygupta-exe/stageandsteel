@@ -51,7 +51,15 @@ export async function POST(req: Request) {
 
     const originHeader = req.headers.get("origin");
     const hostHeader = req.headers.get("host");
-    const baseUrl = originHeader || (hostHeader ? `https://${hostHeader}` : "https://stageandsteel.in");
+    let baseUrl = "https://stageandsteel.in";
+
+    if (originHeader && originHeader.startsWith("https://")) {
+      baseUrl = originHeader;
+    } else if (hostHeader && !hostHeader.includes("localhost") && !hostHeader.includes("127.0.0.1")) {
+      baseUrl = `https://${hostHeader}`;
+    } else if (environment.toUpperCase() !== "PRODUCTION" && originHeader) {
+      baseUrl = originHeader;
+    }
 
     const payload = {
       order_id: orderId,
