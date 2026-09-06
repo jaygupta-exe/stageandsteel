@@ -173,6 +173,7 @@ export async function createDelhiveryShipment(order: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: formData.toString(),
+      signal: AbortSignal.timeout(6000),
     });
 
     const data = await response.json();

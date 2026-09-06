@@ -35,6 +35,8 @@ export async function GET(req: Request) {
         "x-client-id": appId,
         "x-client-secret": secretKey,
       },
+      signal: AbortSignal.timeout(5000),
+      cache: "no-store",
     });
 
     const data = await response.json();
@@ -52,18 +54,28 @@ export async function GET(req: Request) {
 
     if (data.order_status === "PAID") {
       try {
-        const fulfillRes = await fulfillPaidOrder(orderId, data);
-        waybill = fulfillRes.waybill;
-        whatsappUrl = fulfillRes.whatsappUrl;
+        const fulfillPromise = fulfillPaidOrder(orderId, data);
+        const timeoutPromise = new Promise<any>((_, reject) =>
+          setTimeout(() => reject(new Error("Fulfillment timeout")), 5000)
+        );
+        const fulfillRes = await Promise.race([fulfillPromise, timeoutPromise]);
+        if (fulfillRes) {
+          waybill = fulfillRes.waybill;
+          whatsappUrl = fulfillRes.whatsappUrl;
+        }
       } catch (fErr) {
-        console.error("[Verify Order] Fulfillment error:", fErr);
+        console.error("[Verify Order] Fulfillment error (non-fatal):", fErr);
       }
     }
 
     if (db) {
       try {
-        const snap = await getDoc(doc(db, "orders", orderId));
-        if (snap.exists()) {
+        const snapPromise = getDoc(doc(db, "orders", orderId));
+        const timeoutPromise = new Promise<any>((_, reject) =>
+          setTimeout(() => reject(new Error("Firestore read timeout")), 2000)
+        );
+        const snap = await Promise.race([snapPromise, timeoutPromise]);
+        if (snap && snap.exists()) {
           dbOrder = snap.data();
           if (!waybill) waybill = dbOrder.waybill;
         }

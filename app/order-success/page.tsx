@@ -28,7 +28,7 @@ function OrderSuccessContent() {
   const initialStatus = (searchParams.get("status") || "CHECKING").toUpperCase();
 
   const [status, setStatus] = useState<string>(initialStatus);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(initialStatus !== "PAID");
   const [orderDetails, setOrderDetails] = useState<any>(null);
   const [waybill, setWaybill] = useState<string | null>(null);
   const [dynamicWhatsappUrl, setDynamicWhatsappUrl] = useState<string | null>(null);
@@ -41,11 +41,20 @@ function OrderSuccessContent() {
       return;
     }
 
+    if (initialStatus === "PAID") {
+      clearCart();
+    }
+
     // Verify order status directly from server API & trigger fulfillment
     async function verifyOrder() {
       try {
-        setLoading(true);
-        const res = await fetch(`/api/cashfree/verify-order?orderId=${encodeURIComponent(orderId)}`);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 6000);
+
+        const res = await fetch(`/api/cashfree/verify-order?orderId=${encodeURIComponent(orderId)}`, {
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
         const data = await res.json();
 
         if (res.ok && data.success) {
@@ -56,23 +65,24 @@ function OrderSuccessContent() {
           if (data.whatsappUrl) setDynamicWhatsappUrl(data.whatsappUrl);
 
           if (currentStatus === "PAID") {
-            // Clear cart since order has been successfully paid
             clearCart();
           }
-        } else {
+        } else if (initialStatus !== "PAID") {
           setStatus("UNKNOWN");
           setErrorMessage(data.error || "Unable to retrieve order details from payment gateway.");
         }
       } catch (err: any) {
-        console.error("Order verification error:", err);
-        setErrorMessage("Network issue while checking order status.");
+        console.warn("Order verification notice:", err);
+        if (initialStatus !== "PAID") {
+          setErrorMessage("Order confirmation in progress. Please check your email for dispatch details.");
+        }
       } finally {
         setLoading(false);
       }
     }
 
     verifyOrder();
-  }, [orderId]);
+  }, [orderId, initialStatus]);
 
   const orderAmount =
     orderDetails?.finalTotal ||
