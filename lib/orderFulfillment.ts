@@ -481,8 +481,8 @@ async function executeFulfillment(
     }
   }
 
-  // 3. Send Notification Emails
-  await sendOrderEmails({
+  // 3. Send Notification Emails (asynchronously to avoid blocking verification response)
+  sendOrderEmails({
     orderId,
     customerName: orderData.customerName,
     customerEmail: orderData.customerEmail,
@@ -492,7 +492,7 @@ async function executeFulfillment(
     couponCode: orderData.couponCode,
     items: orderData.items,
     shippingAddress: orderData.shippingAddress,
-  });
+  }).catch((emailErr) => console.warn("[Fulfillment] Email sending warning:", emailErr));
 
   // 4. WhatsApp deep link
   const whatsappUrl = generateWhatsAppUrl(orderData, waybill);

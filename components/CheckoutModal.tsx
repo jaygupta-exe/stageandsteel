@@ -69,6 +69,7 @@ export default function CheckoutModal() {
   const [pincode, setPincode] = useState("");
 
   const [isProcessing, setIsProcessing] = useState(false);
+  const [processingText, setProcessingText] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const [pincodeStatus, setPincodeStatus] = useState<{
     checking: boolean;
@@ -175,6 +176,9 @@ export default function CheckoutModal() {
         throw new Error("Please enter your State.");
       }
 
+      setIsProcessing(true);
+      setProcessingText("INITIALIZING PAYMENT GATEWAY...");
+
       // 1. Create order on server
       const res = await fetch("/api/cashfree/create-order", {
         method: "POST",
@@ -217,11 +221,13 @@ export default function CheckoutModal() {
         throw new Error("Payment session ID not received from Cashfree.");
       }
 
+      setProcessingText("OPENING SECURE PAYMENT...");
+
       // 2. Initialize Cashfree Web SDK
       const mode = (environment || "SANDBOX").toLowerCase() === "production" ? "production" : "sandbox";
       const cashfree = await load({ mode });
 
-      // 3. Open Cashfree Hosted Checkout Modal (Seamless in-app popup for Cards, Netbanking & UPI)
+      // 3. Open Cashfree Hosted Checkout Modal
       const checkoutOptions = {
         paymentSessionId,
         redirectTarget: "_modal" as const,
@@ -240,12 +246,14 @@ export default function CheckoutModal() {
         }
       }
 
+      setProcessingText("VERIFYING PAYMENT & DISPATCH...");
+
       // 4. Poll for payment status with retries (Handles UPI / Bank settlement)
       let isPaymentPaid = false;
       let finalVerifyData: any = null;
 
-      // Poll up to 8 times with a 1.5s delay to allow bank/UPI settlement
-      for (let attempt = 0; attempt < 8; attempt++) {
+      // Poll up to 10 times with 1.2s delay
+      for (let attempt = 0; attempt < 10; attempt++) {
         try {
           const verifyRes = await fetch(`/api/cashfree/verify-order?orderId=${encodeURIComponent(orderId)}`);
           if (verifyRes.ok) {
@@ -262,31 +270,25 @@ export default function CheckoutModal() {
         } catch (pollErr) {
           console.warn(`Payment verify attempt ${attempt + 1} error:`, pollErr);
         }
-        // Wait 1.5 seconds before next poll
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        await new Promise((resolve) => setTimeout(resolve, 1200));
       }
 
       if (isPaymentPaid) {
-        // Clear cart since order has been successfully fulfilled by server
+        setProcessingText("ORDER CONFIRMED! REDIRECTING...");
         clearCart();
-
-        setOrderSuccess({
-          orderId: finalVerifyData?.orderId || orderId,
-          amount: Number(finalVerifyData?.orderAmount) || finalTotal,
-          waybill: finalVerifyData?.waybill || null,
-          whatsappUrl: finalVerifyData?.whatsappUrl || null,
-          emailSent: true,
-        });
+        window.location.href = `/order-success?order_id=${encodeURIComponent(orderId)}&status=PAID`;
+        return;
       } else if (finalVerifyData?.orderStatus === "FAILED" || finalVerifyData?.orderStatus === "USER_DROPPED") {
         setError("Payment was not completed or was cancelled. If money was deducted, it will be refunded within 24-48 hours.");
       } else {
-        setError("Payment was not completed. Please click Pay again to retry.");
+        setError("Payment verification timed out. If your account was debited, check your email for the dispatch tracking link.");
       }
     } catch (err: any) {
       console.error("Payment error:", err);
       setError(err?.message || "Payment process encountered an error. Please try again.");
     } finally {
       setIsProcessing(false);
+      setProcessingText("");
     }
   };
 
@@ -676,7 +678,12 @@ export default function CheckoutModal() {
                   className="w-full py-4 bg-[#596238] hover:bg-[#687342] text-white font-editorial font-bold tracking-widest text-sm uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#596238]/30 disabled:opacity-60"
                 >
                   {isProcessing ? (
-                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    <div className="flex items-center justify-center gap-2.5">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span className="text-xs font-mono tracking-wider">
+                        {processingText || "PROCESSING PAYMENT..."}
+                      </span>
+                    </div>
                   ) : (
                     <>
                       <Lock className="w-4 h-4" />
