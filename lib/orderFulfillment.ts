@@ -117,6 +117,10 @@ export async function createDelhiveryShipment(order: {
   const cleanPhone = (order.customerPhone || "").replace(/[^0-9]/g, "").slice(-10);
   const cleanPin = (order.shippingAddress?.pincode || "").replace(/[^0-9]/g, "").slice(0, 6);
 
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const now = new Date();
+  const formattedOrderDate = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+
   const shipmentData = {
     shipments: [
       {
@@ -140,7 +144,7 @@ export async function createDelhiveryShipment(order: {
           "Stage & Steel Sports Nutrition Stack",
         hsn_code: "",
         cod_amount: "0",
-        order_date: new Date().toISOString().replace("Z", "+05:30"),
+        order_date: formattedOrderDate,
         total_amount: String(order.amount || 0),
         seller_add: "",
         seller_name: "STAGE & STEEL LABS",
