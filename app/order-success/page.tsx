@@ -45,37 +45,50 @@ function OrderSuccessContent() {
       clearCart();
     }
 
-    // Verify order status directly from server API & trigger fulfillment
+    // Verify order status directly from server API & trigger fulfillment with retry loop
     async function verifyOrder() {
       try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 6000);
+        let attempts = 0;
+        const maxAttempts = 6;
+        let isConfirmed = false;
 
-        const res = await fetch(`/api/cashfree/verify-order?orderId=${encodeURIComponent(orderId)}`, {
-          signal: controller.signal,
-        });
-        clearTimeout(timeoutId);
-        const data = await res.json();
+        while (attempts < maxAttempts && !isConfirmed) {
+          attempts++;
+          try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 6000);
 
-        if (res.ok && data.success) {
-          const currentStatus = (data.orderStatus || "PENDING").toUpperCase();
-          setStatus(currentStatus);
-          setOrderDetails(data.order || data.paymentDetails || data);
-          if (data.waybill) setWaybill(data.waybill);
-          if (data.whatsappUrl) setDynamicWhatsappUrl(data.whatsappUrl);
+            const res = await fetch(`/api/cashfree/verify-order?orderId=${encodeURIComponent(orderId)}`, {
+              signal: controller.signal,
+            });
+            clearTimeout(timeoutId);
+            const data = await res.json();
 
-          if (currentStatus === "PAID") {
-            clearCart();
+            if (res.ok && data.success) {
+              const currentStatus = (data.orderStatus || "PENDING").toUpperCase();
+              setStatus(currentStatus);
+              setOrderDetails(data.order || data.paymentDetails || data);
+              if (data.waybill) setWaybill(data.waybill);
+              if (data.whatsappUrl) setDynamicWhatsappUrl(data.whatsappUrl);
+
+              if (currentStatus === "PAID") {
+                clearCart();
+                isConfirmed = true;
+                break;
+              } else if (currentStatus === "FAILED" || currentStatus === "USER_DROPPED") {
+                break;
+              }
+            }
+          } catch (fetchErr) {
+            console.warn(`Verify attempt ${attempts} notice:`, fetchErr);
           }
-        } else if (initialStatus !== "PAID") {
-          setStatus("UNKNOWN");
-          setErrorMessage(data.error || "Unable to retrieve order details from payment gateway.");
+
+          if (!isConfirmed && attempts < maxAttempts) {
+            await new Promise((r) => setTimeout(r, 1500));
+          }
         }
       } catch (err: any) {
         console.warn("Order verification notice:", err);
-        if (initialStatus !== "PAID") {
-          setErrorMessage("Order confirmation in progress. Please check your email for dispatch details.");
-        }
       } finally {
         setLoading(false);
       }

@@ -39,13 +39,37 @@ export async function GET(req: Request) {
       cache: "no-store",
     });
 
-    const data = await response.json();
+    let data = await response.json();
 
     if (!response.ok) {
       return NextResponse.json(
         { error: data.message || "Failed to fetch order status", details: data },
         { status: response.status }
       );
+    }
+
+    // If order is still ACTIVE / PENDING, wait 1s and re-check Cashfree to handle bank settlement lag
+    if (data.order_status !== "PAID" && data.order_status !== "FAILED" && data.order_status !== "USER_DROPPED") {
+      await new Promise((r) => setTimeout(r, 1200));
+      try {
+        const retryResponse = await fetch(cashfreeBaseUrl, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "x-api-version": "2023-08-01",
+            "x-client-id": appId,
+            "x-client-secret": secretKey,
+          },
+          signal: AbortSignal.timeout(4000),
+          cache: "no-store",
+        });
+        if (retryResponse.ok) {
+          const retryData = await retryResponse.json();
+          if (retryData.order_status) data = retryData;
+        }
+      } catch (retryErr) {
+        console.warn("[Verify Order] Retry check error:", retryErr);
+      }
     }
 
     let waybill: string | null = null;

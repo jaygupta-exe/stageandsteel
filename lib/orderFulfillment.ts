@@ -282,24 +282,50 @@ export async function sendOrderEmails(order: {
 </body>
 </html>`;
 
-  const recipients = [order.customerEmail, OWNER_EMAIL].filter(Boolean);
+  // Send to Customer
+  if (order.customerEmail && order.customerEmail.includes("@")) {
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: `Stage & Steel Orders <${fromEmail}>`,
+          to: [order.customerEmail],
+          subject: `⚡ Order Confirmed: ${order.orderId} | Stage & Steel`,
+          html: emailHtml,
+        }),
+      });
+      const data = await res.json();
+      console.log("[Resend] Customer email dispatch status:", data);
+    } catch (cErr) {
+      console.warn("[Resend] Customer email error:", cErr);
+    }
+  }
 
-  try {
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${resendApiKey}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        from: `Stage & Steel Orders <${fromEmail}>`,
-        to: recipients,
-        subject: `⚡ New Paid Order: ${order.orderId} - ₹${order.finalTotal} | Stage & Steel`,
-        html: emailHtml,
-      }),
-    });
-  } catch (err) {
-    console.warn("[Resend] Error sending confirmation email:", err);
+  // Send to Owner
+  if (OWNER_EMAIL) {
+    try {
+      const res = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: `Stage & Steel Orders <${fromEmail}>`,
+          to: [OWNER_EMAIL],
+          subject: `🛒 New Paid Order: ${order.orderId} - ₹${order.finalTotal} (${order.customerName})`,
+          html: emailHtml,
+        }),
+      });
+      const data = await res.json();
+      console.log("[Resend] Owner notification status:", data);
+    } catch (oErr) {
+      console.warn("[Resend] Owner notification email error:", oErr);
+    }
   }
 }
 
