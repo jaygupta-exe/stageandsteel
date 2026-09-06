@@ -531,6 +531,8 @@ export default function CheckoutModal() {
                       <UserIcon className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#666762]" />
                       <input
                         type="text"
+                        name="name"
+                        autoComplete="name"
                         required
                         placeholder="Alex Mercer"
                         value={name}
@@ -548,6 +550,8 @@ export default function CheckoutModal() {
                       <Phone className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#666762]" />
                       <input
                         type="tel"
+                        name="tel"
+                        autoComplete="tel"
                         required
                         maxLength={10}
                         placeholder="9876543210"
@@ -566,6 +570,8 @@ export default function CheckoutModal() {
                       <Mail className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#666762]" />
                       <input
                         type="email"
+                        name="email"
+                        autoComplete="email"
                         required
                         placeholder="alex@athlete.com"
                         value={email}
@@ -591,6 +597,8 @@ export default function CheckoutModal() {
                       <MapPin className="w-3.5 h-3.5 absolute left-3 top-3 text-[#666762]" />
                       <input
                         type="text"
+                        name="street-address"
+                        autoComplete="shipping street-address address-line1"
                         required
                         minLength={10}
                         placeholder="e.g. Flat 302, Green Valley Apartments, Near City Mall, Sector 14"
@@ -630,6 +638,8 @@ export default function CheckoutModal() {
                       </div>
                       <input
                         type="text"
+                        name="postal-code"
+                        autoComplete="shipping postal-code"
                         required
                         maxLength={6}
                         placeholder="110001"
@@ -645,6 +655,8 @@ export default function CheckoutModal() {
                       </label>
                       <input
                         type="text"
+                        name="address-level2"
+                        autoComplete="shipping address-level2"
                         required
                         placeholder="Mumbai"
                         value={city}
@@ -659,6 +671,8 @@ export default function CheckoutModal() {
                       </label>
                       <input
                         type="text"
+                        name="address-level1"
+                        autoComplete="shipping address-level1"
                         required
                         placeholder="Maharashtra"
                         value={stateName}
