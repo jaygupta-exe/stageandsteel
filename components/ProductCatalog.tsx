@@ -113,10 +113,14 @@ export default function ProductCatalog() {
         </div>
 
         {/* Category Filters Bar - Smooth Horizontal Scroll on Mobile */}
-        <div className="w-full py-6 sm:py-8">
-          <div className="flex items-center justify-between gap-4">
-            <div className="w-full lg:w-auto overflow-x-auto no-scrollbar py-1 -mx-4 px-4 sm:mx-0 sm:px-0">
-              <div className="inline-flex items-center gap-1.5 sm:gap-2 p-1.5 bg-[#151515]/10 backdrop-blur-sm rounded-lg border border-[#151515]/15 shadow-inner shrink-0">
+        <div className="w-full py-4 sm:py-8">
+          <div className="flex items-center justify-between gap-4 w-full min-w-0">
+            {/* Scrollable Container with min-w-0 for flexbox overflow */}
+            <div
+              className="w-full min-w-0 overflow-x-auto no-scrollbar scroll-smooth touch-pan-x py-1.5 -mx-4 px-4 sm:mx-0 sm:px-0"
+              style={{ WebkitOverflowScrolling: "touch" }}
+            >
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 p-1.5 bg-[#151515]/10 backdrop-blur-sm rounded-lg border border-[#151515]/15 shadow-inner">
                 {categories.map((cat) => {
                   const isActive = activeCategory === cat.id;
                   return (
@@ -131,9 +135,9 @@ export default function ProductCatalog() {
                       }`}
                     >
                       {isActive && <span className="w-2 h-2 rounded-full bg-[#9DB25E] animate-pulse shrink-0" />}
-                      <span>{cat.label}</span>
+                      <span className="shrink-0">{cat.label}</span>
                       <span
-                        className={`text-[10px] sm:text-xs font-mono px-1.5 py-0.5 rounded font-bold ${
+                        className={`text-[10px] sm:text-xs font-mono px-1.5 py-0.5 rounded font-bold shrink-0 ${
                           isActive ? "bg-black/20 text-[#F4F4F1]" : "bg-[#151515]/15 text-[#151515]"
                         }`}
                       >
