@@ -36,10 +36,35 @@ export async function POST(req: Request) {
     }
 
     // Clean and validate customer details
-    const customerPhone = customerDetails?.phone?.replace(/[^0-9]/g, "") || "9999999999";
-    const customerEmail = customerDetails?.email || "athlete@stageandsteel.com";
-    const customerName = customerDetails?.name || "Stage & Steel Athlete";
+    const customerPhone = (customerDetails?.phone || "").replace(/[^0-9]/g, "");
+    const customerEmail = (customerDetails?.email || "").trim() || "athlete@stageandsteel.com";
+    const customerName = (customerDetails?.name || "").trim() || "Stage & Steel Athlete";
     const customerId = customerDetails?.customerId || `cust_${Date.now()}`;
+
+    if (customerPhone.length !== 10) {
+      return NextResponse.json(
+        { error: "A valid 10-digit mobile number is required for dispatch updates." },
+        { status: 400 }
+      );
+    }
+
+    if (!shippingAddress?.address || shippingAddress.address.trim().length < 10) {
+      return NextResponse.json(
+        {
+          error:
+            "Complete delivery address with House/Flat No. & Street is required (minimum 10 characters).",
+        },
+        { status: 400 }
+      );
+    }
+
+    const cleanPincode = (shippingAddress?.pincode || "").replace(/[^0-9]/g, "");
+    if (cleanPincode.length !== 6) {
+      return NextResponse.json(
+        { error: "A valid 6-digit PIN code is required for courier routing." },
+        { status: 400 }
+      );
+    }
 
     // Unique Order ID (max 45 chars alphanumeric)
     const orderId = `SS_${Date.now()}_${Math.floor(Math.random() * 1000)}`;

@@ -302,15 +302,66 @@ export async function sendOrderEmails(order: {
   }
 }
 
+// In-flight fulfillment locks to prevent race conditions across parallel webhook & client verify requests
+const inFlightFulfillments = new Map<
+  string,
+  Promise<{
+    success: boolean;
+    orderId: string;
+    status: string;
+    waybill: string;
+    whatsappUrl: string;
+  }>
+>();
+
 /**
  * 4. Master Fulfillment Function
  * Idempotently fulfills any paid order:
  *  - Verifies or loads order from Firestore / Cashfree
- *  - Dispatches Delhivery CMU AWB
+ *  - Dispatches Delhivery CMU AWB (single dispatch guarantee)
  *  - Marks Firestore status as "PAID"
  *  - Sends confirmation emails and returns WhatsApp deep link
  */
-export async function fulfillPaidOrder(orderId: string, paymentDetails?: any): Promise<{
+export async function fulfillPaidOrder(
+  orderId: string,
+  paymentDetails?: any
+): Promise<{
+  success: boolean;
+  orderId: string;
+  status: string;
+  waybill: string;
+  whatsappUrl: string;
+}> {
+  if (!orderId) {
+    return {
+      success: false,
+      orderId: "",
+      status: "INVALID",
+      waybill: "",
+      whatsappUrl: "",
+    };
+  }
+
+  // If already processing in-flight for this order, reuse the same promise to prevent duplicate Delhivery AWBs
+  if (inFlightFulfillments.has(orderId)) {
+    console.log(`[Fulfillment] Fulfillment for ${orderId} already in flight. Awaiting shared promise...`);
+    return await inFlightFulfillments.get(orderId)!;
+  }
+
+  const fulfillmentPromise = executeFulfillment(orderId, paymentDetails);
+  inFlightFulfillments.set(orderId, fulfillmentPromise);
+
+  try {
+    return await fulfillmentPromise;
+  } finally {
+    inFlightFulfillments.delete(orderId);
+  }
+}
+
+async function executeFulfillment(
+  orderId: string,
+  paymentDetails?: any
+): Promise<{
   success: boolean;
   orderId: string;
   status: string;
@@ -378,7 +429,7 @@ export async function fulfillPaidOrder(orderId: string, paymentDetails?: any): P
     };
   }
 
-  // Idempotency: if already paid and has Delhivery waybill, return directly
+  // Idempotency: if already paid and has valid Delhivery waybill, return directly
   if (orderData.status === "PAID" && orderData.waybill && !orderData.waybill.startsWith("DELHIVERY_EXP_")) {
     console.log(`[Fulfillment] Order ${orderId} is already fulfilled with AWB ${orderData.waybill}`);
     return {
@@ -390,7 +441,7 @@ export async function fulfillPaidOrder(orderId: string, paymentDetails?: any): P
     };
   }
 
-  // 1. Generate Delhivery Shipment
+  // 1. Generate Delhivery Shipment (Only once)
   const shipResult = await createDelhiveryShipment({
     orderId,
     amount: orderData.finalTotal,

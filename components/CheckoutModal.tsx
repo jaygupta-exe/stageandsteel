@@ -149,11 +149,30 @@ export default function CheckoutModal() {
     setIsProcessing(true);
 
     try {
-      if (!phone || phone.replace(/[^0-9]/g, "").length < 10) {
-        throw new Error("Please enter a valid 10-digit mobile number for Cashfree verification.");
+      if (!name || name.trim().length < 2) {
+        throw new Error("Please enter your full name.");
       }
-      if (!pincode || pincode.length < 6) {
+      const cleanPhoneNum = phone.replace(/[^0-9]/g, "");
+      if (!cleanPhoneNum || cleanPhoneNum.length !== 10) {
+        throw new Error("Please enter a valid 10-digit mobile number.");
+      }
+      if (!email || !email.includes("@") || !email.includes(".")) {
+        throw new Error("Please enter a valid email address.");
+      }
+      if (!address || address.trim().length < 10) {
+        throw new Error(
+          "Please enter a complete street address (House/Flat No., Building, Street/Area) so Delhivery can dispatch your order."
+        );
+      }
+      const cleanPinCode = pincode.replace(/[^0-9]/g, "");
+      if (!cleanPinCode || cleanPinCode.length !== 6) {
         throw new Error("Please enter a valid 6-digit PIN code.");
+      }
+      if (!city || city.trim().length < 2) {
+        throw new Error("Please enter your City.");
+      }
+      if (!stateName || stateName.trim().length < 2) {
+        throw new Error("Please enter your State.");
       }
 
       // 1. Create order on server
@@ -167,16 +186,16 @@ export default function CheckoutModal() {
           couponCode: appliedCoupon?.code || null,
           customerDetails: {
             customerId: user?.uid || `cust_${Date.now()}`,
-            name,
-            email,
-            phone: phone.replace(/[^0-9]/g, ""),
+            name: name.trim(),
+            email: email.trim(),
+            phone: cleanPhoneNum,
           },
           items,
           shippingAddress: {
-            address,
-            city,
-            state: stateName,
-            pincode,
+            address: address.trim(),
+            city: city.trim(),
+            state: stateName.trim(),
+            pincode: cleanPinCode,
           },
         }),
       });
@@ -564,19 +583,23 @@ export default function CheckoutModal() {
                 <div className="space-y-3">
                   <div>
                     <label className="block text-[9px] font-mono tracking-wider text-[#8e9089] uppercase mb-1">
-                      Street Address / House / Flat No. *
+                      Complete Street Address (Flat / House No., Area / Landmark) *
                     </label>
                     <div className="relative">
                       <MapPin className="w-3.5 h-3.5 absolute left-3 top-3 text-[#666762]" />
                       <input
                         type="text"
                         required
-                        placeholder="House No., Street / Sector / Landmark"
+                        minLength={10}
+                        placeholder="e.g. Flat 302, Green Valley Apartments, Near City Mall, Sector 14"
                         value={address}
                         onChange={(e) => setAddress(e.target.value)}
                         className="w-full bg-[#0d0e0d] border border-[#2b2d28] focus:border-[#8FA355] text-white text-xs pl-8 pr-2.5 py-2 placeholder:text-[#444541] focus:outline-hidden"
                       />
                     </div>
+                    <p className="text-[9px] font-mono text-[#777873] mt-1">
+                      Must include House/Flat No., Street/Area to avoid Delhivery courier Bad Address delay.
+                    </p>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
