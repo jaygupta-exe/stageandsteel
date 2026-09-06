@@ -22,7 +22,6 @@ import {
 import { useCart } from "@/context/CartContext";
 import { useAuth } from "@/context/AuthContext";
 import { load } from "@cashfreepayments/cashfree-js";
-import { saveOrder } from "@/lib/orders";
 
 export default function CheckoutModal() {
   const {
@@ -226,10 +225,10 @@ export default function CheckoutModal() {
       let isPaymentPaid = false;
       let finalVerifyData: any = null;
 
-      // Poll up to 6 times with a 1.5s delay to allow bank/UPI settlement
-      for (let attempt = 0; attempt < 6; attempt++) {
+      // Poll up to 8 times with a 1.5s delay to allow bank/UPI settlement
+      for (let attempt = 0; attempt < 8; attempt++) {
         try {
-          const verifyRes = await fetch(`/api/cashfree/verify-order?orderId=${orderId}`);
+          const verifyRes = await fetch(`/api/cashfree/verify-order?orderId=${encodeURIComponent(orderId)}`);
           if (verifyRes.ok) {
             const verifyData = await verifyRes.json();
             finalVerifyData = verifyData;
@@ -249,97 +248,16 @@ export default function CheckoutModal() {
       }
 
       if (isPaymentPaid) {
-        // Automatically create Delhivery Express Shipment
-        let waybill = `DELHIVERY_${Date.now()}`;
-        try {
-          const shipRes = await fetch("/api/delhivery/create-shipment", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              orderId,
-              amount: finalTotal,
-              customer: { name, phone, email },
-              shippingAddress: { address, city, state: stateName, pincode },
-              items,
-            }),
-          });
-          if (shipRes.ok) {
-            const shipData = await shipRes.json().catch(() => ({}));
-            if (shipData.waybill) {
-              waybill = shipData.waybill;
-            }
-          }
-        } catch (shipErr) {
-          console.warn("Delhivery auto-dispatch error:", shipErr);
-        }
-
-        // 5. Save order to Firestore for order history
-        const orderItems = items.map((item) => ({
-          id: item.id,
-          name: item.name,
-          flavor: item.flavor,
-          price: item.price,
-          numericPrice: item.numericPrice,
-          quantity: item.quantity,
-          thumbnail: item.thumbnail,
-        }));
-
-        try {
-          await saveOrder({
-            orderId,
-            userId: user?.uid || `guest_${Date.now()}`,
-            items: orderItems,
-            subtotal,
-            discountAmount,
-            couponCode: appliedCoupon?.code || null,
-            finalTotal,
-            status: "PAID",
-            paymentGateway: "CASHFREE",
-            waybill,
-            customerName: name,
-            customerEmail: email,
-            customerPhone: phone.replace(/[^0-9]/g, ""),
-            shippingAddress: { address, city, state: stateName, pincode },
-          });
-        } catch (saveErr) {
-          console.warn("Order save to Firestore warning:", saveErr);
-        }
-
-        // 6. Send order confirmation (email + WhatsApp link)
-        let whatsappUrl = "";
-        let emailSent = false;
-        try {
-          const confirmRes = await fetch("/api/send-confirmation", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              orderId,
-              customerName: name,
-              customerEmail: email,
-              customerPhone: phone.replace(/[^0-9]/g, ""),
-              orderAmount: finalTotal,
-              items: orderItems,
-              waybill,
-              couponCode: appliedCoupon?.code || null,
-            }),
-          });
-          if (confirmRes.ok) {
-            const confirmData = await confirmRes.json().catch(() => ({}));
-            whatsappUrl = confirmData.whatsappUrl || "";
-            emailSent = confirmData.emailSent || false;
-          }
-        } catch (confirmErr) {
-          console.warn("Order confirmation send warning:", confirmErr);
-        }
+        // Clear cart since order has been successfully fulfilled by server
+        clearCart();
 
         setOrderSuccess({
-          orderId,
-          amount: finalTotal,
-          waybill,
-          whatsappUrl,
-          emailSent,
+          orderId: finalVerifyData?.orderId || orderId,
+          amount: Number(finalVerifyData?.orderAmount) || finalTotal,
+          waybill: finalVerifyData?.waybill || null,
+          whatsappUrl: finalVerifyData?.whatsappUrl || null,
+          emailSent: true,
         });
-        clearCart();
       } else if (finalVerifyData?.orderStatus === "FAILED" || finalVerifyData?.orderStatus === "USER_DROPPED") {
         setError("Payment was not completed or was cancelled. If money was deducted, it will be refunded within 24-48 hours.");
       } else {
