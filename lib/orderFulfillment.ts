@@ -75,7 +75,7 @@ export async function savePendingOrder(payload: PendingOrderPayload): Promise<bo
       { merge: true }
     );
     const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("Firestore save timeout")), 2500)
+      setTimeout(() => reject(new Error("Firestore save timeout")), 5000)
     );
 
     await Promise.race([savePromise, timeoutPromise]);
@@ -323,7 +323,7 @@ export async function fulfillPaidOrder(orderId: string, paymentDetails?: any): P
       const orderDocRef = doc(db, "orders", orderId);
       const snapPromise = getDoc(orderDocRef);
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("Firestore getDoc timeout")), 2500)
+        setTimeout(() => reject(new Error("Firestore getDoc timeout")), 5000)
       );
       const orderSnap: any = await Promise.race([snapPromise, timeoutPromise]);
       orderData = orderSnap && orderSnap.exists() ? orderSnap.data() : null;
@@ -335,6 +335,7 @@ export async function fulfillPaidOrder(orderId: string, paymentDetails?: any): P
   // If order was not yet pre-saved in Firestore, reconstruct from Cashfree payment details
   if (!orderData && paymentDetails) {
     const cust = paymentDetails.customer_details || {};
+    const tags = paymentDetails.order_tags || {};
     orderData = {
       orderId,
       userId: cust.customer_id || `cust_${Date.now()}`,
@@ -358,10 +359,10 @@ export async function fulfillPaidOrder(orderId: string, paymentDetails?: any): P
         },
       ],
       shippingAddress: {
-        address: "Contact Customer for Dispatch",
-        city: "Delhi",
-        state: "Delhi",
-        pincode: "110001",
+        address: tags.address || "Delivery Address",
+        city: tags.city || "Delhi",
+        state: tags.state || "Delhi",
+        pincode: tags.pincode || "110001",
       },
     };
   }

@@ -61,7 +61,7 @@ export async function POST(req: Request) {
       baseUrl = originHeader;
     }
 
-    const payload = {
+    const payload: any = {
       order_id: orderId,
       order_amount: Number(orderAmount),
       order_currency: "INR",
@@ -77,6 +77,15 @@ export async function POST(req: Request) {
       },
       order_note: `Stage & Steel Order: ${items?.length || 1} items${couponCode ? ` (Coupon: ${couponCode})` : ""}`,
     };
+
+    if (shippingAddress) {
+      payload.order_tags = {
+        city: (shippingAddress.city || "").substring(0, 50),
+        state: (shippingAddress.state || "").substring(0, 50),
+        pincode: (shippingAddress.pincode || "").substring(0, 10),
+        address: (shippingAddress.address || "").substring(0, 100),
+      };
+    }
 
     const response = await fetch(cashfreeBaseUrl, {
       method: "POST",
@@ -99,35 +108,37 @@ export async function POST(req: Request) {
       );
     }
 
-    // Pre-save pending order in Firestore asynchronously (non-blocking)
-    savePendingOrder({
-      orderId: data.order_id,
-      userId: customerId,
-      customerName,
-      customerEmail,
-      customerPhone,
-      subtotal: subtotal || orderAmount,
-      discountAmount: discountAmount || 0,
-      couponCode: couponCode || null,
-      finalTotal: Number(orderAmount),
-      items: (items || []).map((i: any) => ({
-        id: i.id,
-        name: i.name,
-        flavor: i.flavor || "Default",
-        price: i.price,
-        numericPrice: i.numericPrice,
-        quantity: i.quantity || 1,
-        thumbnail: i.thumbnail || "",
-      })),
-      shippingAddress: shippingAddress || {
-        address: "",
-        city: "",
-        state: "",
-        pincode: "",
-      },
-    }).catch((saveErr) => {
-      console.warn("Non-blocking savePendingOrder warning:", saveErr);
-    });
+    // Await saving pending order in Firestore so shipping address is permanently stored before payment
+    try {
+      await savePendingOrder({
+        orderId: data.order_id,
+        userId: customerId,
+        customerName,
+        customerEmail,
+        customerPhone,
+        subtotal: subtotal || orderAmount,
+        discountAmount: discountAmount || 0,
+        couponCode: couponCode || null,
+        finalTotal: Number(orderAmount),
+        items: (items || []).map((i: any) => ({
+          id: i.id,
+          name: i.name,
+          flavor: i.flavor || "Default",
+          price: i.price,
+          numericPrice: i.numericPrice,
+          quantity: i.quantity || 1,
+          thumbnail: i.thumbnail || "",
+        })),
+        shippingAddress: shippingAddress || {
+          address: "",
+          city: "",
+          state: "",
+          pincode: "",
+        },
+      });
+    } catch (saveErr) {
+      console.warn("savePendingOrder warning:", saveErr);
+    }
 
     return NextResponse.json({
       success: true,
