@@ -112,37 +112,43 @@ export default function ProductCatalog() {
           </div>
         </div>
 
-        {/* Category Filters Bar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 py-8">
-          <div className="inline-flex p-1.5 bg-[#151515]/10 backdrop-blur-sm rounded-lg border border-[#151515]/15 shadow-inner">
-            {categories.map((cat) => {
-              const isActive = activeCategory === cat.id;
-              return (
-                <button
-                  key={cat.id}
-                  type="button"
-                  onClick={() => setActiveCategory(cat.id)}
-                  className={`relative px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-sans font-bold tracking-wide uppercase transition-all duration-200 cursor-pointer rounded-md flex items-center gap-2 ${
-                    isActive
-                      ? "bg-[#596238] text-[#F4F4F1] shadow-lg border border-[#7C8B4C]/40"
-                      : "text-[#151515] hover:text-black hover:bg-[#151515]/10"
-                  }`}
-                >
-                  {isActive && <span className="w-2 h-2 rounded-full bg-[#9DB25E] animate-pulse" />}
-                  <span>{cat.label}</span>
-                  <span className={`text-xs font-mono px-1.5 py-0.5 rounded font-bold ${
-                    isActive ? "bg-black/20 text-[#F4F4F1]" : "bg-[#151515]/15 text-[#151515]"
-                  }`}>
-                    {cat.count}
-                  </span>
-                </button>
-              );
-            })}
-          </div>
+        {/* Category Filters Bar - Smooth Horizontal Scroll on Mobile */}
+        <div className="w-full py-6 sm:py-8">
+          <div className="flex items-center justify-between gap-4">
+            <div className="w-full lg:w-auto overflow-x-auto no-scrollbar py-1 -mx-4 px-4 sm:mx-0 sm:px-0">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 p-1.5 bg-[#151515]/10 backdrop-blur-sm rounded-lg border border-[#151515]/15 shadow-inner shrink-0">
+                {categories.map((cat) => {
+                  const isActive = activeCategory === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      type="button"
+                      onClick={() => setActiveCategory(cat.id)}
+                      className={`relative shrink-0 whitespace-nowrap px-3.5 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-sans font-bold tracking-wide uppercase transition-all duration-200 cursor-pointer rounded-md flex items-center gap-1.5 sm:gap-2 ${
+                        isActive
+                          ? "bg-[#596238] text-[#F4F4F1] shadow-lg border border-[#7C8B4C]/40"
+                          : "text-[#151515] hover:text-black hover:bg-[#151515]/10"
+                      }`}
+                    >
+                      {isActive && <span className="w-2 h-2 rounded-full bg-[#9DB25E] animate-pulse shrink-0" />}
+                      <span>{cat.label}</span>
+                      <span
+                        className={`text-[10px] sm:text-xs font-mono px-1.5 py-0.5 rounded font-bold ${
+                          isActive ? "bg-black/20 text-[#F4F4F1]" : "bg-[#151515]/15 text-[#151515]"
+                        }`}
+                      >
+                        {cat.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
 
-          <div className="hidden sm:flex items-center gap-2 text-xs sm:text-sm font-mono text-[#20201D] font-bold">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-700 animate-pulse" />
-            <span className="tracking-wider uppercase">LIVE INVENTORY // ALL PRODUCTS IN STOCK</span>
+            <div className="hidden lg:flex items-center gap-2 text-xs sm:text-sm font-mono text-[#20201D] font-bold shrink-0">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-700 animate-pulse" />
+              <span className="tracking-wider uppercase">LIVE INVENTORY // ALL PRODUCTS IN STOCK</span>
+            </div>
           </div>
         </div>
 
