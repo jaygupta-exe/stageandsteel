@@ -516,7 +516,7 @@ export default function CheckoutModal() {
             </div>
 
             {/* Form */}
-            <form onSubmit={handlePayment} className="space-y-4">
+            <form onSubmit={handlePayment} className="space-y-4" autoComplete="off" autoCorrect="off" data-lpignore="true">
               {/* Personal Details */}
               <div>
                 <span className="text-[10px] font-mono tracking-widest text-[#9DB25E] uppercase font-bold block mb-2">
@@ -531,8 +531,14 @@ export default function CheckoutModal() {
                       <UserIcon className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#666762]" />
                       <input
                         type="text"
-                        name="name"
-                        autoComplete="name"
+                        name="stage_custom_fn"
+                        id="stage_custom_fn"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        spellCheck="false"
+                        data-lpignore="true"
+                        data-1p-ignore="true"
+                        data-form-type="other"
                         required
                         placeholder="Alex Mercer"
                         value={name}
@@ -550,8 +556,14 @@ export default function CheckoutModal() {
                       <Phone className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#666762]" />
                       <input
                         type="tel"
-                        name="tel"
-                        autoComplete="tel"
+                        name="stage_custom_ph"
+                        id="stage_custom_ph"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        spellCheck="false"
+                        data-lpignore="true"
+                        data-1p-ignore="true"
+                        data-form-type="other"
                         required
                         maxLength={10}
                         placeholder="9876543210"
@@ -570,8 +582,14 @@ export default function CheckoutModal() {
                       <Mail className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#666762]" />
                       <input
                         type="email"
-                        name="email"
-                        autoComplete="email"
+                        name="stage_custom_em"
+                        id="stage_custom_em"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        spellCheck="false"
+                        data-lpignore="true"
+                        data-1p-ignore="true"
+                        data-form-type="other"
                         required
                         placeholder="alex@athlete.com"
                         value={email}
@@ -597,8 +615,14 @@ export default function CheckoutModal() {
                       <MapPin className="w-3.5 h-3.5 absolute left-3 top-3 text-[#666762]" />
                       <input
                         type="text"
-                        name="street-address"
-                        autoComplete="shipping street-address address-line1"
+                        name="stage_custom_addr"
+                        id="stage_custom_addr"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        spellCheck="false"
+                        data-lpignore="true"
+                        data-1p-ignore="true"
+                        data-form-type="other"
                         required
                         minLength={10}
                         placeholder="e.g. Flat 302, Green Valley Apartments, Near City Mall, Sector 14"
@@ -638,8 +662,14 @@ export default function CheckoutModal() {
                       </div>
                       <input
                         type="text"
-                        name="postal-code"
-                        autoComplete="shipping postal-code"
+                        name="stage_custom_pin"
+                        id="stage_custom_pin"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        spellCheck="false"
+                        data-lpignore="true"
+                        data-1p-ignore="true"
+                        data-form-type="other"
                         required
                         maxLength={6}
                         placeholder="110001"
@@ -655,8 +685,14 @@ export default function CheckoutModal() {
                       </label>
                       <input
                         type="text"
-                        name="address-level2"
-                        autoComplete="shipping address-level2"
+                        name="stage_custom_city"
+                        id="stage_custom_city"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        spellCheck="false"
+                        data-lpignore="true"
+                        data-1p-ignore="true"
+                        data-form-type="other"
                         required
                         placeholder="Mumbai"
                         value={city}
@@ -671,8 +707,14 @@ export default function CheckoutModal() {
                       </label>
                       <input
                         type="text"
-                        name="address-level1"
-                        autoComplete="shipping address-level1"
+                        name="stage_custom_state"
+                        id="stage_custom_state"
+                        autoComplete="off"
+                        autoCorrect="off"
+                        spellCheck="false"
+                        data-lpignore="true"
+                        data-1p-ignore="true"
+                        data-form-type="other"
                         required
                         placeholder="Maharashtra"
                         value={stateName}
