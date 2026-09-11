@@ -264,9 +264,16 @@ export function validateCoupon(
 
   const cleanCode = inputCode.trim().toUpperCase();
   const couponsPool = customCouponsList && customCouponsList.length > 0 ? customCouponsList : DEFAULT_COUPONS;
-  const coupon = couponsPool.find(
+  let coupon = couponsPool.find(
     (c) => c.code.toUpperCase() === cleanCode && c.isActive
   );
+
+  // Fallback to DEFAULT_COUPONS if not found in custom pool (e.g. system test coupons)
+  if (!coupon) {
+    coupon = DEFAULT_COUPONS.find(
+      (c) => c.code.toUpperCase() === cleanCode && c.isActive
+    );
+  }
 
   if (!coupon) {
     return {

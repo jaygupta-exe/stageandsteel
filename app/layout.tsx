@@ -8,6 +8,7 @@ import CartDrawer from "@/components/CartDrawer";
 import CheckoutModal from "@/components/CheckoutModal";
 import WhatsAppWidget from "@/components/WhatsAppWidget";
 import LaunchCouponModal from "@/components/LaunchCouponModal";
+import VersionCheck from "@/components/VersionCheck";
 
 const oswald = Oswald({
   variable: "--font-oswald",
@@ -158,6 +159,7 @@ export default function RootLayout({
       >
         <AuthProvider>
           <CartProvider>
+            <VersionCheck />
             {children}
             <AuthModal />
             <CartDrawer />
