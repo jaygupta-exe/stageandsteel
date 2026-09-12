@@ -9,6 +9,60 @@ import {
 
 const WHATSAPP_NUMBER = "919779159169"; // Divesh Mehan (Stage & Steel Owner)
 const OWNER_EMAIL = "Stageandsteel26@gmail.com";
+const FIREBASE_PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || "stageandsteel-a179f";
+const FIREBASE_API_KEY = process.env.NEXT_PUBLIC_FIREBASE_API_KEY || "";
+
+function toFirestoreFields(obj: any): any {
+  if (obj === null || obj === undefined) return { nullValue: null };
+  if (typeof obj === "boolean") return { booleanValue: obj };
+  if (typeof obj === "number") {
+    return Number.isInteger(obj) ? { integerValue: String(obj) } : { doubleValue: obj };
+  }
+  if (typeof obj === "string") return { stringValue: obj };
+  if (obj instanceof Date) return { timestampValue: obj.toISOString() };
+  if (Array.isArray(obj)) {
+    return { arrayValue: { values: obj.map(toFirestoreFields) } };
+  }
+  if (typeof obj === "object") {
+    const fields: Record<string, any> = {};
+    for (const [k, v] of Object.entries(obj)) {
+      if (v !== undefined) {
+        fields[k] = toFirestoreFields(v);
+      }
+    }
+    return { mapValue: { fields } };
+  }
+  return { stringValue: String(obj) };
+}
+
+function fromFirestoreValue(val: any): any {
+  if (!val) return null;
+  if ("nullValue" in val) return null;
+  if ("booleanValue" in val) return val.booleanValue;
+  if ("integerValue" in val) return parseInt(val.integerValue, 10);
+  if ("doubleValue" in val) return parseFloat(val.doubleValue);
+  if ("stringValue" in val) return val.stringValue;
+  if ("timestampValue" in val) return { toDate: () => new Date(val.timestampValue) };
+  if ("arrayValue" in val) {
+    return (val.arrayValue.values || []).map(fromFirestoreValue);
+  }
+  if ("mapValue" in val) {
+    const obj: Record<string, any> = {};
+    for (const [k, v] of Object.entries(val.mapValue.fields || {})) {
+      obj[k] = fromFirestoreValue(v);
+    }
+    return obj;
+  }
+  return null;
+}
+
+function fromFirestoreFields(fields: any): any {
+  const obj: Record<string, any> = {};
+  for (const [k, v] of Object.entries(fields || {})) {
+    obj[k] = fromFirestoreValue(v);
+  }
+  return obj;
+}
 
 export interface PendingOrderPayload {
   orderId: string;
@@ -41,50 +95,75 @@ export interface PendingOrderPayload {
  * 1. Save Pending Order to Firestore (called in /api/cashfree/create-order)
  */
 export async function savePendingOrder(payload: PendingOrderPayload): Promise<boolean> {
-  if (!db) {
-    console.warn("Firestore not initialized — pending order not saved.");
-    return false;
+  const orderDocData = {
+    orderId: payload.orderId,
+    userId: payload.userId || `cust_${Date.now()}`,
+    customerName: payload.customerName || "Stage & Steel Athlete",
+    customerEmail: payload.customerEmail || "",
+    customerPhone: (payload.customerPhone || "").replace(/[^0-9]/g, ""),
+    subtotal: Number(payload.subtotal) || Number(payload.finalTotal),
+    discountAmount: Number(payload.discountAmount) || 0,
+    couponCode: payload.couponCode || null,
+    finalTotal: Number(payload.finalTotal),
+    items: payload.items || [],
+    shippingAddress: payload.shippingAddress || {
+      address: "",
+      city: "",
+      state: "",
+      pincode: "",
+    },
+    status: "PENDING",
+    paymentGateway: "CASHFREE",
+    waybill: null,
+    createdAt: new Date().toISOString(),
+  };
+
+  // 1. Primary: REST API save (Direct & 100% reliable on server)
+  if (FIREBASE_PROJECT_ID && FIREBASE_API_KEY) {
+    try {
+      const restUrl = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/orders/${encodeURIComponent(payload.orderId)}?key=${FIREBASE_API_KEY}`;
+      const res = await fetch(restUrl, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fields: toFirestoreFields(orderDocData).mapValue.fields,
+        }),
+        cache: "no-store",
+      });
+      if (res.ok) {
+        console.log(`[Fulfillment] Pending order ${payload.orderId} saved via REST.`);
+        return true;
+      }
+    } catch (restErr) {
+      console.warn("[Fulfillment] REST pending save warning:", restErr);
+    }
   }
 
-  try {
-    const orderDocRef = doc(db, "orders", payload.orderId);
-    const savePromise = setDoc(
-      orderDocRef,
-      {
-        orderId: payload.orderId,
-        userId: payload.userId || `cust_${Date.now()}`,
-        customerName: payload.customerName || "Stage & Steel Athlete",
-        customerEmail: payload.customerEmail || "",
-        customerPhone: (payload.customerPhone || "").replace(/[^0-9]/g, ""),
-        subtotal: Number(payload.subtotal) || Number(payload.finalTotal),
-        discountAmount: Number(payload.discountAmount) || 0,
-        couponCode: payload.couponCode || null,
-        finalTotal: Number(payload.finalTotal),
-        items: payload.items || [],
-        shippingAddress: payload.shippingAddress || {
-          address: "",
-          city: "",
-          state: "",
-          pincode: "",
+  // 2. Fallback: Firebase Web SDK
+  if (db) {
+    try {
+      const orderDocRef = doc(db, "orders", payload.orderId);
+      const savePromise = setDoc(
+        orderDocRef,
+        {
+          ...orderDocData,
+          createdAt: serverTimestamp(),
         },
-        status: "PENDING",
-        paymentGateway: "CASHFREE",
-        waybill: null,
-        createdAt: serverTimestamp(),
-      },
-      { merge: true }
-    );
-    const timeoutPromise = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error("Firestore save timeout")), 5000)
-    );
+        { merge: true }
+      );
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("Firestore save timeout")), 3000)
+      );
 
-    await Promise.race([savePromise, timeoutPromise]);
-    console.log(`[Fulfillment] Pending order ${payload.orderId} saved to Firestore.`);
-    return true;
-  } catch (error) {
-    console.warn("[Fulfillment] Save pending order warning (non-fatal):", error);
-    return false;
+      await Promise.race([savePromise, timeoutPromise]);
+      console.log(`[Fulfillment] Pending order ${payload.orderId} saved via SDK.`);
+      return true;
+    } catch (error) {
+      console.warn("[Fulfillment] Save pending order SDK warning:", error);
+    }
   }
+
+  return false;
 }
 
 /**
@@ -400,12 +479,30 @@ async function executeFulfillment(
   whatsappUrl: string;
 }> {
   let orderData: any = null;
-  if (db) {
+
+  // 1. Primary: REST read
+  if (FIREBASE_PROJECT_ID && FIREBASE_API_KEY) {
+    try {
+      const restUrl = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/orders/${encodeURIComponent(orderId)}?key=${FIREBASE_API_KEY}`;
+      const res = await fetch(restUrl, { cache: "no-store" });
+      if (res.ok) {
+        const docData = await res.json();
+        if (docData && docData.fields) {
+          orderData = fromFirestoreFields(docData.fields);
+        }
+      }
+    } catch (rErr) {
+      console.warn("[Fulfillment] REST read order warning:", rErr);
+    }
+  }
+
+  // 2. Fallback: SDK read
+  if (!orderData && db) {
     try {
       const orderDocRef = doc(db, "orders", orderId);
       const snapPromise = getDoc(orderDocRef);
       const timeoutPromise = new Promise<never>((_, reject) =>
-        setTimeout(() => reject(new Error("Firestore getDoc timeout")), 5000)
+        setTimeout(() => reject(new Error("Firestore getDoc timeout")), 3000)
       );
       const orderSnap: any = await Promise.race([snapPromise, timeoutPromise]);
       orderData = orderSnap && orderSnap.exists() ? orderSnap.data() : null;
@@ -485,8 +582,40 @@ async function executeFulfillment(
 
   const waybill = shipResult.waybill;
 
-  // 2. Update Firestore Order Record
-  if (db) {
+  const updatedPayload = {
+    ...orderData,
+    status: "PAID",
+    waybill,
+    delhiveryStatus: shipResult.success ? "MANIFESTED" : "MANUAL_REVIEW",
+    delhiveryDetails: shipResult.rawResponse || null,
+    paidAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  // 2. Update Firestore Order Record via REST (Primary)
+  let savedViaRest = false;
+  if (FIREBASE_PROJECT_ID && FIREBASE_API_KEY) {
+    try {
+      const restUrl = `https://firestore.googleapis.com/v1/projects/${FIREBASE_PROJECT_ID}/databases/(default)/documents/orders/${encodeURIComponent(orderId)}?key=${FIREBASE_API_KEY}`;
+      const res = await fetch(restUrl, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          fields: toFirestoreFields(updatedPayload).mapValue.fields,
+        }),
+        cache: "no-store",
+      });
+      if (res.ok) {
+        savedViaRest = true;
+        console.log(`[Fulfillment] Order ${orderId} marked PAID via REST with Waybill: ${waybill}`);
+      }
+    } catch (patchErr) {
+      console.warn("[Fulfillment] REST fulfillment save warning:", patchErr);
+    }
+  }
+
+  // Fallback: SDK
+  if (!savedViaRest && db) {
     try {
       const orderDocRef = doc(db, "orders", orderId);
       const updatePromise = setDoc(
@@ -506,7 +635,7 @@ async function executeFulfillment(
         setTimeout(() => reject(new Error("Firestore setDoc timeout")), 2500)
       );
       await Promise.race([updatePromise, timeoutPromise]);
-      console.log(`[Fulfillment] Order ${orderId} marked PAID in Firestore with Waybill: ${waybill}`);
+      console.log(`[Fulfillment] Order ${orderId} marked PAID in Firestore via SDK with Waybill: ${waybill}`);
     } catch (saveErr) {
       console.warn("[Fulfillment] Firestore save warning:", saveErr);
     }
