@@ -275,11 +275,16 @@ export async function createDelhiveryShipment(order: {
     }
 
     // If Delhivery returns remarks or issues
-    const errorRmk =
+    let errorRmk =
       firstPkg?.remarks?.join("; ") ||
       data.rmk ||
       (typeof data.error === "string" ? data.error : JSON.stringify(data.error || data)) ||
       "Manifest issue";
+
+    if (errorRmk.toLowerCase().includes("duplicate order")) {
+      errorRmk = "Order is already registered & manifested in Delhivery. Search with AWB / Waybill number in Delhivery One.";
+    }
+
     return {
       success: false,
       waybill: fallbackWaybill,
