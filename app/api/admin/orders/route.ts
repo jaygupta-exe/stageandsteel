@@ -50,11 +50,20 @@ export async function GET() {
             list.push(orderObj as OrderRecord);
           });
 
+          const parseDate = (val: any) => {
+            if (!val) return 0;
+            if (typeof val?.toDate === "function") return val.toDate().getTime();
+            if (typeof val === "string") {
+              const t = new Date(val).getTime();
+              return isNaN(t) ? 0 : t;
+            }
+            if (typeof val === "number") return val;
+            return 0;
+          };
+
           // Sort newest first
           list.sort((a, b) => {
-            const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
-            const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
-            return timeB - timeA;
+            return parseDate(b.createdAt) - parseDate(a.createdAt);
           });
 
           if (list.length > 0) {
@@ -76,10 +85,19 @@ export async function GET() {
           list.push({ ...docSnap.data(), id: docSnap.id } as OrderRecord);
         });
 
+        const parseDate = (val: any) => {
+          if (!val) return 0;
+          if (typeof val?.toDate === "function") return val.toDate().getTime();
+          if (typeof val === "string") {
+            const t = new Date(val).getTime();
+            return isNaN(t) ? 0 : t;
+          }
+          if (typeof val === "number") return val;
+          return 0;
+        };
+
         list.sort((a, b) => {
-          const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
-          const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
-          return timeB - timeA;
+          return parseDate(b.createdAt) - parseDate(a.createdAt);
         });
 
         return NextResponse.json({ orders: list, source: "firestore_sdk" });

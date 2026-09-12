@@ -92,20 +92,30 @@ export async function getUserOrders(userId: string): Promise<OrderRecord[]> {
   }
 }
 
-/**
- * [ADMIN] Get all orders in the entire system, sorted newest first.
- */
 export async function getAllOrders(): Promise<OrderRecord[]> {
   if (!db) return [];
 
   try {
     const ordersRef = collection(db, "orders");
-    const q = query(ordersRef, orderBy("createdAt", "desc"));
-    const snapshot = await getDocs(q);
-    return snapshot.docs.map((docSnap) => ({
+    const snapshot = await getDocs(ordersRef);
+    const list = snapshot.docs.map((docSnap) => ({
       ...docSnap.data(),
       id: docSnap.id,
     })) as OrderRecord[];
+
+    const parseDate = (val: any) => {
+      if (!val) return 0;
+      if (typeof val?.toDate === "function") return val.toDate().getTime();
+      if (typeof val === "string") {
+        const t = new Date(val).getTime();
+        return isNaN(t) ? 0 : t;
+      }
+      if (typeof val === "number") return val;
+      return 0;
+    };
+
+    list.sort((a, b) => parseDate(b.createdAt) - parseDate(a.createdAt));
+    return list;
   } catch (err) {
     console.error("Failed to fetch all orders for admin:", err);
     return [];
