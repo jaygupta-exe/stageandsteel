@@ -164,16 +164,17 @@ export default function AdminOrdersPage() {
       clearTimeout(timeoutId);
 
       const data = await res.json();
-      if (data.waybill) {
+      if (data.success && data.waybill && !data.waybill.startsWith("DELHIVERY_EXP_")) {
         setMessage({
           type: "success",
-          text: `Delhivery shipment processed! AWB: ${data.waybill}`,
+          text: `Delhivery shipment created successfully! Live AWB: ${data.waybill}`,
         });
         await loadOrders();
       } else {
+        const errorDetail = data.error || (data.details ? JSON.stringify(data.details) : "Delhivery rejected package manifest");
         setMessage({
           type: "error",
-          text: `Delhivery response: ${data.error || "Could not manifest package"}`,
+          text: `Delhivery Error: ${errorDetail}`,
         });
       }
     } catch (err: any) {

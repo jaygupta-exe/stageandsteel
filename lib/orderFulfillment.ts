@@ -256,7 +256,7 @@ export async function createDelhiveryShipment(order: {
         "Content-Type": "application/x-www-form-urlencoded",
       },
       body: formData.toString(),
-      signal: AbortSignal.timeout(6000),
+      signal: AbortSignal.timeout(10000),
     });
 
     const data = await response.json();
@@ -265,7 +265,7 @@ export async function createDelhiveryShipment(order: {
     const packages = data?.packages || [];
     const firstPkg = packages[0];
 
-    if (firstPkg && firstPkg.waybill) {
+    if (firstPkg && firstPkg.waybill && firstPkg.status?.toLowerCase() !== "fail") {
       return {
         success: true,
         waybill: firstPkg.waybill,
@@ -274,7 +274,11 @@ export async function createDelhiveryShipment(order: {
     }
 
     // If Delhivery returns remarks or issues
-    const errorRmk = firstPkg?.remarks?.join("; ") || data.rmk || data.error || "Manifest issue";
+    const errorRmk =
+      firstPkg?.remarks?.join("; ") ||
+      data.rmk ||
+      (typeof data.error === "string" ? data.error : JSON.stringify(data.error || data)) ||
+      "Manifest issue";
     return {
       success: false,
       waybill: fallbackWaybill,
