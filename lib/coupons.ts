@@ -298,24 +298,28 @@ export function validateCoupon(
     // Special test coupon: make payable exactly ₹1 (Cashfree minimum is ₹1)
     discount = Math.max(0, subtotal - 1);
   } else if (coupon.type === "percentage") {
-    discount = Math.round((subtotal * coupon.value) / 100);
+    discount = Math.round((subtotal * Number(coupon.value || 0)) / 100);
     if (coupon.maxDiscount && discount > coupon.maxDiscount) {
       discount = coupon.maxDiscount;
     }
   } else if (coupon.type === "flat") {
-    discount = Math.min(coupon.value, subtotal);
+    discount = Math.min(Number(coupon.value || 0), subtotal);
   }
 
-  const finalAmount = Math.max(1, subtotal - discount);
+  const finalAmount = Math.max(0, subtotal - discount);
+
+  let successMsg = `Coupon "${coupon.code}" applied! You saved ₹${discount.toLocaleString("en-IN")}.`;
+  if (cleanCode === "TEST1" || cleanCode === "RUPEE1") {
+    successMsg = `Test Coupon "${coupon.code}" applied! Total Payable is ₹1 (for Gateway Testing).`;
+  } else if (finalAmount === 0) {
+    successMsg = `Promotional Coupon "${coupon.code}" applied! 100% Free Order (₹0 Payable).`;
+  }
 
   return {
     isValid: true,
     coupon,
     discountAmount: discount,
     finalAmount,
-    message:
-      cleanCode === "TEST1" || cleanCode === "RUPEE1"
-        ? `Test Coupon "${coupon.code}" applied! Total Payable is ₹1.`
-        : `Coupon "${coupon.code}" applied! You saved ₹${discount.toLocaleString("en-IN")}.`,
+    message: successMsg,
   };
 }

@@ -28,9 +28,13 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!orderAmount || orderAmount <= 0) {
+    const numericAmount = Math.round(Number(orderAmount) * 100) / 100;
+    if (isNaN(numericAmount) || numericAmount < 1) {
       return NextResponse.json(
-        { error: "Invalid order amount" },
+        {
+          error: "Cashfree payment gateway requires a minimum payable amount of ₹1. For 100% free coupons (₹0), please use the Claim Free Order option.",
+          isZeroAmount: numericAmount === 0,
+        },
         { status: 400 }
       );
     }

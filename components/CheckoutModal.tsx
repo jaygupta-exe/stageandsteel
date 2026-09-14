@@ -176,10 +176,50 @@ export default function CheckoutModal() {
         throw new Error("Please enter your State.");
       }
 
-      setIsProcessing(true);
+      // Handle 100% Discounted Free Orders directly (₹0 payable)
+      if (finalTotal === 0) {
+        setProcessingText("PLACING 100% FREE PROMOTIONAL ORDER...");
+
+        const freeOrderRes = await fetch("/api/orders/create-free-order", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderAmount: 0,
+            subtotal,
+            discountAmount,
+            couponCode: appliedCoupon?.code || "FREE_PROMO",
+            customerDetails: {
+              customerId: user?.uid || `cust_${Date.now()}`,
+              name: name.trim(),
+              email: email.trim(),
+              phone: cleanPhoneNum,
+            },
+            items,
+            shippingAddress: {
+              address: address.trim(),
+              city: city.trim(),
+              state: stateName.trim(),
+              pincode: cleanPinCode,
+            },
+          }),
+        });
+
+        const freeOrderData = await freeOrderRes.json();
+        if (!freeOrderRes.ok || !freeOrderData.success) {
+          throw new Error(
+            freeOrderData.error || "Failed to place promotional order. Please try again."
+          );
+        }
+
+        setProcessingText("ORDER CONFIRMED! REDIRECTING...");
+        clearCart();
+        window.location.href = `/order-success?order_id=${encodeURIComponent(freeOrderData.orderId)}&status=PAID`;
+        return;
+      }
+
       setProcessingText("INITIALIZING PAYMENT GATEWAY...");
 
-      // 1. Create order on server
+      // 1. Create Cashfree order on server
       const res = await fetch("/api/cashfree/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -279,9 +319,9 @@ export default function CheckoutModal() {
         window.location.href = `/order-success?order_id=${encodeURIComponent(orderId)}&status=PAID`;
         return;
       } else if (finalVerifyData?.orderStatus === "FAILED" || finalVerifyData?.orderStatus === "USER_DROPPED") {
-        setError("Payment was not completed or was cancelled. If money was deducted, it will be refunded within 24-48 hours.");
+        setError("Payment was cancelled or was not completed. You can try again whenever ready.");
       } else {
-        setError("Payment verification timed out. If your account was debited, check your email for the dispatch tracking link.");
+        setError("Payment verification completed. If your account was debited, check your email for the dispatch tracking link.");
       }
     } catch (err: any) {
       console.error("Payment error:", err);
@@ -726,20 +766,30 @@ export default function CheckoutModal() {
                 </div>
               </div>
 
-              {/* Cashfree Payment Button */}
+              {/* Cashfree Payment / Free Order Button */}
               <div className="pt-2">
                 <button
                   type="submit"
                   disabled={isProcessing}
-                  className="w-full py-4 bg-[#596238] hover:bg-[#687342] text-white font-editorial font-bold tracking-widest text-sm uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#596238]/30 disabled:opacity-60"
+                  className={`w-full py-4 text-white font-editorial font-bold tracking-widest text-sm uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg disabled:opacity-60 ${
+                    finalTotal === 0
+                      ? "bg-gradient-to-r from-[#4d5e28] via-[#6d8234] to-[#4d5e28] hover:from-[#596b30] hover:to-[#596b30] border border-[#8FA355] shadow-[#8FA355]/25"
+                      : "bg-[#596238] hover:bg-[#687342] shadow-[#596238]/30"
+                  }`}
                 >
                   {isProcessing ? (
                     <div className="flex items-center justify-center gap-2.5">
                       <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
                       <span className="text-xs font-mono tracking-wider">
-                        {processingText || "PROCESSING PAYMENT..."}
+                        {processingText || "PROCESSING ORDER..."}
                       </span>
                     </div>
+                  ) : finalTotal === 0 ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 text-[#C2D879]" />
+                      <span>CLAIM 100% FREE ORDER (₹0) — DISPATCH NOW</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
                   ) : (
                     <>
                       <Lock className="w-4 h-4" />
@@ -752,9 +802,9 @@ export default function CheckoutModal() {
                 <div className="mt-3 flex items-center justify-between text-[10px] font-mono text-[#777873]">
                   <span className="flex items-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5 text-[#9DB25E]" />
-                    UPI / CARDS / NETBANKING / WALLETS
+                    {finalTotal === 0 ? "100% PROMOTIONAL DISCOUNT APPLIED" : "UPI / CARDS / NETBANKING / WALLETS"}
                   </span>
-                  <span>POWERED BY CASHFREE PAYMENTS</span>
+                  <span>{finalTotal === 0 ? "EXPRESS DISPATCH // DELHIVERY" : "POWERED BY CASHFREE PAYMENTS"}</span>
                 </div>
 
                 <p className="mt-2.5 text-[9px] font-mono text-center text-[#777873] leading-relaxed">
