@@ -3,9 +3,7 @@
 # ⚡ STAGE & STEEL
 ### HIGH-PURITY PERFORMANCE NUTRITION // LUXURY D2C E-COMMERCE
 
-<p align="center">
-  <img src="public/assets/readme-hero.jpg" alt="Stage & Steel Banner" width="100%" style="border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5);" />
-</p>
+![Stage & Steel Banner](./public/assets/readme-hero.jpg)
 
 [![Next.js 16](https://img.shields.io/badge/Next.js%2016-Turbopack-000000?style=for-the-badge&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -73,39 +71,28 @@ The entire system was architected and built through **Vibe Coding** paired with 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Customer
-    participant UI as Checkout Modal (Next.js)
-    participant API as Cashfree / Free Order API
-    participant DB as Firebase Firestore
-    participant PG as Cashfree Payment Gateway
-    participant Del as Delhivery CMU Logistics
-    participant Mail as Resend & WhatsApp
+    actor Customer as Athlete
+    participant UI as Checkout Modal
+    participant API as Backend API
+    participant PG as Cashfree Gateway
+    participant Del as Delhivery CMU
+    participant DB as Firestore & Resend
 
-    Customer->>UI: Fills Address & Applies Coupon
-    alt Total is ₹0 (100% Promo Coupon)
-        Customer->>UI: Clicks "CLAIM 100% FREE ORDER"
-        UI->>API: POST /api/orders/create-free-order
-        API->>DB: Save Order (Status: PAID)
-        API->>Del: Generate Waybill / CMU Shipment
-        API->>Mail: Trigger Customer & Owner Email + WhatsApp
-        API-->>UI: Return Order Confirmed
-        UI-->>Customer: Redirect /order-success
-    else Total > ₹0
-        Customer->>UI: Clicks "PAY VIA CASHFREE"
-        UI->>API: POST /api/cashfree/create-order
-        API->>PG: Initialize PG Order Session
-        API->>DB: Save Order (Status: PENDING)
-        API-->>UI: Return paymentSessionId
-        UI->>PG: Open Cashfree Checkout Modal
-        Customer->>PG: Complete UPI / Card / Netbanking
-        PG-->>UI: Payment Successful
-        UI->>API: GET /api/cashfree/verify-order
-        API->>DB: Update Order Status -> PAID
-        API->>Del: Auto-Manifest Delhivery Express AWB
-        API->>Mail: Dispatch Resend Invoice & WhatsApp Deep-link
-        API-->>UI: Verified
-        UI-->>Customer: Redirect /order-success (AWB Tracking)
+    Customer->>UI: Select Stack & Apply Coupon
+    Customer->>UI: Submit Dispatch Address
+    UI->>API: Initialize Order
+    alt Standard Gateway Payment
+        API->>PG: Create Cashfree Session
+        UI->>PG: Complete UPI / Card Payment
+        PG-->>API: Payment Confirmed
+    else 100% Free Promo Order
+        API->>DB: Record Promotional Order
     end
+    API->>Del: Auto-Manifest Delhivery AWB
+    API->>DB: Set Status to PAID
+    API->>DB: Send Resend Email & WhatsApp
+    API-->>UI: Return Verified Order
+    UI-->>Customer: Redirect to /order-success
 ```
 
 ---
