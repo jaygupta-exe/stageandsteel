@@ -12,7 +12,7 @@ function fromFirestoreValue(val: any): any {
   if ("integerValue" in val) return parseInt(val.integerValue, 10);
   if ("doubleValue" in val) return parseFloat(val.doubleValue);
   if ("stringValue" in val) return val.stringValue;
-  if ("timestampValue" in val) return { toDate: () => new Date(val.timestampValue) };
+  if ("timestampValue" in val) return val.timestampValue;
   if ("arrayValue" in val) {
     return (val.arrayValue.values || []).map(fromFirestoreValue);
   }

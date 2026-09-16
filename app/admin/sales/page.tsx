@@ -57,26 +57,53 @@ export default function AdminSalesPage() {
     loadOrders();
   }, []);
 
-  // Helper to parse order date safely
+  // Helper to parse order date safely across all Firestore SDK, REST and fallback formats
   const getOrderDate = (ord: OrderRecord): Date | null => {
-    if (!ord.createdAt) return null;
-    if (typeof ord.createdAt?.toDate === "function") {
-      return ord.createdAt.toDate();
+    if (!ord) return null;
+
+    // 1. Direct toDate function
+    if (typeof (ord as any).createdAt?.toDate === "function") {
+      try {
+        return (ord as any).createdAt.toDate();
+      } catch (e) {}
     }
-    if (typeof ord.createdAt === "string") {
+
+    // 2. Firestore Timestamp object {_seconds, _nanoseconds} or {seconds, nanoseconds}
+    const sec = (ord as any).createdAt?.seconds ?? (ord as any).createdAt?._seconds;
+    if (typeof sec === "number") {
+      return new Date(sec * 1000);
+    }
+
+    // 3. String date / ISO string
+    if (typeof ord.createdAt === "string" && ord.createdAt.trim()) {
       const d = new Date(ord.createdAt);
-      return isNaN(d.getTime()) ? null : d;
+      if (!isNaN(d.getTime())) return d;
     }
+
+    // 4. Numeric timestamp
     if (typeof ord.createdAt === "number") {
-      return new Date(ord.createdAt);
+      const d = new Date(ord.createdAt > 1e11 ? ord.createdAt : ord.createdAt * 1000);
+      if (!isNaN(d.getTime())) return d;
     }
+
+    // 5. Fallback: extract millisecond timestamp from order ID like SS_1789441511693_997
+    const orderIdStr = ord.orderId || (ord as any).order_id || ord.id || "";
+    const match = orderIdStr.match(/\d{10,13}/);
+    if (match) {
+      const num = parseInt(match[0], 10);
+      const ts = num > 1e11 ? num : num * 1000;
+      const d = new Date(ts);
+      if (!isNaN(d.getTime()) && d.getFullYear() >= 2020 && d.getFullYear() <= 2035) {
+        return d;
+      }
+    }
+
     return null;
   };
 
   // Filter orders based on date range and status
   const filteredOrders = useMemo(() => {
     const now = new Date();
-    const currentYear = now.getFullYear();
 
     return orders.filter((ord) => {
       // 1. Status Filter
@@ -90,6 +117,7 @@ export default function AdminSalesPage() {
       if (!orderDate) return selectedRange === "all";
 
       const orderTime = orderDate.getTime();
+      const month = orderDate.getMonth(); // 0 = Jan, 7 = Aug, 8 = Sep
 
       // 2. Date Range Filter
       switch (selectedRange) {
@@ -111,24 +139,19 @@ export default function AdminSalesPage() {
           return orderTime >= thirtyDaysAgo;
         }
         case "thisMonth": {
-          const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
-          return orderTime >= startOfMonth;
+          return month === now.getMonth() && orderDate.getFullYear() === now.getFullYear();
         }
         case "august": {
-          // August (Month index 7) of current year or 2026/2025
-          const augStart = new Date(currentYear, 7, 1, 0, 0, 0).getTime();
-          const augEnd = new Date(currentYear, 8, 1, 0, 0, 0).getTime();
-          return orderTime >= augStart && orderTime < augEnd;
+          // August (Month index 7)
+          return month === 7;
         }
         case "september": {
-          const sepStart = new Date(currentYear, 8, 1, 0, 0, 0).getTime();
-          const sepEnd = new Date(currentYear, 9, 1, 0, 0, 0).getTime();
-          return orderTime >= sepStart && orderTime < sepEnd;
+          // September (Month index 8)
+          return month === 8;
         }
         case "july": {
-          const julStart = new Date(currentYear, 6, 1, 0, 0, 0).getTime();
-          const julEnd = new Date(currentYear, 7, 1, 0, 0, 0).getTime();
-          return orderTime >= julStart && orderTime < julEnd;
+          // July (Month index 6)
+          return month === 6;
         }
         case "custom": {
           if (!customStart && !customEnd) return true;
@@ -610,6 +633,24 @@ export default function AdminSalesPage() {
                 className="bg-[#141b16] border border-neutral-800 rounded-xl px-3 py-1.5 text-white focus:border-emerald-500 focus:outline-none"
               />
             </div>
+          </div>
+        )}
+
+        {/* Informative notice if no orders in selected range */}
+        {orders.length > 0 && filteredOrders.length === 0 && (
+          <div className="p-4 rounded-2xl bg-amber-950/30 border border-amber-500/30 text-amber-300 text-xs font-mono flex items-center justify-between">
+            <div>
+              <span>No orders found for <strong>{getRangeDisplayTitle()}</strong>. (Total orders in database: {orders.length}).</span>
+              <span className="block text-[11px] text-neutral-400 mt-1">
+                Your store orders may be from September 2026 or another month. Click <strong>September</strong> or <strong>All Time</strong> above to view and export.
+              </span>
+            </div>
+            <button
+              onClick={() => setSelectedRange("all")}
+              className="px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-200 text-xs font-bold uppercase transition-all shrink-0 ml-3 cursor-pointer"
+            >
+              View All Time
+            </button>
           </div>
         )}
       </div>
