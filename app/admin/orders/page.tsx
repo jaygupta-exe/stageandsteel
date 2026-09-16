@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   getAllOrders,
   updateOrderStatus,
@@ -28,6 +29,8 @@ import {
   ExternalLink,
   Save,
   X,
+  Download,
+  TrendingUp,
 } from "lucide-react";
 
 export default function AdminOrdersPage() {
@@ -207,6 +210,93 @@ export default function AdminOrdersPage() {
     }
   };
 
+  const handleExportCSV = () => {
+    if (filteredOrders.length === 0) return;
+
+    const headers = [
+      "Order ID",
+      "Date",
+      "Status",
+      "Customer Name",
+      "Customer Phone",
+      "Customer Email",
+      "Shipping Address",
+      "City",
+      "State",
+      "Pincode",
+      "Items",
+      "Total Quantity",
+      "Subtotal (INR)",
+      "Discount (INR)",
+      "Coupon Code",
+      "Final Total (INR)",
+      "Payment Gateway",
+      "Waybill",
+    ];
+
+    const rows = [headers];
+
+    filteredOrders.forEach((ord) => {
+      let dateStr = "N/A";
+      if (ord.createdAt?.toDate) {
+        dateStr = ord.createdAt.toDate().toLocaleString("en-IN");
+      } else if (typeof ord.createdAt === "string") {
+        dateStr = new Date(ord.createdAt).toLocaleString("en-IN");
+      }
+
+      const itemsStr = (ord.items || [])
+        .map((i) => `${i.name || "Item"} [${i.flavor || ""}] x${i.quantity || 1}`)
+        .join(" | ");
+
+      const totalQty = (ord.items || []).reduce((sum, i) => sum + (i.quantity || 1), 0);
+
+      rows.push([
+        ord.orderId || (ord as any).order_id || ord.id || "",
+        dateStr,
+        ord.status,
+        ord.customerName || (ord as any).customer_name || "",
+        ord.customerPhone || (ord as any).customer_phone || "",
+        ord.customerEmail || (ord as any).customer_email || "",
+        ord.shippingAddress?.address || "",
+        ord.shippingAddress?.city || "",
+        ord.shippingAddress?.state || "",
+        ord.shippingAddress?.pincode || "",
+        itemsStr,
+        String(totalQty),
+        String(ord.subtotal || ord.finalTotal || 0),
+        String(ord.discountAmount || 0),
+        ord.couponCode || "NONE",
+        String(ord.finalTotal || 0),
+        ord.paymentGateway || "CASHFREE",
+        ord.waybill || "NO_WAYBILL",
+      ]);
+    });
+
+    const csvContent =
+      "\uFEFF" +
+      rows
+        .map((row) =>
+          row
+            .map((val) => {
+              if (val === null || val === undefined) return '""';
+              const str = String(val).replace(/"/g, '""');
+              return `"${str}"`;
+            })
+            .join(",")
+        )
+        .join("\r\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `StageAndSteel_Orders_Export_${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   const statuses = ["ALL", "PAID", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"];
 
   return (
@@ -220,6 +310,26 @@ export default function AdminOrdersPage() {
           <p className="text-xs font-mono text-neutral-400 mt-1 uppercase tracking-widest">
             Manage customer deliveries, Delhivery waybills & live order tracking
           </p>
+        </div>
+
+        <div className="flex items-center gap-2.5">
+          <Link
+            href="/admin/sales"
+            className="px-3.5 py-2.5 rounded-xl bg-neutral-900 hover:bg-neutral-800 border border-emerald-500/30 text-emerald-400 text-xs font-mono uppercase tracking-wider flex items-center gap-2 transition-all cursor-pointer"
+          >
+            <TrendingUp className="w-3.5 h-3.5" />
+            <span>Sales & CA Reports</span>
+          </Link>
+
+          <button
+            onClick={handleExportCSV}
+            disabled={filteredOrders.length === 0}
+            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-black text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)] cursor-pointer disabled:opacity-50"
+            title="Download currently filtered orders as CSV"
+          >
+            <Download className="w-4 h-4" />
+            <span>Export Orders CSV ({filteredOrders.length})</span>
+          </button>
         </div>
       </div>
 

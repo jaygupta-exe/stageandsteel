@@ -11,6 +11,7 @@ import {
   ShoppingCart,
   TicketPercent,
   Sliders,
+  BarChart3,
   ExternalLink,
   LogOut,
   Menu,
@@ -21,8 +22,9 @@ import {
 
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { label: "Products", href: "/admin/products", icon: Package },
+  { label: "Sales & Reports", href: "/admin/sales", icon: BarChart3 },
   { label: "Live Orders", href: "/admin/orders", icon: ShoppingCart },
+  { label: "Products", href: "/admin/products", icon: Package },
   { label: "Coupons", href: "/admin/coupons", icon: TicketPercent },
   { label: "Site Content", href: "/admin/content", icon: Sliders },
 ];

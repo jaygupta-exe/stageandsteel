@@ -19,6 +19,7 @@ import {
   Plus,
   Truck,
   Sparkles,
+  BarChart3,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -139,12 +140,15 @@ export default function AdminDashboardPage() {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Total Revenue */}
-        <div className="p-6 rounded-2xl bg-[#0f1410] border border-neutral-800 relative overflow-hidden group hover:border-emerald-500/40 transition-all">
+        <Link
+          href="/admin/sales"
+          className="p-6 rounded-2xl bg-[#0f1410] border border-neutral-800 relative overflow-hidden group hover:border-emerald-500/60 transition-all block cursor-pointer"
+        >
           <div className="flex items-center justify-between mb-4">
-            <span className="text-xs font-mono text-neutral-400 uppercase tracking-wider">
-              Total Revenue
+            <span className="text-xs font-mono text-neutral-400 uppercase tracking-wider group-hover:text-emerald-400 transition-colors">
+              Total Revenue (Analytics &rarr;)
             </span>
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
               <TrendingUp className="w-4 h-4" />
             </div>
           </div>
@@ -152,9 +156,9 @@ export default function AdminDashboardPage() {
             ₹{totalRevenue.toLocaleString("en-IN")}
           </div>
           <p className="text-[10px] font-mono text-neutral-400 mt-2">
-            Across {orders.length} total customer orders
+            Across {orders.length} total customer orders &bull; View Reports
           </p>
-        </div>
+        </Link>
 
         {/* Pending Shipments */}
         <div className="p-6 rounded-2xl bg-[#0f1410] border border-neutral-800 relative overflow-hidden group hover:border-amber-500/40 transition-all">
@@ -212,20 +216,20 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Quick Action Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Link
-          href="/admin/products"
+          href="/admin/sales"
           className="p-5 rounded-2xl bg-[#0c100d] border border-neutral-800/80 hover:border-emerald-500/50 transition-all flex items-center justify-between group"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
-              <Package className="w-5 h-5" />
+              <BarChart3 className="w-5 h-5" />
             </div>
             <div>
               <h3 className="font-bold text-sm text-white uppercase group-hover:text-emerald-400 transition-colors">
-                Manage Products
+                Sales & CA Reports
               </h3>
-              <p className="text-[11px] text-neutral-400">Add, edit pricing, stock & specs</p>
+              <p className="text-[11px] text-neutral-400">Export August, CSV & audits</p>
             </div>
           </div>
           <ArrowUpRight className="w-4 h-4 text-neutral-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
@@ -243,7 +247,25 @@ export default function AdminDashboardPage() {
               <h3 className="font-bold text-sm text-white uppercase group-hover:text-emerald-400 transition-colors">
                 Order Fulfillment
               </h3>
-              <p className="text-[11px] text-neutral-400">Update shipping & tracking IDs</p>
+              <p className="text-[11px] text-neutral-400">Delhivery waybills & tracking</p>
+            </div>
+          </div>
+          <ArrowUpRight className="w-4 h-4 text-neutral-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
+        </Link>
+
+        <Link
+          href="/admin/products"
+          className="p-5 rounded-2xl bg-[#0c100d] border border-neutral-800/80 hover:border-emerald-500/50 transition-all flex items-center justify-between group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center">
+              <Package className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-white uppercase group-hover:text-emerald-400 transition-colors">
+                Manage Products
+              </h3>
+              <p className="text-[11px] text-neutral-400">Add, edit pricing & stock</p>
             </div>
           </div>
           <ArrowUpRight className="w-4 h-4 text-neutral-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
@@ -261,7 +283,7 @@ export default function AdminDashboardPage() {
               <h3 className="font-bold text-sm text-white uppercase group-hover:text-emerald-400 transition-colors">
                 Live Site Content
               </h3>
-              <p className="text-[11px] text-neutral-400">Edit announcements & banners</p>
+              <p className="text-[11px] text-neutral-400">Announcements & banners</p>
             </div>
           </div>
           <ArrowUpRight className="w-4 h-4 text-neutral-400 group-hover:text-emerald-400 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
