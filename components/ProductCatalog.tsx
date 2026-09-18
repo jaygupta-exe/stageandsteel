@@ -60,6 +60,7 @@ export default function ProductCatalog() {
 
   const categories = [
     { id: "ALL", label: "ALL PRODUCTS", count: `0${productsList.length}`.slice(-2) },
+    { id: "STACKS", label: "3-IN-1 STACKS", count: `0${productsList.filter((p) => p.category === "STACKS").length}`.slice(-2) },
     { id: "PROTEIN", label: "PROTEIN", count: `0${productsList.filter((p) => p.category === "PROTEIN").length}`.slice(-2) },
     { id: "CREATINE", label: "CREATINE", count: `0${productsList.filter((p) => p.category === "CREATINE").length}`.slice(-2) },
     { id: "EAA", label: "EAA", count: `0${productsList.filter((p) => p.category === "EAA").length}`.slice(-2) },

@@ -350,6 +350,61 @@ export const DEFAULT_PRODUCTS: ProductData[] = [
     suggestedUse:
       "Shake well before use. Consume 1 tablespoon (15ml) of Liquid L-Carnitine daily, preferably 30–45 minutes prior to workout or cardio sessions on an empty stomach for maximum fat metabolization.",
   },
+  {
+    id: "stage-trio-performance-stack",
+    name: "STAGE 3-IN-1 PERFORMANCE TRIO STACK",
+    subtitle: "YEAST PROTEIN (MOCHA) + CREATINE (ORANGE) + EAA (COLA)",
+    category: "STACKS",
+    price: "₹3,150",
+    originalPrice: "₹4,697",
+    servings: "Complete 3-Product Stack",
+    netWeight: "1.55 KG TOTAL",
+    thumbnail: "/desktop.png",
+    gallery: [
+      {
+        label: "01 TRIO STACK BANNER",
+        url: "/desktop.png",
+      },
+      {
+        label: "02 MOBILE BANNER",
+        url: "/mobile.png",
+      },
+      {
+        label: "03 CAFE MOCHA PROTEIN",
+        url: "/whey protein/mocha protein/front.png",
+      },
+      {
+        label: "04 CREATINE ORANGE",
+        url: "/creatine/front.png",
+      },
+      {
+        label: "05 EAA COLA BLAST",
+        url: "/eaa/front.png",
+      },
+    ],
+    accentColor: "#DE8A36",
+    batchCode: "BATCH SS-TRIO-2026",
+    flavors: [
+      { name: "Mocha + Orange + Cola", color: "#6F4E37", inStock: true },
+    ],
+    specs: [
+      { label: "PRODUCTS", value: "3", unit: "TUBS" },
+      { label: "SAVINGS", value: "33", unit: "% OFF" },
+      { label: "DELIVERY", value: "FREE", unit: "EXPRESS" },
+    ],
+    description:
+      "The Ultimate All-in-One Athletic Stack. Includes Stage & Steel 1KG Bio-Fermented Yeast Protein (Café Mocha, 24.6g protein per scoop), 300G Pure Micronized Creatine Monohydrate (Orange flavor, 85 servings), and 255G Essential Amino Acids with Electrolytes (Cola Blast flavor, 30 servings). Everything you need to fuel maximum muscle growth, explosive power, and lightning-fast recovery.",
+    nutritionFacts: [
+      { name: "1x Stage Yeast Protein (Café Mocha)", amount: "1 KG (28 Servings)" },
+      { name: "1x Stage Micronized Creatine (Orange)", amount: "300g (85 Servings)" },
+      { name: "1x Stage Essential Amino Acids (Cola)", amount: "255g (30 Servings)" },
+      { name: "Combined MRP Value", amount: "₹4,697" },
+      { name: "Special Trio Bundle Price", amount: "₹3,150 (Save ₹1,547)" },
+      { name: "Shipping / Handling", amount: "Free Express Delivery" },
+    ],
+    suggestedUse:
+      "Daily Protocol: Sip Creatine Monohydrate daily (3.5g). Consume EAA during training for hydration and intra-workout endurance. Take 1 scoop of Café Mocha Protein post-workout or throughout the day for total muscle recovery.",
+  },
 ];
 
 /**
