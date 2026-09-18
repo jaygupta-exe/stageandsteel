@@ -8,7 +8,6 @@ import gsap from "gsap";
 import ProductShowcase from "./ProductShowcase";
 import Navbar from "./Navbar";
 import FeatureStrip from "./FeatureStrip";
-import AmbientDust from "./AmbientDust";
 import { soundFX } from "@/lib/sound";
 
 export default function HeroSection() {
@@ -320,11 +319,8 @@ export default function HeroSection() {
         {/* Background Micro Grain */}
         <div
           ref={parallaxBgRef}
-          className="absolute inset-0 bg-grain pointer-events-none z-0 will-change-transform"
+          className="absolute inset-0 bg-grain pointer-events-none z-0"
         />
-
-        {/* Continuous Floating Ambient Powder Particles */}
-        <AmbientDust />
 
         {/* Main Hero Container - Spacious 2-Column Luxury Layout */}
         <div className="relative z-10 w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-16 my-auto">

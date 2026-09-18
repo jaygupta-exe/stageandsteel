@@ -18,17 +18,24 @@
 }
 
 /* Custom Base Styles */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+
 html, body {
   background-color: #A8A7A3;
   color: #151515;
   font-family: var(--font-inter), sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
-/* Grain texture overlay */
+/* Ultra-lightweight high-performance static grain/mesh (zero CPU filter overhead) */
 .bg-grain {
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.045'/%3E%3C/svg%3E");
+  background-image: radial-gradient(rgba(21, 21, 21, 0.04) 1px, transparent 0);
+  background-size: 24px 24px;
 }
 
 /* Studio Product Shadow Layer */

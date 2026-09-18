@@ -45,25 +45,35 @@ export default function ProductShowcase({
       ease: "power2.out",
     });
 
+    let rafId: number | null = null;
     const handlePointerMove = (e: PointerEvent) => {
-      const rect = el.getBoundingClientRect();
-      const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
-      const y = (e.clientY - rect.top) / rect.height - 0.5;
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        const rect = el.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width - 0.5; // -0.5 to 0.5
+        const y = (e.clientY - rect.top) / rect.height - 0.5;
 
-      // 3D tilt angles
-      setRotateY(x * 24); // max 12 deg tilt
-      setRotateX(-y * 24);
+        // 3D tilt angles
+        setRotateY(x * 20);
+        setRotateX(-y * 20);
+        rafId = null;
+      });
     };
 
     const handlePointerLeave = () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
       setRotateX(0);
       setRotateY(0);
     };
 
     el.addEventListener("pointermove", handlePointerMove, { passive: true });
-    el.addEventListener("pointerleave", handlePointerLeave);
+    el.addEventListener("pointerleave", handlePointerLeave, { passive: true });
 
     return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
       el.removeEventListener("pointermove", handlePointerMove);
       el.removeEventListener("pointerleave", handlePointerLeave);
     };
