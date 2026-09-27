@@ -133,7 +133,7 @@ export default function ProductModal({
               </span>
             ) : product.category === "GEAR" ? (
               <span className="hidden md:inline-block px-2.5 py-0.5 bg-[#596238]/20 border border-[#596238]/40 text-[10px] font-mono text-[#9DB25E] uppercase rounded font-bold">
-                TACTICAL GRADE • 900D OXFORD • WATERPROOF
+                TACTICAL GRADE • 400 GSM CANVAS • WATERPROOF
               </span>
             ) : (
               <span className="hidden md:inline-block px-2.5 py-0.5 bg-[#596238]/20 border border-[#596238]/40 text-[10px] font-mono text-[#9DB25E] uppercase rounded font-bold">
@@ -402,7 +402,7 @@ export default function ProductModal({
                       </span>
                       <span className="text-[11px] font-sans text-[#8E8D88]">
                         {product.category === "GEAR"
-                          ? "Reinforced stitching, weather-resistant Oxford fabric, and military-grade hardware designed for maximum athletic performance."
+                          ? "Reinforced stitching, weather-resistant 400 GSM Canvas fabric, and military-grade hardware designed for maximum athletic performance."
                           : "Zero proprietary blends, zero amino-spiking, zero banned substances. CGMP & WADA compliant."}
                       </span>
                     </div>

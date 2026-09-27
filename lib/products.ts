@@ -408,12 +408,12 @@ export const DEFAULT_PRODUCTS: ProductData[] = [
   {
     id: "stage-tactical-gym-backpack",
     name: "STAGE & STEEL TACTICAL GYM BACKPACK",
-    subtitle: "HEAVY-DUTY WATER-RESISTANT 35L TACTICAL GYM BACKPACK",
+    subtitle: "HEAVY-DUTY WATER-RESISTANT 400 GSM CANVAS TACTICAL GYM BACKPACK",
     category: "GEAR",
     price: "₹899",
     originalPrice: "₹1,499",
     servings: "1 UNIT",
-    netWeight: "35L CAPACITY",
+    netWeight: "400 GSM",
     thumbnail: "/bag-front-cutout.png",
     gallery: [
       {
@@ -435,15 +435,15 @@ export const DEFAULT_PRODUCTS: ProductData[] = [
       { name: "Stealth Black", color: "#151515", inStock: true },
     ],
     specs: [
-      { label: "CAPACITY", value: "35", unit: "L" },
-      { label: "FABRIC", value: "900D", unit: "OXFORD" },
+      { label: "GSM", value: "400", unit: "GSM" },
+      { label: "FABRIC", value: "CANVAS", unit: "" },
       { label: "WATERPROOF", value: "100", unit: "%" },
     ],
     description:
-      "Engineered for dedicated athletes and gym goers. The Stage & Steel Tactical Gym Backpack features rugged 900D water-resistant Oxford construction, dedicated shaker and meal-prep storage, high-tensile military-grade buckles, cushioned breathable air-mesh shoulder straps, and a reinforced dual-pocket front design built to endure intense training days.",
+      "Engineered for dedicated athletes and gym goers. The Stage & Steel Tactical Gym Backpack features rugged 400 GSM water-resistant Canvas construction, dedicated shaker and meal-prep storage, high-tensile military-grade buckles, cushioned breathable air-mesh shoulder straps, and a reinforced dual-pocket front design built to endure intense training days.",
     nutritionFacts: [
-      { name: "Storage Capacity", amount: "35 Litres" },
-      { name: "Material Grade", amount: "900D Heavy-Duty Hydrophobic Oxford" },
+      { name: "Fabric Weight", amount: "400 GSM Heavy-Duty Canvas" },
+      { name: "Material Grade", amount: "400 GSM Hydrophobic Canvas" },
       { name: "Utility Pockets", amount: "Dual Quick-Access Front Flap Pouches" },
       { name: "Hardware & Buckles", amount: "High-Tensile Military Quick-Release" },
       { name: "Ergonomics", amount: "Breathable Padded Air-Mesh Back Panel" },

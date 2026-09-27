@@ -343,7 +343,7 @@ export default function ProductCatalog() {
                       {product.category === "GEAR" ? (
                         <div className="flex items-center gap-1.5 text-xs font-mono text-[#9DB25E] bg-[#596238]/20 px-3 py-1.5 rounded border border-[#596238]/40 font-semibold">
                           <Check className="w-4 h-4" />
-                          <span>900D REINFORCED</span>
+                          <span>400 GSM CANVAS</span>
                         </div>
                       ) : (
                         <button
