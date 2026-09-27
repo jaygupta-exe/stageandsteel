@@ -43,6 +43,8 @@ export default function ProductCatalog() {
         setActiveCategory("CREATINE");
       } else if (hash.includes("eaa") || hash.includes("amino")) {
         setActiveCategory("EAA");
+      } else if (hash.includes("gear") || hash.includes("bag")) {
+        setActiveCategory("GEAR");
       } else if (hash.includes("carnitine") || hash.includes("soon") || hash.includes("pipeline")) {
         setActiveCategory("COMING_SOON");
       }
@@ -64,6 +66,7 @@ export default function ProductCatalog() {
     { id: "PROTEIN", label: "PROTEIN", count: `0${productsList.filter((p) => p.category === "PROTEIN").length}`.slice(-2) },
     { id: "CREATINE", label: "CREATINE", count: `0${productsList.filter((p) => p.category === "CREATINE").length}`.slice(-2) },
     { id: "EAA", label: "EAA", count: `0${productsList.filter((p) => p.category === "EAA").length}`.slice(-2) },
+    { id: "GEAR", label: "GYM BAGS & GEAR", count: `0${productsList.filter((p) => p.category === "GEAR" || p.category === "ACCESSORIES").length}`.slice(-2) },
     { id: "COMING_SOON", label: "COMING SOON", count: `0${productsList.filter((p) => p.isComingSoon || p.category === "L-CARNITINE").length}`.slice(-2) },
   ];
 
@@ -337,18 +340,25 @@ export default function ProductCatalog() {
                           </span>
                         </div>
                       )}
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.dispatchEvent(new CustomEvent("open-lab-reports", { detail: product.id.includes("creatine") ? "creapure-creatine-coa" : "whey-matrix-coa" }));
-                        }}
-                        className="flex items-center gap-1.5 text-xs font-mono text-[#9DB25E] hover:text-white bg-[#596238]/20 hover:bg-[#596238]/40 px-3 py-1.5 rounded border border-[#596238]/40 transition-all cursor-pointer font-semibold"
-                        title="View Official 3rd-Party HPLC Lab Test Report"
-                      >
-                        <Check className="w-4 h-4" />
-                        <span>{product.labReportUrl ? "VIEW LAB REPORT" : "HPLC VERIFIED"}</span>
-                      </button>
+                      {product.category === "GEAR" ? (
+                        <div className="flex items-center gap-1.5 text-xs font-mono text-[#9DB25E] bg-[#596238]/20 px-3 py-1.5 rounded border border-[#596238]/40 font-semibold">
+                          <Check className="w-4 h-4" />
+                          <span>900D REINFORCED</span>
+                        </div>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.dispatchEvent(new CustomEvent("open-lab-reports", { detail: product.id.includes("creatine") ? "creapure-creatine-coa" : "whey-matrix-coa" }));
+                          }}
+                          className="flex items-center gap-1.5 text-xs font-mono text-[#9DB25E] hover:text-white bg-[#596238]/20 hover:bg-[#596238]/40 px-3 py-1.5 rounded border border-[#596238]/40 transition-all cursor-pointer font-semibold"
+                          title="View Official 3rd-Party HPLC Lab Test Report"
+                        >
+                          <Check className="w-4 h-4" />
+                          <span>{product.labReportUrl ? "VIEW LAB REPORT" : "HPLC VERIFIED"}</span>
+                        </button>
+                      )}
                     </div>
                   </div>
 
@@ -357,11 +367,11 @@ export default function ProductCatalog() {
                     <button
                       type="button"
                       onClick={() => setSelectedProduct(product)}
-                      title="View Packaging & Supplement Facts"
+                      title="View Details & Gallery"
                       className="px-4 py-3.5 bg-[#222220] hover:bg-[#2C2C29] border border-white/10 hover:border-white/20 text-[#F5F5F2] rounded-lg transition-colors cursor-pointer text-xs font-mono font-bold flex items-center gap-2"
                     >
                       <Images className="w-4 h-4" />
-                      <span className="hidden sm:inline">PACKAGING</span>
+                      <span className="hidden sm:inline">{product.category === "GEAR" ? "GALLERY" : "PACKAGING"}</span>
                     </button>
 
                     {product.isComingSoon ? (

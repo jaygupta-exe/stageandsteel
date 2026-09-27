@@ -64,6 +64,15 @@ export default function PowderMegaMenu({
     },
     {
       num: "04",
+      title: "GYM BAGS & GEAR",
+      href: "#products",
+      category: "TACTICAL ATHLETE BACKPACK",
+      spec: "35L CAPACITY // 900D OXFORD // ₹899",
+      desc: "Heavy-duty tactical gym backpack with dual utility pockets, military quick-release buckles, and ergonomic air-mesh back support.",
+      badge: "NEW DROP",
+    },
+    {
+      num: "05",
       title: "COMING SOON",
       href: "#products",
       category: "L-CARNITINE LIQUID",
@@ -72,7 +81,7 @@ export default function PowderMegaMenu({
       badge: "LAB PIPELINE",
     },
     {
-      num: "05",
+      num: "06",
       title: "ABOUT US",
       href: "#about",
       category: "MEET THE FOUNDERS",
@@ -81,7 +90,7 @@ export default function PowderMegaMenu({
       badge: "FOUNDERS & VISION",
     },
     {
-      num: "06",
+      num: "07",
       title: "CONTACT",
       href: "#contact",
       category: "SUPPORT & B2B",
@@ -176,6 +185,8 @@ export default function PowderMegaMenu({
                       window.dispatchEvent(new CustomEvent("filter-category", { detail: "CREATINE" }));
                     } else if (item.title.includes("EAA")) {
                       window.dispatchEvent(new CustomEvent("filter-category", { detail: "EAA" }));
+                    } else if (item.title.includes("GEAR") || item.title.includes("BAG")) {
+                      window.dispatchEvent(new CustomEvent("filter-category", { detail: "GEAR" }));
                     } else if (item.title.includes("SOON")) {
                       window.dispatchEvent(new CustomEvent("filter-category", { detail: "COMING_SOON" }));
                     }

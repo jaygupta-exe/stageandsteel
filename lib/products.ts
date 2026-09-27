@@ -405,6 +405,55 @@ export const DEFAULT_PRODUCTS: ProductData[] = [
     suggestedUse:
       "Daily Protocol: Sip Creatine Monohydrate daily (3.5g). Consume EAA during training for hydration and intra-workout endurance. Take 1 scoop of Café Mocha Protein post-workout or throughout the day for total muscle recovery.",
   },
+  {
+    id: "stage-tactical-gym-backpack",
+    name: "STAGE & STEEL TACTICAL GYM BACKPACK",
+    subtitle: "HEAVY-DUTY WATER-RESISTANT 35L TACTICAL GYM BACKPACK",
+    category: "GEAR",
+    price: "₹899",
+    originalPrice: "₹1,499",
+    servings: "1 UNIT",
+    netWeight: "35L CAPACITY",
+    thumbnail: "/bag-front-cutout.png",
+    gallery: [
+      {
+        label: "01 FRONT PROFILE",
+        url: "/bag-front-cutout.png",
+      },
+      {
+        label: "02 ERGONOMIC BACK & STRAPS",
+        url: "/bag-back-cutout.png",
+      },
+      {
+        label: "03 ATHLETE LIFESTYLE & FIT",
+        url: "/bag-lifestyle.jpg",
+      },
+    ],
+    accentColor: "#D12626",
+    batchCode: "BATCH SS-GEAR-BAG",
+    flavors: [
+      { name: "Stealth Black", color: "#151515", inStock: true },
+    ],
+    specs: [
+      { label: "CAPACITY", value: "35", unit: "L" },
+      { label: "FABRIC", value: "900D", unit: "OXFORD" },
+      { label: "WATERPROOF", value: "100", unit: "%" },
+    ],
+    description:
+      "Engineered for dedicated athletes and gym goers. The Stage & Steel Tactical Gym Backpack features rugged 900D water-resistant Oxford construction, dedicated shaker and meal-prep storage, high-tensile military-grade buckles, cushioned breathable air-mesh shoulder straps, and a reinforced dual-pocket front design built to endure intense training days.",
+    nutritionFacts: [
+      { name: "Storage Capacity", amount: "35 Litres" },
+      { name: "Material Grade", amount: "900D Heavy-Duty Hydrophobic Oxford" },
+      { name: "Utility Pockets", amount: "Dual Quick-Access Front Flap Pouches" },
+      { name: "Hardware & Buckles", amount: "High-Tensile Military Quick-Release" },
+      { name: "Ergonomics", amount: "Breathable Padded Air-Mesh Back Panel" },
+      { name: "Side Bottle Holders", amount: "Dual Reinforced with Compression Straps" },
+      { name: "Laptop / Tablet Sleeve", amount: "Fits up to 15.6-inch devices" },
+      { name: "Closure System", amount: "Drawstring Cinch + Storm Buckle Flap" },
+    ],
+    suggestedUse:
+      "Ideal for gym gear, lifting belts, shakers, lifting straps, shoes, and daily athletic commuting. Clean exterior by wiping gently with a damp microfiber cloth. Do not machine wash or bleach.",
+  },
 ];
 
 /**

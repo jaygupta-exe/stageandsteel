@@ -43,6 +43,7 @@ export default function Navbar({ navbarRef }: NavbarProps) {
   const navLinks = [
     { name: "PROTEIN", href: "#products" },
     { name: "CREATINE", href: "#products" },
+    { name: "GEAR", href: "#products" },
     { name: "TRACK ORDER", href: "#track" },
     { name: "ABOUT US", href: "#about" },
     { name: "CONTACT US", href: "#contact" },
@@ -73,6 +74,8 @@ export default function Navbar({ navbarRef }: NavbarProps) {
       window.dispatchEvent(new CustomEvent("filter-category", { detail: "CREATINE" }));
     } else if (linkName === "EAA") {
       window.dispatchEvent(new CustomEvent("filter-category", { detail: "EAA" }));
+    } else if (linkName === "GEAR" || linkName === "BAGS") {
+      window.dispatchEvent(new CustomEvent("filter-category", { detail: "GEAR" }));
     } else if (linkName === "COMING SOON") {
       window.dispatchEvent(new CustomEvent("filter-category", { detail: "COMING_SOON" }));
     }

@@ -131,6 +131,10 @@ export default function ProductModal({
               <span className="inline-block px-2.5 py-0.5 bg-amber-500/20 border border-amber-500/40 text-[10px] font-mono text-amber-400 uppercase rounded font-bold animate-pulse">
                 LAB PIPELINE // COMING SOON
               </span>
+            ) : product.category === "GEAR" ? (
+              <span className="hidden md:inline-block px-2.5 py-0.5 bg-[#596238]/20 border border-[#596238]/40 text-[10px] font-mono text-[#9DB25E] uppercase rounded font-bold">
+                TACTICAL GRADE • 900D OXFORD • WATERPROOF
+              </span>
             ) : (
               <span className="hidden md:inline-block px-2.5 py-0.5 bg-[#596238]/20 border border-[#596238]/40 text-[10px] font-mono text-[#9DB25E] uppercase rounded font-bold">
                 HPLC 3RD-PARTY VERIFIED • 100% PURE
@@ -310,9 +314,9 @@ export default function ProductModal({
                           : "text-[#8E8D88] hover:text-[#F4F4F1]"
                       }`}
                     >
-                      {tab === "SPECS" && "FORMULA SPECS"}
-                      {tab === "NUTRITION" && "NUTRITION PANEL"}
-                      {tab === "USAGE" && "HOW TO USE"}
+                      {tab === "SPECS" && (product.category === "GEAR" ? "GEAR SPECS" : "FORMULA SPECS")}
+                      {tab === "NUTRITION" && (product.category === "GEAR" ? "FEATURES & BUILD" : "NUTRITION PANEL")}
+                      {tab === "USAGE" && (product.category === "GEAR" ? "CARE & USAGE" : "HOW TO USE")}
                       {tab === "LAB_REPORT" && (
                         <>
                           <ShieldCheck className="w-3.5 h-3.5 text-[#9DB25E]" />
@@ -335,7 +339,7 @@ export default function ProductModal({
                   {product.flavors.length > 0 && (
                     <div className="pt-2">
                       <span className="text-[10px] font-mono text-[#8E8D88] uppercase tracking-widest block mb-2">
-                        AVAILABLE FLAVOR: <span className="text-[#F4F4F1] font-bold">{selectedFlavor}</span>
+                        {product.category === "GEAR" ? "AVAILABLE COLORWAY:" : "AVAILABLE FLAVOR:"} <span className="text-[#F4F4F1] font-bold">{selectedFlavor}</span>
                       </span>
                       <div className="flex flex-wrap gap-2">
                         {product.flavors.map((f) => (
@@ -366,8 +370,8 @@ export default function ProductModal({
               {activeTab === "NUTRITION" && (
                 <div className="space-y-2 max-h-[220px] overflow-y-auto pr-2 animate-in fade-in duration-200">
                   <div className="text-[10px] font-mono text-[#9DB25E] tracking-wider mb-2 flex justify-between border-b border-white/10 pb-1 font-bold">
-                    <span>ACTIVE COMPOUND</span>
-                    <span>AMOUNT PER SERVING</span>
+                    <span>{product.category === "GEAR" ? "FEATURE / SPECIFICATION" : "ACTIVE COMPOUND"}</span>
+                    <span>{product.category === "GEAR" ? "SPECIFICATION DETAIL" : "AMOUNT PER SERVING"}</span>
                   </div>
                   {product.nutritionFacts.map((n, i) => (
                     <div key={i} className="flex items-center justify-between text-xs py-1.5 border-b border-white/5">
@@ -383,7 +387,7 @@ export default function ProductModal({
                 <div className="space-y-4 text-xs text-[#D4D3CD] leading-relaxed animate-in fade-in duration-200">
                   <div className="p-3.5 bg-[#0D0D0C] border border-white/10 rounded-lg">
                     <span className="font-mono text-[10px] text-[#9DB25E] uppercase tracking-wider block mb-1 font-bold">
-                      SUGGESTED USAGE:
+                      {product.category === "GEAR" ? "RECOMMENDED USE & CARE:" : "SUGGESTED USAGE:"}
                     </span>
                     <p className="text-xs sm:text-sm font-sans text-[#F5F5F2] leading-relaxed">
                       {product.suggestedUse}
@@ -393,8 +397,14 @@ export default function ProductModal({
                   <div className="flex items-start gap-3 p-3 bg-[#0D0D0C] border border-white/10 rounded-lg">
                     <ShieldCheck className="w-4 h-4 text-[#9DB25E] shrink-0 mt-0.5" />
                     <div>
-                      <span className="font-editorial font-bold text-[#F5F5F2] block mb-0.5">100% Transparent Label Guarantee</span>
-                      <span className="text-[11px] font-sans text-[#8E8D88]">Zero proprietary blends, zero amino-spiking, zero banned substances. CGMP &amp; WADA compliant.</span>
+                      <span className="font-editorial font-bold text-[#F5F5F2] block mb-0.5">
+                        {product.category === "GEAR" ? "Stage & Steel Heavy-Duty Guarantee" : "100% Transparent Label Guarantee"}
+                      </span>
+                      <span className="text-[11px] font-sans text-[#8E8D88]">
+                        {product.category === "GEAR"
+                          ? "Reinforced stitching, weather-resistant Oxford fabric, and military-grade hardware designed for maximum athletic performance."
+                          : "Zero proprietary blends, zero amino-spiking, zero banned substances. CGMP & WADA compliant."}
+                      </span>
                     </div>
                   </div>
                 </div>

@@ -269,6 +269,7 @@ export default function ProductEditPage({ params }: { params: Promise<{ id: stri
               <option value="PROTEIN">PROTEIN</option>
               <option value="CREATINE">CREATINE</option>
               <option value="EAA">EAA</option>
+              <option value="GEAR">GEAR &amp; BAGS</option>
               <option value="L-CARNITINE">L-CARNITINE</option>
               <option value="PRE-WORKOUT">PRE-WORKOUT</option>
             </select>
