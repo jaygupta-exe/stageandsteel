@@ -67,7 +67,7 @@ export default function PowderMegaMenu({
       title: "GYM BAGS & GEAR",
       href: "#products",
       category: "TACTICAL ATHLETE BACKPACK",
-      spec: "400 GSM CANVAS // WATERPROOF // ₹899",
+      spec: "400 GSM CANVAS // WATERPROOF // ₹1,599",
       desc: "Heavy-duty tactical gym backpack with dual utility pockets, military quick-release buckles, and ergonomic air-mesh back support.",
       badge: "NEW DROP",
     },
