@@ -513,7 +513,7 @@ export default function CheckoutModal() {
                       <Tag className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-[#666762]" />
                       <input
                         type="text"
-                        placeholder="COUPON (e.g. LAUNCH10)"
+                        placeholder="COUPON CODE"
                         value={couponInput}
                         onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
                         className="w-full bg-[#0d0e0d] border border-[#2b2d28] focus:border-[#8FA355] text-white text-xs pl-8 pr-2 py-1.5 placeholder:text-[#444541] focus:outline-hidden uppercase font-mono"

@@ -3,7 +3,7 @@
 import React, { useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ArrowUpRight, Zap, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowUpRight } from "lucide-react";
 import gsap from "gsap";
 import ProductShowcase from "./ProductShowcase";
 import Navbar from "./Navbar";
@@ -333,29 +333,20 @@ export default function HeroSection() {
               ref={parallaxHeadlineRef}
               className="order-2 lg:order-1 lg:col-span-6 xl:col-span-6 flex flex-col justify-center z-20 will-change-transform"
             >
-              {/* Category Sub-Tag & Continuous Readable Promo Badge */}
+              {/* Category Sub-Tag */}
               <div
                 ref={subtagRef}
-                className="flex flex-wrap items-center gap-2.5 mb-3 sm:mb-4 opacity-0 will-change-transform"
+                className="flex items-center gap-2 mb-2 sm:mb-3 opacity-0 will-change-transform"
               >
-                {/* Continuous Steady & High-Contrast Promo Modal Trigger */}
-                <button
-                  type="button"
-                  onClick={() => {
-                    soundFX.playClick();
-                    window.dispatchEvent(new CustomEvent("open-launch-promo"));
-                  }}
-                  className="group inline-flex items-center gap-2 px-3.5 py-1.5 bg-[#141413] hover:bg-[#1E1E1C] border border-[#8FA355] text-[#9DB25E] rounded-full text-xs font-mono font-bold tracking-wider uppercase transition-all duration-200 cursor-pointer shadow-[0_0_15px_rgba(143,163,85,0.3)] hover:shadow-[0_0_25px_rgba(143,163,85,0.6)] hover:scale-[1.02]"
-                >
-                  <span className="relative flex h-2 w-2">
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#8FA355]" />
+                <div className="flex items-center gap-1.5 px-2.5 py-0.5 bg-[#151515] text-[#F4F4F1] border border-[#596238]/40 shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#596238] animate-ping" />
+                  <span className="text-[10px] font-mono font-bold tracking-widest text-[#A8B778] uppercase">
+                    STAGE PROTOCOL // 2026
                   </span>
-                  <span className="flex items-center gap-1.5">
-                    <Zap className="w-3.5 h-3.5 text-[#9DB25E] fill-current" />
-                    <span>FLASH CODE: <span className="text-[#F4F4F1] bg-[#596238] px-1.5 py-0.5 rounded font-mono font-bold">LAUNCH10</span> (10% OFF)</span>
-                  </span>
-                  <ArrowRight className="w-3.5 h-3.5 text-[#9DB25E] group-hover:translate-x-1 transition-transform" />
-                </button>
+                </div>
+                <span className="text-[10px] sm:text-[11px] font-mono tracking-widest text-[#151515]/70 uppercase">
+                  SPORTS NUTRITION LABS
+                </span>
               </div>
 
               {/* Commanding Huge Headline */}

@@ -9,7 +9,6 @@ interface FeatureStripProps {
 
 export default function FeatureStrip({ featureStripRef }: FeatureStripProps) {
   const tickerItems = [
-    "🔥 USE CODE 'LAUNCH10' FOR 10% OFF AT CHECKOUT",
     "100% MICROFILTERED WHEY CONCENTRATE",
     "GOVT OF INDIA FSSAI LIC NO. 10724997000182 CERTIFIED",
     "25G PROTEIN PER SCOOP",

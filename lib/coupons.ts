@@ -20,14 +20,6 @@ export interface Coupon {
 
 export const DEFAULT_COUPONS: Coupon[] = [
   {
-    code: "LAUNCH10",
-    type: "percentage",
-    value: 10,
-    minOrderAmount: 0,
-    description: "Launch Special: 10% OFF on all Stage & Steel products",
-    isActive: true,
-  },
-  {
     code: "TEST1",
     type: "flat",
     value: 1,
