@@ -5,6 +5,8 @@ import Image from "next/image";
 import { X, ChevronLeft, ChevronRight, ShieldCheck, Award, Check, ArrowRight, Plus, Minus, Bell, MessageCircle, Sparkles } from "lucide-react";
 
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { trackProductView } from "@/lib/visitorTracking";
 
 export interface ProductImageSlide {
   label: string;
@@ -50,6 +52,7 @@ export default function ProductModal({
   initialFlavor,
 }: ProductModalProps) {
   const { addToCart } = useCart();
+  const { user } = useAuth();
   const [activeSlide, setActiveSlide] = useState<number>(0);
   const [selectedFlavor, setSelectedFlavor] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(1);
@@ -67,6 +70,24 @@ export default function ProductModal({
       }
     }
   }, [product, initialFlavor]);
+
+  // Track product view for visitor reminder system
+  useEffect(() => {
+    if (isOpen && product) {
+      trackProductView(
+        {
+          id: product.id,
+          name: product.name,
+          subtitle: product.subtitle,
+          category: product.category,
+          price: product.price,
+          thumbnail: product.thumbnail,
+        },
+        user?.uid,
+        user?.email
+      );
+    }
+  }, [isOpen, product, user?.uid, user?.email]);
 
   // Handle keyboard navigation and Escape key
   useEffect(() => {

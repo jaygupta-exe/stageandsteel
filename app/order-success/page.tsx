@@ -16,6 +16,8 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { useCart } from "@/context/CartContext";
+import { useAuth } from "@/context/AuthContext";
+import { markUserPurchaseConverted } from "@/lib/visitorTracking";
 
 const WHATSAPP_NUMBER = "919779159169"; // Divesh Mehan (Stage & Steel Owner)
 
@@ -23,6 +25,7 @@ function OrderSuccessContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { clearCart } = useCart();
+  const { user } = useAuth();
 
   const orderId = searchParams.get("order_id") || searchParams.get("orderId") || "";
   const initialStatus = (searchParams.get("status") || "CHECKING").toUpperCase();
@@ -43,6 +46,9 @@ function OrderSuccessContent() {
 
     if (initialStatus === "PAID") {
       clearCart();
+      if (user?.uid) {
+        markUserPurchaseConverted(user.uid);
+      }
     }
 
     // Verify order status directly from server API & trigger fulfillment with retry loop
@@ -73,6 +79,9 @@ function OrderSuccessContent() {
 
               if (currentStatus === "PAID") {
                 clearCart();
+                if (user?.uid) {
+                  markUserPurchaseConverted(user.uid);
+                }
                 isConfirmed = true;
                 break;
               } else if (currentStatus === "FAILED" || currentStatus === "USER_DROPPED") {

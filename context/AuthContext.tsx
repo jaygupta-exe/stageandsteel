@@ -39,6 +39,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
+import { flushLocalViewsToFirestore } from "@/lib/visitorTracking";
+
 // Helper to persist and sync user data into Cloud Firestore
 async function syncUserToFirestore(firebaseUser: User, customName?: string) {
   if (!db || !firebaseUser) return;
@@ -52,10 +54,13 @@ async function syncUserToFirestore(firebaseUser: User, customName?: string) {
         email: firebaseUser.email,
         photoURL: firebaseUser.photoURL || null,
         lastLoginAt: serverTimestamp(),
+        lastActiveAt: serverTimestamp(),
         createdAt: serverTimestamp(),
       },
       { merge: true }
     );
+    // Flush any products viewed anonymously before logging in
+    await flushLocalViewsToFirestore(firebaseUser.uid, firebaseUser.email);
   } catch (err) {
     console.warn("Firestore user sync warning:", err);
   }

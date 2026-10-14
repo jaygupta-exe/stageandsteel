@@ -4,6 +4,8 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { soundFX } from "@/lib/sound";
 
 import { Coupon, validateCoupon, getAllCoupons, DEFAULT_COUPONS } from "@/lib/coupons";
+import { useAuth } from "@/context/AuthContext";
+import { syncCartActivity } from "@/lib/visitorTracking";
 
 export interface CartItem {
   id: string;
@@ -66,6 +68,7 @@ export function parsePriceToNumber(priceStr: string): number {
 }
 
 export function CartProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
   const [items, setItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
@@ -108,8 +111,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       } catch (e) {
         console.warn("Failed to save cart to storage:", e);
       }
+
+      // Sync active cart to Firestore if user is authenticated
+      if (user?.uid) {
+        const currentSubtotal = items.reduce(
+          (sum, item) => sum + item.numericPrice * item.quantity,
+          0
+        );
+        syncCartActivity(user.uid, items, currentSubtotal);
+      }
     }
-  }, [items, isLoaded]);
+  }, [items, isLoaded, user?.uid]);
 
   // Calculate Subtotal
   const totalCount = items.reduce((sum, item) => sum + item.quantity, 0);

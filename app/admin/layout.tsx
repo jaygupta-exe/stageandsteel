@@ -18,6 +18,7 @@ import {
   X,
   ShieldCheck,
   Zap,
+  MailCheck,
 } from "lucide-react";
 
 const NAV_ITEMS = [
@@ -26,6 +27,7 @@ const NAV_ITEMS = [
   { label: "Live Orders", href: "/admin/orders", icon: ShoppingCart },
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Coupons", href: "/admin/coupons", icon: TicketPercent },
+  { label: "Visitor Reminders", href: "/admin/reminders", icon: MailCheck },
   { label: "Site Content", href: "/admin/content", icon: Sliders },
 ];
 

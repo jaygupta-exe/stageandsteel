@@ -46,6 +46,8 @@ export interface OrderRecord {
   createdAt: any; // Firestore Timestamp
 }
 
+import { markUserPurchaseConverted } from "@/lib/visitorTracking";
+
 /**
  * Save a completed order to Firestore `orders` collection.
  */
@@ -61,6 +63,11 @@ export async function saveOrder(order: Omit<OrderRecord, "id" | "createdAt">): P
       ...order,
       createdAt: Timestamp.now(),
     });
+
+    if (order.userId) {
+      await markUserPurchaseConverted(order.userId);
+    }
+
     return docRef.id;
   } catch (err) {
     console.error("Failed to save order to Firestore:", err);
