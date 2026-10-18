@@ -179,6 +179,75 @@ async function handleVisitorReminder(req: Request) {
   const dryRun = searchParams.get("dryRun") === "true";
   const forceEmail = searchParams.get("testEmail"); // Optional: send test copy to specific email
 
+  // If this is an explicit Test Email trigger to admin inbox
+  if (forceEmail && forceEmail.includes("@")) {
+    const sampleProduct = {
+      id: "whey-belgian-chocolate",
+      name: "STAGE WHEY - BELGIAN CHOCOLATE",
+      subtitle: "MICROFILTERED 100% PURE WHEY // RICH COCOA",
+      category: "PROTEIN",
+      price: "₹3,499",
+      numericPrice: 3499,
+      thumbnail: "/belgium-chocolate-cutout.png",
+      viewedAt: new Date().toISOString(),
+    };
+
+    const allUsers = await fetchAllUsers();
+    const targetUser = allUsers.find((u) => u.email?.toLowerCase() === forceEmail.toLowerCase()) || allUsers[0] || {};
+    const viewedProducts = Array.isArray(targetUser.viewedProducts) && targetUser.viewedProducts.length > 0
+      ? targetUser.viewedProducts
+      : [sampleProduct];
+    const cartItems = Array.isArray(targetUser.cartItems) ? targetUser.cartItems : [];
+
+    const { html, subject } = generateVisitorReminderEmailHtml({
+      customerName: targetUser.name || "Athlete",
+      customerEmail: forceEmail,
+      viewedProducts,
+      cartItems,
+      cartSubtotal: targetUser.cartSubtotal || 0,
+      siteUrl: SITE_URL,
+    });
+
+    try {
+      const resendRes = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: `Stage & Steel <${DEFAULT_FROM_EMAIL}>`,
+          to: [forceEmail],
+          subject: `[TEST PREVIEW] ${subject}`,
+          html,
+        }),
+      });
+
+      if (resendRes.ok) {
+        return NextResponse.json({
+          success: true,
+          sentCount: 1,
+          skippedCount: 0,
+          failedCount: 0,
+          results: [{ email: forceEmail, status: "sent", reason: "Test email dispatched successfully" }],
+        });
+      } else {
+        const errJson = await resendRes.json().catch(() => ({}));
+        return NextResponse.json({
+          success: false,
+          error: errJson.message || "Resend API error",
+          results: [{ email: forceEmail, status: "failed", reason: errJson.message }],
+        }, { status: 400 });
+      }
+    } catch (sendErr: any) {
+      return NextResponse.json({
+        success: false,
+        error: sendErr.message || "Failed to dispatch test email",
+        results: [{ email: forceEmail, status: "failed", reason: sendErr.message }],
+      }, { status: 500 });
+    }
+  }
+
   const now = Date.now();
   const minInactiveMs = minInactiveMinutes * 60 * 1000;
   const maxInactiveMs = maxInactiveHours * 60 * 60 * 1000;
@@ -194,7 +263,7 @@ async function handleVisitorReminder(req: Request) {
   }> = [];
 
   for (const user of allUsers) {
-    const userEmail = forceEmail || user.email;
+    const userEmail = user.email;
 
     // 1. Must have a valid email
     if (!userEmail || !userEmail.includes("@")) {
