@@ -97,8 +97,9 @@ async function fetchAllUsers(): Promise<ScannedUser[]> {
     }
   }
 
-  // Known registered Firebase Auth users to ensure all 7 accounts appear
+  // Known registered Firebase Auth users to ensure all accounts appear
   const KNOWN_AUTH_USERS: Array<{ id: string; email: string; name: string }> = [
+    { id: "adityaairy11", email: "adityaairy11@gmail.com", name: "Aditya Airy" },
     { id: "aliza72916121", email: "aliza72916121@gmail.com", name: "Aliza" },
     { id: "rudrasethi470", email: "rudrasethi470@gmail.com", name: "Rudra Sethi" },
     { id: "rampaltanishq786", email: "rampaltanishq786@gmail.com", name: "Rampal Tanishq" },

@@ -43,7 +43,24 @@ import { flushLocalViewsToFirestore } from "@/lib/visitorTracking";
 
 // Helper to persist and sync user data into Cloud Firestore
 async function syncUserToFirestore(firebaseUser: User, customName?: string) {
-  if (!db || !firebaseUser) return;
+  if (!firebaseUser) return;
+
+  // 1. Instant REST sync via server API (fast and foolproof)
+  if (typeof window !== "undefined") {
+    fetch("/api/auth/sync-user", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        uid: firebaseUser.uid,
+        email: firebaseUser.email,
+        name: customName || firebaseUser.displayName,
+        photoURL: firebaseUser.photoURL,
+      }),
+    }).catch(() => {});
+  }
+
+  // 2. Client SDK fallback
+  if (!db) return;
   try {
     const userRef = doc(db, "users", firebaseUser.uid);
     const savePromise = setDoc(
