@@ -288,7 +288,7 @@ async function handleVisitorReminder(req: Request) {
     userId: string;
     email: string;
     name?: string;
-    status: "sent" | "skipped" | "failed";
+    status: "sent" | "skipped" | "failed" | "ready";
     reason?: string;
   }> = [];
 
