@@ -6,6 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 
 export default function AuthModal() {
   const {
+    user,
     isAuthModalOpen,
     closeAuthModal,
     authMode,
@@ -24,6 +25,14 @@ export default function AuthModal() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Auto-close modal as soon as authentication state has a user
+  React.useEffect(() => {
+    if (user && isAuthModalOpen) {
+      setIsSubmitting(false);
+      closeAuthModal();
+    }
+  }, [user, isAuthModalOpen, closeAuthModal]);
 
   if (!isAuthModalOpen) return null;
 

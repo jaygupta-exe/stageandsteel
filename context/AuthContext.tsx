@@ -46,7 +46,7 @@ async function syncUserToFirestore(firebaseUser: User, customName?: string) {
   if (!db || !firebaseUser) return;
   try {
     const userRef = doc(db, "users", firebaseUser.uid);
-    await setDoc(
+    const savePromise = setDoc(
       userRef,
       {
         uid: firebaseUser.uid,
@@ -59,8 +59,10 @@ async function syncUserToFirestore(firebaseUser: User, customName?: string) {
       },
       { merge: true }
     );
+    const timeoutPromise = new Promise<void>((resolve) => setTimeout(resolve, 2500));
+    await Promise.race([savePromise, timeoutPromise]);
     // Flush any products viewed anonymously before logging in
-    await flushLocalViewsToFirestore(firebaseUser.uid, firebaseUser.email);
+    void flushLocalViewsToFirestore(firebaseUser.uid, firebaseUser.email);
   } catch (err) {
     console.warn("Firestore user sync warning:", err);
   }
@@ -78,11 +80,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setLoading(false);
       if (currentUser) {
-        await syncUserToFirestore(currentUser);
+        void syncUserToFirestore(currentUser);
       }
     });
 
@@ -104,7 +106,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     const result = await signInWithPopup(auth, googleProvider);
     if (result.user) {
-      await syncUserToFirestore(result.user);
+      setUser(result.user);
+      void syncUserToFirestore(result.user);
     }
   };
 
@@ -114,7 +117,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     const result = await signInWithEmailAndPassword(auth, email, password);
     if (result.user) {
-      await syncUserToFirestore(result.user);
+      setUser(result.user);
+      void syncUserToFirestore(result.user);
     }
   };
 
@@ -126,9 +130,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (userCredential.user) {
       if (name.trim()) {
         await updateProfile(userCredential.user, { displayName: name.trim() });
-        setUser({ ...userCredential.user, displayName: name.trim() });
       }
-      await syncUserToFirestore(userCredential.user, name.trim());
+      setUser({ ...userCredential.user, displayName: name.trim() || userCredential.user.displayName });
+      void syncUserToFirestore(userCredential.user, name.trim());
     }
   };
 
