@@ -1,0 +1,15 @@
+name: Visitor Reminder Cron
+
+on:
+  schedule:
+    # Runs every 30 minutes via GitHub Actions (Free, no Vercel Hobby limits)
+    - cron: '*/30 * * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions UI
+
+jobs:
+  ping-reminder-cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Visitor Reminder Recovery API
+        run: |
+          curl -s -f -X GET "https://stageandsteel.in/api/cron/visitor-reminder" || echo "Cron pinged"
