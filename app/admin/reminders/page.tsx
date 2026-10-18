@@ -338,6 +338,8 @@ export default function VisitorRemindersAdminPage() {
                           className={`px-2 py-0.5 rounded text-[11px] font-bold font-mono uppercase ${
                             u.status === "sent"
                               ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                              : u.status === "ready"
+                              ? "bg-[#596238]/30 text-[#9DB25E] border border-[#596238]/50"
                               : "bg-neutral-800 text-neutral-400"
                           }`}
                         >

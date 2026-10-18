@@ -311,34 +311,36 @@ async function handleVisitorReminder(req: Request) {
       continue;
     }
 
-    // 3. Must have viewed products or cart items
-    const viewedProducts = Array.isArray(user.viewedProducts) ? user.viewedProducts : [];
+    // 3. Prepare products (if user viewed specific products, use those; otherwise, use Stage & Steel Flagship Bestseller)
+    const sampleProduct = {
+      id: "whey-belgian-chocolate",
+      name: "STAGE WHEY - BELGIAN CHOCOLATE",
+      subtitle: "MICROFILTERED 100% PURE WHEY // RICH COCOA",
+      category: "PROTEIN",
+      price: "₹3,499",
+      numericPrice: 3499,
+      thumbnail: "/belgium-chocolate-cutout.png",
+      viewedAt: new Date().toISOString(),
+    };
+
+    const viewedProducts = Array.isArray(user.viewedProducts) && user.viewedProducts.length > 0
+      ? user.viewedProducts
+      : [sampleProduct];
     const cartItems = Array.isArray(user.cartItems) ? user.cartItems : [];
+    const hasCart = cartItems.length > 0;
+    const hasSpecificViews = Array.isArray(user.viewedProducts) && user.viewedProducts.length > 0;
 
-    if (viewedProducts.length === 0 && cartItems.length === 0) {
-      dispatchResults.push({
-        userId: user.id,
-        email: userEmail,
-        status: "skipped",
-        reason: "No viewed products or cart items recorded",
-      });
-      continue;
-    }
-
-    // 4. Inactivity check
-    const lastActiveMs = parseDateMs(user.lastActiveAt);
-    if (!lastActiveMs) {
-      // If no activity timestamp, skip
-      continue;
-    }
-
+    // 4. Inactivity check (fallback to 40 mins ago if first scan so user is eligible)
+    const lastActiveMs = parseDateMs(user.lastActiveAt) || (now - minInactiveMs - 60000);
     const elapsedMs = now - lastActiveMs;
+
     if (elapsedMs < minInactiveMs) {
       dispatchResults.push({
         userId: user.id,
         email: userEmail,
+        name: user.name,
         status: "skipped",
-        reason: `Still active recently (${Math.round(elapsedMs / 60000)}m ago, min threshold: ${minInactiveMinutes}m)`,
+        reason: `Active recently (${Math.round(elapsedMs / 60000)}m ago, waiting for ${minInactiveMinutes}m threshold)`,
       });
       continue;
     }
@@ -347,8 +349,9 @@ async function handleVisitorReminder(req: Request) {
       dispatchResults.push({
         userId: user.id,
         email: userEmail,
+        name: user.name,
         status: "skipped",
-        reason: `Activity too old (${Math.round(elapsedMs / 3600000)}h ago, max threshold: ${maxInactiveHours}h)`,
+        reason: `Activity too old (${Math.round(elapsedMs / 3600000)}h ago)`,
       });
       continue;
     }
@@ -359,8 +362,9 @@ async function handleVisitorReminder(req: Request) {
       dispatchResults.push({
         userId: user.id,
         email: userEmail,
+        name: user.name,
         status: "skipped",
-        reason: "Reminder already sent within the last 24 hours",
+        reason: "Reminder already sent in last 24h (anti-spam cooldown)",
       });
       continue;
     }
@@ -379,8 +383,13 @@ async function handleVisitorReminder(req: Request) {
       dispatchResults.push({
         userId: user.id,
         email: userEmail,
-        status: "sent",
-        reason: "DRY-RUN (Email preview generated but not dispatched)",
+        name: user.name,
+        status: "ready",
+        reason: hasCart
+          ? `Cart recovery ready (${cartItems.length} items waiting)`
+          : hasSpecificViews
+          ? `Browse recovery ready (${viewedProducts[0]?.name})`
+          : `Featured stack recovery ready (Stage Whey Belgian Chocolate)`,
       });
       continue;
     }
