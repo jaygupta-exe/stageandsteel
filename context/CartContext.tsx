@@ -54,7 +54,7 @@ interface CartContextType {
   finalTotal: number;
   formattedDiscountAmount: string;
   formattedFinalTotal: string;
-  applyCoupon: (code: string) => { success: boolean; message: string; discount: number };
+  applyCoupon: (code: string, userOverride?: { phone?: string; email?: string }) => Promise<{ success: boolean; message: string; discount: number }>;
   removeCoupon: () => void;
 }
 
@@ -134,7 +134,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Recalculate discount whenever subtotal or coupon changes
   let discountAmount = 0;
   if (appliedCoupon && subtotal > 0) {
-    const result = validateCoupon(appliedCoupon.code, subtotal, liveCoupons);
+    const result = validateCoupon(appliedCoupon.code, subtotal, liveCoupons, items);
     if (result.isValid) {
       discountAmount = result.discountAmount;
     }
@@ -143,27 +143,64 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   // Restore coupon from storage on initial load once subtotal is known
   useEffect(() => {
     if (couponCodeStored && subtotal > 0 && !appliedCoupon) {
-      const result = validateCoupon(couponCodeStored, subtotal, liveCoupons);
+      const result = validateCoupon(couponCodeStored, subtotal, liveCoupons, items);
       if (result.isValid && result.coupon) {
         setAppliedCoupon(result.coupon);
       }
     }
-  }, [couponCodeStored, subtotal, appliedCoupon, liveCoupons]);
+  }, [couponCodeStored, subtotal, appliedCoupon, liveCoupons, items]);
 
   const finalTotal = Math.max(0, subtotal - discountAmount);
   const formattedDiscountAmount = `₹${discountAmount.toLocaleString("en-IN")}`;
   const formattedFinalTotal = `₹${finalTotal.toLocaleString("en-IN")}`;
 
-  const applyCoupon = (inputCode: string) => {
-    const result = validateCoupon(inputCode, subtotal, liveCoupons);
-    if (result.isValid && result.coupon) {
-      soundFX.playClick();
-      setAppliedCoupon(result.coupon);
-      localStorage.setItem("stage_steel_coupon", result.coupon.code);
-      return { success: true, message: result.message, discount: result.discountAmount };
-    } else {
+  const applyCoupon = async (
+    inputCode: string,
+    userOverride?: { phone?: string; email?: string }
+  ) => {
+    const result = validateCoupon(inputCode, subtotal, liveCoupons, items);
+    if (!result.isValid || !result.coupon) {
       return { success: false, message: result.message, discount: 0 };
     }
+
+    // High priority check: If single-use coupon, verify against API if user info is present
+    const checkPhone = userOverride?.phone || undefined;
+    const checkEmail = userOverride?.email || user?.email || undefined;
+    const checkUserId = user?.uid || undefined;
+
+    if (result.coupon.onePerUser !== false && (checkPhone || checkEmail || checkUserId)) {
+      try {
+        const res = await fetch("/api/coupons/validate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            code: result.coupon.code,
+            subtotal,
+            items,
+            phone: checkPhone,
+            email: checkEmail,
+            userId: checkUserId,
+          }),
+        });
+        if (res.ok) {
+          const apiData = await res.json();
+          if (!apiData.isValid) {
+            return {
+              success: false,
+              message: apiData.message || "You have already redeemed this coupon.",
+              discount: 0,
+            };
+          }
+        }
+      } catch (err) {
+        console.warn("Coupon check API warning:", err);
+      }
+    }
+
+    soundFX.playClick();
+    setAppliedCoupon(result.coupon);
+    localStorage.setItem("stage_steel_coupon", result.coupon.code);
+    return { success: true, message: result.message, discount: result.discountAmount };
   };
 
   const removeCoupon = () => {

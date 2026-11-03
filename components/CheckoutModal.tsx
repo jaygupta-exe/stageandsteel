@@ -47,17 +47,21 @@ export default function CheckoutModal() {
     message: string;
   } | null>(null);
 
-  const handleApplyCoupon = (e: React.FormEvent) => {
+  const handleApplyCoupon = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!couponInput.trim()) return;
-    const res = applyCoupon(couponInput);
+    const cleanP = phone ? phone.replace(/[^0-9]/g, "") : undefined;
+    const res = await applyCoupon(couponInput, {
+      phone: cleanP,
+      email: email ? email.trim() : undefined,
+    });
     if (res.success) {
       setCouponFeedback({ type: "success", message: res.message });
       setCouponInput("");
     } else {
       setCouponFeedback({ type: "error", message: res.message });
     }
-    setTimeout(() => setCouponFeedback(null), 4000);
+    setTimeout(() => setCouponFeedback(null), 5000);
   };
 
   const [name, setName] = useState("");
@@ -174,6 +178,36 @@ export default function CheckoutModal() {
       }
       if (!stateName || stateName.trim().length < 2) {
         throw new Error("Please enter your State.");
+      }
+
+      // Strict Pre-flight Single-Use Coupon Check
+      if (appliedCoupon) {
+        try {
+          const valRes = await fetch("/api/coupons/validate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              code: appliedCoupon.code,
+              subtotal,
+              items,
+              phone: cleanPhoneNum,
+              email: email.trim(),
+              userId: user?.uid || null,
+            }),
+          });
+          const valData = await valRes.json();
+          if (!valData.isValid) {
+            removeCoupon();
+            throw new Error(
+              valData.message ||
+                `Coupon "${appliedCoupon.code}" is not valid or has already been redeemed by your phone/email.`
+            );
+          }
+        } catch (valErr: any) {
+          if (valErr.message && !valErr.message.includes("fetch")) {
+            throw valErr;
+          }
+        }
       }
 
       // Handle 100% Discounted Free Orders directly (₹0 payable)

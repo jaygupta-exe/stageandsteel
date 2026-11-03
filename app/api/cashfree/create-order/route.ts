@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { savePendingOrder } from "@/lib/orderFulfillment";
+import { getAllCoupons, validateCoupon } from "@/lib/coupons";
+import { checkCouponUsage } from "@/lib/couponUsage";
 
 export async function POST(req: Request) {
   try {
@@ -68,6 +70,44 @@ export async function POST(req: Request) {
         { error: "A valid 6-digit PIN code is required for courier routing." },
         { status: 400 }
       );
+    }
+
+    // Strict Server-Side Verification for Single-Use & Bundle Coupons
+    if (couponCode && typeof couponCode === "string" && couponCode.trim()) {
+      const coupons = await getAllCoupons();
+      const validation = validateCoupon(
+        couponCode,
+        Number(subtotal) || Number(orderAmount),
+        coupons,
+        items || []
+      );
+
+      if (!validation.isValid || !validation.coupon) {
+        return NextResponse.json(
+          { error: validation.message || "Invalid or expired coupon code." },
+          { status: 400 }
+        );
+      }
+
+      // Enforce Single Use Per Customer if onePerUser is active
+      if (validation.coupon.onePerUser !== false) {
+        const usage = await checkCouponUsage(couponCode, {
+          phone: customerPhone,
+          email: customerEmail,
+          userId: customerId,
+        });
+
+        if (usage.alreadyUsed) {
+          return NextResponse.json(
+            {
+              error:
+                usage.reason ||
+                `Coupon "${couponCode}" has already been redeemed by your phone number or email. This special offer is limited to 1 use per customer.`,
+            },
+            { status: 400 }
+          );
+        }
+      }
     }
 
     // Unique Order ID (max 45 chars alphanumeric)

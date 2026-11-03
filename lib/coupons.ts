@@ -7,18 +7,47 @@ import {
   deleteDoc,
   updateDoc,
 } from "@/lib/firebase";
+import { normalizeCouponCode } from "@/lib/couponUsage";
 
 export interface Coupon {
   code: string;
-  type: "percentage" | "flat";
-  value: number; // 10 for 10% or 200 for ₹200
+  type: "percentage" | "flat" | "bundle";
+  value: number; // 10 for 10% or 200 for ₹200 or 798 / 1397 for bundle discount
+  bundleTargetPrice?: number; // e.g. 1300 or 4200
+  requiredBundle?: "creatine_amino" | "whey_creatine_amino" | string;
   minOrderAmount?: number;
   maxDiscount?: number; // Cap for percentage discounts
   description: string;
   isActive: boolean;
+  onePerUser?: boolean; // If true, single user can only redeem once in lifetime
+  aliases?: string[];
 }
 
 export const DEFAULT_COUPONS: Coupon[] = [
+  {
+    code: "DUO1300",
+    type: "bundle",
+    value: 798,
+    bundleTargetPrice: 1300,
+    requiredBundle: "creatine_amino",
+    minOrderAmount: 1300,
+    description: "Creatine + Amino Combo: Get both for just ₹1,300 (Save ₹798) [Single Use Only]",
+    isActive: true,
+    onePerUser: true,
+    aliases: ["CREAA1300", "POWERDUO", "DUOSTACK"],
+  },
+  {
+    code: "TRIO4200",
+    type: "bundle",
+    value: 1397,
+    bundleTargetPrice: 4200,
+    requiredBundle: "whey_creatine_amino",
+    minOrderAmount: 4200,
+    description: "Whey Protein + Creatine + Amino Trio Stack: Get all 3 for ₹4,200 (Save ₹1,397) [Single Use Only]",
+    isActive: true,
+    onePerUser: true,
+    aliases: ["WHEYTRIO", "TRIOSTACK", "STAGE4200"],
+  },
   {
     code: "TEST1",
     type: "flat",
@@ -26,6 +55,7 @@ export const DEFAULT_COUPONS: Coupon[] = [
     minOrderAmount: 1,
     description: "Tester Coupon: Pay ₹1 only for gateway verification",
     isActive: true,
+    onePerUser: false,
   },
   {
     code: "RUPEE1",
@@ -34,6 +64,7 @@ export const DEFAULT_COUPONS: Coupon[] = [
     minOrderAmount: 1,
     description: "Tester Coupon: Pay ₹1 only for gateway verification",
     isActive: true,
+    onePerUser: false,
   },
 ];
 
@@ -45,6 +76,36 @@ export interface ValidationResult {
   discountAmount: number;
   finalAmount: number;
   message: string;
+}
+
+/**
+ * Item classification helpers for bundles
+ */
+export function isCreatineItem(item: { id?: string; name?: string }): boolean {
+  const id = (item.id || "").toLowerCase();
+  const name = (item.name || "").toLowerCase();
+  return id.includes("creatine") || name.includes("creatine");
+}
+
+export function isAminoItem(item: { id?: string; name?: string }): boolean {
+  const id = (item.id || "").toLowerCase();
+  const name = (item.name || "").toLowerCase();
+  return (
+    id.includes("eaa") ||
+    id.includes("amino") ||
+    name.includes("eaa") ||
+    name.includes("amino")
+  );
+}
+
+export function isWheyItem(item: { id?: string; name?: string }): boolean {
+  const id = (item.id || "").toLowerCase();
+  const name = (item.name || "").toLowerCase();
+  return (
+    id.includes("whey") ||
+    name.includes("whey") ||
+    (id.includes("protein") && !id.includes("yeast"))
+  );
 }
 
 /**
@@ -243,7 +304,8 @@ export async function seedCoupons(): Promise<{ count: number }> {
 export function validateCoupon(
   inputCode: string,
   subtotal: number,
-  customCouponsList?: Coupon[]
+  customCouponsList?: Coupon[],
+  cartItems?: Array<{ id?: string; name?: string; price?: string; numericPrice?: number; quantity?: number }>
 ): ValidationResult {
   if (!inputCode || !inputCode.trim()) {
     return {
@@ -254,17 +316,27 @@ export function validateCoupon(
     };
   }
 
-  const cleanCode = inputCode.trim().toUpperCase();
-  const couponsPool = customCouponsList && customCouponsList.length > 0 ? customCouponsList : DEFAULT_COUPONS;
-  let coupon = couponsPool.find(
-    (c) => c.code.toUpperCase() === cleanCode && c.isActive
-  );
+  const rawCode = inputCode.trim().toUpperCase();
+  const canonicalCode = normalizeCouponCode(rawCode);
+  const couponsPool =
+    customCouponsList && customCouponsList.length > 0 ? customCouponsList : DEFAULT_COUPONS;
 
-  // Fallback to DEFAULT_COUPONS if not found in custom pool (e.g. system test coupons)
+  const matchFn = (c: Coupon) => {
+    if (!c.isActive) return false;
+    const cUpper = c.code.toUpperCase();
+    if (cUpper === rawCode || cUpper === canonicalCode) return true;
+    if (
+      c.aliases &&
+      c.aliases.some((a) => a.toUpperCase() === rawCode || a.toUpperCase() === canonicalCode)
+    ) {
+      return true;
+    }
+    return false;
+  };
+
+  let coupon = couponsPool.find(matchFn);
   if (!coupon) {
-    coupon = DEFAULT_COUPONS.find(
-      (c) => c.code.toUpperCase() === cleanCode && c.isActive
-    );
+    coupon = DEFAULT_COUPONS.find(matchFn);
   }
 
   if (!coupon) {
@@ -272,10 +344,43 @@ export function validateCoupon(
       isValid: false,
       discountAmount: 0,
       finalAmount: subtotal,
-      message: `Coupon code "${cleanCode}" is invalid or expired.`,
+      message: `Coupon code "${rawCode}" is invalid or expired.`,
     };
   }
 
+  const cleanCode = coupon.code.toUpperCase();
+
+  // 1. Bundle items verification (if cart items available)
+  if (cartItems && cartItems.length > 0) {
+    if (cleanCode === "DUO1300" || coupon.requiredBundle === "creatine_amino") {
+      const hasCreatine = cartItems.some((i) => isCreatineItem(i) && (i.quantity || 1) >= 1);
+      const hasAmino = cartItems.some((i) => isAminoItem(i) && (i.quantity || 1) >= 1);
+
+      if (!hasCreatine || !hasAmino) {
+        return {
+          isValid: false,
+          discountAmount: 0,
+          finalAmount: subtotal,
+          message: `Coupon "${coupon.code}" requires both Stage Creatine Monohydrate and EAA (Amino Acid) in your cart to claim the combo for ₹1,300.`,
+        };
+      }
+    } else if (cleanCode === "TRIO4200" || coupon.requiredBundle === "whey_creatine_amino") {
+      const hasWhey = cartItems.some((i) => isWheyItem(i) && (i.quantity || 1) >= 1);
+      const hasCreatine = cartItems.some((i) => isCreatineItem(i) && (i.quantity || 1) >= 1);
+      const hasAmino = cartItems.some((i) => isAminoItem(i) && (i.quantity || 1) >= 1);
+
+      if (!hasWhey || !hasCreatine || !hasAmino) {
+        return {
+          isValid: false,
+          discountAmount: 0,
+          finalAmount: subtotal,
+          message: `Coupon "${coupon.code}" requires Whey Protein, Creatine Monohydrate, and EAA (Amino Acid) in your cart to claim the trio stack for ₹4,200.`,
+        };
+      }
+    }
+  }
+
+  // 2. Minimum order validation
   if (coupon.minOrderAmount && subtotal < coupon.minOrderAmount) {
     return {
       isValid: false,
@@ -285,10 +390,19 @@ export function validateCoupon(
     };
   }
 
+  // 3. Discount calculation
   let discount = 0;
   if (cleanCode === "TEST1" || cleanCode === "RUPEE1") {
-    // Special test coupon: make payable exactly ₹1 (Cashfree minimum is ₹1)
+    // Special test coupon: make payable exactly ₹1
     discount = Math.max(0, subtotal - 1);
+  } else if (cleanCode === "DUO1300" || coupon.requiredBundle === "creatine_amino") {
+    // Creatine (899) + EAA (1199) = 2098 -> Combo price 1300 -> Discount = 798
+    const duoDiscount = coupon.value || 798;
+    discount = Math.min(duoDiscount, subtotal);
+  } else if (cleanCode === "TRIO4200" || coupon.requiredBundle === "whey_creatine_amino") {
+    // Whey (3499) + Creatine (899) + EAA (1199) = 5597 -> Combo price 4200 -> Discount = 1397
+    const trioDiscount = coupon.value || 1397;
+    discount = Math.min(trioDiscount, subtotal);
   } else if (coupon.type === "percentage") {
     discount = Math.round((subtotal * Number(coupon.value || 0)) / 100);
     if (coupon.maxDiscount && discount > coupon.maxDiscount) {
@@ -301,7 +415,11 @@ export function validateCoupon(
   const finalAmount = Math.max(0, subtotal - discount);
 
   let successMsg = `Coupon "${coupon.code}" applied! You saved ₹${discount.toLocaleString("en-IN")}.`;
-  if (cleanCode === "TEST1" || cleanCode === "RUPEE1") {
+  if (cleanCode === "DUO1300") {
+    successMsg = `Creatine + Amino Combo applied! Stack discounted to ₹1,300 (You saved ₹${discount.toLocaleString("en-IN")}). [Single-use offer]`;
+  } else if (cleanCode === "TRIO4200") {
+    successMsg = `Whey + Creatine + Amino Trio Stack applied! All 3 discounted to ₹4,200 (You saved ₹${discount.toLocaleString("en-IN")}). [Single-use offer]`;
+  } else if (cleanCode === "TEST1" || cleanCode === "RUPEE1") {
     successMsg = `Test Coupon "${coupon.code}" applied! Total Payable is ₹1 (for Gateway Testing).`;
   } else if (finalAmount === 0) {
     successMsg = `Promotional Coupon "${coupon.code}" applied! 100% Free Order (₹0 Payable).`;

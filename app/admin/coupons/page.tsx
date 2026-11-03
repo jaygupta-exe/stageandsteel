@@ -40,6 +40,7 @@ export default function AdminCouponsPage() {
     maxDiscount: undefined,
     description: "",
     isActive: true,
+    onePerUser: true,
   });
 
   const loadCoupons = async () => {
@@ -219,15 +220,26 @@ export default function AdminCouponsPage() {
                   <tr key={c.code} className="hover:bg-neutral-900/40 transition-colors">
                     {/* Code */}
                     <td className="py-4 px-3">
-                      <span className="font-bold text-white text-sm bg-neutral-900 px-3 py-1.5 rounded-lg border border-neutral-800 tracking-wider">
-                        {c.code}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-white text-sm bg-neutral-900 px-3 py-1.5 rounded-lg border border-neutral-800 tracking-wider">
+                          {c.code}
+                        </span>
+                        {c.onePerUser !== false && (
+                          <span className="px-2 py-0.5 text-[9px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 rounded-full tracking-wider uppercase">
+                            1-TIME
+                          </span>
+                        )}
+                      </div>
                     </td>
 
                     {/* Value */}
                     <td className="py-4 px-3">
                       <span className="text-emerald-400 font-bold text-sm">
-                        {c.type === "percentage" ? `${c.value}% OFF` : `₹${c.value} FLAT OFF`}
+                        {c.type === "percentage"
+                          ? `${c.value}% OFF`
+                          : c.type === "bundle"
+                          ? (c.bundleTargetPrice ? `₹${c.bundleTargetPrice} COMBO` : `₹${c.value} OFF`)
+                          : `₹${c.value} FLAT OFF`}
                       </span>
                     </td>
 
@@ -325,6 +337,7 @@ export default function AdminCouponsPage() {
                   >
                     <option value="percentage">Percentage (% OFF)</option>
                     <option value="flat">Flat Amount (₹ OFF)</option>
+                    <option value="bundle">Special Bundle Combo</option>
                   </select>
                 </div>
 
@@ -391,7 +404,18 @@ export default function AdminCouponsPage() {
                 />
               </div>
 
-              <div className="pt-2">
+              <div className="pt-2 flex flex-col gap-2.5">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={formData.onePerUser ?? true}
+                    onChange={(e) => setFormData({ ...formData, onePerUser: e.target.checked })}
+                    className="accent-emerald-500 w-4 h-4"
+                  />
+                  <span className="text-amber-300 font-semibold text-xs tracking-wider uppercase">
+                    ⭐ Single Use Per Customer (Only 1 redemption per phone/email/account)
+                  </span>
+                </label>
                 <label className="flex items-center gap-2 cursor-pointer">
                   <input
                     type="checkbox"
@@ -399,7 +423,9 @@ export default function AdminCouponsPage() {
                     onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
                     className="accent-emerald-500 w-4 h-4"
                   />
-                  <span className="text-white font-semibold">Activate immediately</span>
+                  <span className="text-white font-semibold text-xs tracking-wider uppercase">
+                    Activate immediately
+                  </span>
                 </label>
               </div>
 

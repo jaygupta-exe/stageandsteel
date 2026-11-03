@@ -6,6 +6,7 @@ import {
   updateDoc,
   serverTimestamp,
 } from "@/lib/firebase";
+import { recordCouponUsage } from "@/lib/couponUsage";
 
 const WHATSAPP_NUMBER = "919779159169"; // Divesh Mehan (Stage & Steel Owner)
 const OWNER_EMAIL = "Stageandsteel26@gmail.com";
@@ -652,6 +653,17 @@ async function executeFulfillment(
   }
 
   // 3. Send Notification Emails (asynchronously to avoid blocking verification response)
+  if (orderData.couponCode) {
+    void recordCouponUsage({
+      orderId,
+      couponCode: orderData.couponCode,
+      customerPhone: orderData.customerPhone,
+      customerEmail: orderData.customerEmail,
+      userId: orderData.userId,
+      finalTotal: orderData.finalTotal,
+    });
+  }
+
   sendOrderEmails({
     orderId,
     customerName: orderData.customerName,

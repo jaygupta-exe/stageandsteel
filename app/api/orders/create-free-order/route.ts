@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { savePendingOrder, fulfillPaidOrder } from "@/lib/orderFulfillment";
+import { getAllCoupons, validateCoupon } from "@/lib/coupons";
+import { checkCouponUsage, recordCouponUsage } from "@/lib/couponUsage";
 
 export async function POST(req: Request) {
   try {
@@ -53,6 +55,43 @@ export async function POST(req: Request) {
       );
     }
 
+    // Strict Single-Use Coupon Check for promotional orders
+    if (couponCode && typeof couponCode === "string" && couponCode.trim()) {
+      const coupons = await getAllCoupons();
+      const validation = validateCoupon(
+        couponCode,
+        Number(subtotal) || Number(discountAmount) || 0,
+        coupons,
+        items || []
+      );
+
+      if (!validation.isValid || !validation.coupon) {
+        return NextResponse.json(
+          { error: validation.message || "Invalid promotional coupon code." },
+          { status: 400 }
+        );
+      }
+
+      if (validation.coupon.onePerUser !== false) {
+        const usage = await checkCouponUsage(couponCode, {
+          phone: customerPhone,
+          email: customerEmail,
+          userId: customerId,
+        });
+
+        if (usage.alreadyUsed) {
+          return NextResponse.json(
+            {
+              error:
+                usage.reason ||
+                `Promotional coupon "${couponCode}" has already been claimed by your phone number or email. Limit 1 per customer.`,
+            },
+            { status: 400 }
+          );
+        }
+      }
+    }
+
     // Unique Order ID for Free Promotional Orders
     const orderId = `SS_PROMO_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
 
@@ -102,6 +141,18 @@ export async function POST(req: Request) {
         pincode: cleanPincode,
       },
     });
+
+    // 3. Record coupon usage to prevent duplicate claims
+    if (couponCode) {
+      void recordCouponUsage({
+        orderId,
+        couponCode,
+        customerPhone,
+        customerEmail,
+        userId: customerId,
+        finalTotal: 0,
+      });
+    }
 
     return NextResponse.json({
       success: true,
