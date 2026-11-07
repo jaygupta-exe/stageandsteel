@@ -30,6 +30,9 @@ export function normalizeCouponCode(code: string): string {
   if (c === "WHEYTRIO" || c === "TRIOSTACK" || c === "STAGE4200" || c === "TRIO4200") {
     return "TRIO4200";
   }
+  if (c === "DIWALI" || c === "DIWALI-15" || c === "DIWALI15") {
+    return "DIWALI15";
+  }
   return c;
 }
 

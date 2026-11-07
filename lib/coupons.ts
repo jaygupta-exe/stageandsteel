@@ -25,6 +25,15 @@ export interface Coupon {
 
 export const DEFAULT_COUPONS: Coupon[] = [
   {
+    code: "DIWALI15",
+    type: "percentage",
+    value: 15,
+    description: "Diwali Special: Flat 15% OFF across all products [Single Use Only]",
+    isActive: true,
+    onePerUser: true,
+    aliases: ["DIWALI", "DIWALI-15"],
+  },
+  {
     code: "DUO1300",
     type: "bundle",
     value: 798,
@@ -415,6 +424,9 @@ export function validateCoupon(
   const finalAmount = Math.max(0, subtotal - discount);
 
   let successMsg = `Coupon "${coupon.code}" applied! You saved ₹${discount.toLocaleString("en-IN")}.`;
+  if (cleanCode === "DIWALI15") {
+    successMsg = `Diwali Special applied! 15% OFF across your order (You saved ₹${discount.toLocaleString("en-IN")}). [Single-use offer]`;
+  } else 
   if (cleanCode === "DUO1300") {
     successMsg = `Creatine + Amino Combo applied! Stack discounted to ₹1,300 (You saved ₹${discount.toLocaleString("en-IN")}). [Single-use offer]`;
   } else if (cleanCode === "TRIO4200") {
