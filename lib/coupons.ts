@@ -15,6 +15,7 @@ export interface Coupon {
   value: number; // 10 for 10% or 200 for ₹200 or 798 / 1397 for bundle discount
   bundleTargetPrice?: number; // e.g. 1300 or 4200
   requiredBundle?: "creatine_amino" | "whey_creatine_amino" | string;
+  targetProductId?: string;
   minOrderAmount?: number;
   maxDiscount?: number; // Cap for percentage discounts
   description: string;
@@ -28,7 +29,9 @@ export const DEFAULT_COUPONS: Coupon[] = [
     code: "DIWALI15",
     type: "percentage",
     value: 15,
-    description: "Diwali Special: Flat 15% OFF across all products [Single Use Only]",
+    requiredBundle: "mocha_protein",
+    targetProductId: "yeast-mocha-protein",
+    description: "Diwali Special: 15% OFF exclusively on Stage Yeast Protein (Cafe Mocha) [Single Use Only]",
     isActive: true,
     onePerUser: true,
     aliases: ["DIWALI", "DIWALI-15"],
@@ -114,6 +117,18 @@ export function isWheyItem(item: { id?: string; name?: string }): boolean {
     id.includes("whey") ||
     name.includes("whey") ||
     (id.includes("protein") && !id.includes("yeast"))
+  );
+}
+
+export function isMochaProteinItem(item: { id?: string; name?: string; flavor?: string }): boolean {
+  const id = (item.id || "").toLowerCase();
+  const name = (item.name || "").toLowerCase();
+  const flavor = (item.flavor || "").toLowerCase();
+  return (
+    id.includes("mocha") ||
+    name.includes("mocha") ||
+    flavor.includes("mocha") ||
+    id === "yeast-mocha-protein"
   );
 }
 
@@ -361,7 +376,17 @@ export function validateCoupon(
 
   // 1. Bundle items verification (if cart items available)
   if (cartItems && cartItems.length > 0) {
-    if (cleanCode === "DUO1300" || coupon.requiredBundle === "creatine_amino") {
+    if (cleanCode === "DIWALI15" || coupon.requiredBundle === "mocha_protein") {
+      const hasMocha = cartItems.some((i) => isMochaProteinItem(i) && (i.quantity || 1) >= 1);
+      if (!hasMocha) {
+        return {
+          isValid: false,
+          discountAmount: 0,
+          finalAmount: subtotal,
+          message: `Coupon "${coupon.code}" is valid exclusively on Stage Yeast Protein (Cafe Mocha). Please add Cafe Mocha to your cart.`,
+        };
+      }
+    } else if (cleanCode === "DUO1300" || coupon.requiredBundle === "creatine_amino") {
       const hasCreatine = cartItems.some((i) => isCreatineItem(i) && (i.quantity || 1) >= 1);
       const hasAmino = cartItems.some((i) => isAminoItem(i) && (i.quantity || 1) >= 1);
 
@@ -412,6 +437,18 @@ export function validateCoupon(
     // Whey (3499) + Creatine (899) + EAA (1199) = 5597 -> Combo price 4200 -> Discount = 1397
     const trioDiscount = coupon.value || 1397;
     discount = Math.min(trioDiscount, subtotal);
+  } else if (cleanCode === "DIWALI15" || coupon.requiredBundle === "mocha_protein") {
+    // 15% discount strictly on Cafe Mocha Protein items
+    let mochaSubtotal = subtotal;
+    if (cartItems && cartItems.length > 0) {
+      mochaSubtotal = cartItems
+        .filter(isMochaProteinItem)
+        .reduce((sum, item) => sum + (Number(item.numericPrice) || 2599) * (Number(item.quantity) || 1), 0);
+    }
+    discount = Math.round((mochaSubtotal * Number(coupon.value || 15)) / 100);
+    if (coupon.maxDiscount && discount > coupon.maxDiscount) {
+      discount = coupon.maxDiscount;
+    }
   } else if (coupon.type === "percentage") {
     discount = Math.round((subtotal * Number(coupon.value || 0)) / 100);
     if (coupon.maxDiscount && discount > coupon.maxDiscount) {
@@ -425,7 +462,7 @@ export function validateCoupon(
 
   let successMsg = `Coupon "${coupon.code}" applied! You saved ₹${discount.toLocaleString("en-IN")}.`;
   if (cleanCode === "DIWALI15") {
-    successMsg = `Diwali Special applied! 15% OFF across your order (You saved ₹${discount.toLocaleString("en-IN")}). [Single-use offer]`;
+    successMsg = `Diwali Special applied! 15% OFF on Stage Yeast Protein (Cafe Mocha) (You saved ₹${discount.toLocaleString("en-IN")}). [Single-use offer]`;
   } else 
   if (cleanCode === "DUO1300") {
     successMsg = `Creatine + Amino Combo applied! Stack discounted to ₹1,300 (You saved ₹${discount.toLocaleString("en-IN")}). [Single-use offer]`;
